@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create viral TikTok content with Chafiktech Ai's AI-powered tools. Sound finder, caption generator, hashtag optimizer, trend analyzer, and more.">
+  <meta name="keywords" content="TikTok tools, AI TikTok, viral TikTok, caption generator, hashtag optimizer, trend analyzer, Chafiktech Ai">
+  <meta name="author" content="Chafiktech Ai">
+  <meta property="og:title" content="AI Tiktok Creator Suite - Chafiktech Ai">
+  <meta property="og:description" content="Create viral TikTok content with AI-powered creation tools.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Tiktok Creator Suite - Chafiktech Ai">
+  <meta name="twitter:description" content="Create viral TikTok content with AI-powered creation tools.">
+  <title>AI Tiktok Creator Suite - Chafiktech Ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* ============================================================
+       AI Tiktok Creator Suite Section - Modular CSS
+       ============================================================ */
+    .tk-wrap {
+      max-width: 1320px; margin: 0 auto;
+      padding: 0 28px 120px; position: relative; z-index: 1;
+      margin-top: 40px;
+    }
+    .tk-nav {
+      display: flex; gap: 6px;
+      background: rgba(0,0,0,0.2); border: 1px solid var(--border2);
+      border-radius: 18px; padding: 6px; margin-bottom: 28px;
+      overflow-x: auto; scrollbar-width: none;
+    }
+    [data-theme="light"] .tk-nav { background: rgba(0,0,0,0.04); }
+    .tk-nav::-webkit-scrollbar { display: none; }
+    
+    .tk-tab {
+      flex: 1; min-width: 140px; padding: 13px 18px; border-radius: 13px;
+      border: none; background: transparent;
+      font-family: var(--font2); font-size: 0.85rem; font-weight: 700;
+      color: var(--text2); cursor: pointer; transition: all 0.25s var(--ease);
+      display: flex; align-items: center; gap: 8px; justify-content: center;
+      white-space: nowrap; letter-spacing: -0.01em; position: relative;
+    }
+    .tk-tab.active {
+      background: linear-gradient(135deg, #00f2fe, #4facfe); color: #fff;
+      box-shadow: 0 4px 24px rgba(0,242,254,0.45);
+    }
+    .tk-tab:not(.active):hover { background: var(--glass2); color: var(--text); }
+    
+    .tk-badge {
+      position: absolute; top: 2px; right: 2px;
+      font-size: 0.55rem; padding: 2px 6px; border-radius: 6px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .tk-badge.pro { background: rgba(168,85,247,0.2); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+    .tk-badge.prem { background: rgba(245,158,11,0.2); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+
+    .tk-pane { display: none; }
+    .tk-pane.active { display: block; animation: fadeUp 0.4s var(--ease) both; }
+    
+    .tk-layout { display: grid; grid-template-columns: 360px 1fr; gap: 24px; align-items: start; }
+    @media(max-width:1024px) { .tk-layout { grid-template-columns: 1fr; } }
+    
+    /* Input Panel */
+    .tk-input-panel {
+      background: var(--glass); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--border); border-radius: var(--r2);
+      box-shadow: var(--shadow); padding: 26px; transition: border-color 0.3s;
+    }
+    .tk-input-panel:hover { border-color: var(--border2); }
+    
+    .tk-btn {
+      width: 100%; margin-top: 20px; padding: 16px; border-radius: var(--r); border: none;
+      font-family: var(--font2); font-size: 1rem; font-weight: 800;
+      cursor: pointer; transition: all 0.28s var(--ease);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      position: relative; overflow: hidden; letter-spacing: -0.01em;
+      background: linear-gradient(135deg, #00f2fe, #4facfe); color: #fff;
+    }
+    .tk-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,242,254,0.4); }
+    .tk-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Output Panel */
+    .tk-output-panel {
+      background: var(--glass); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--border); border-radius: var(--r2);
+      box-shadow: var(--shadow); min-height: 500px; position: relative; overflow: hidden;
+    }
+    
+    .tk-placeholder {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; color: var(--text3); padding: 40px; text-align: center;
+    }
+    .tk-loading {
+      position: absolute; inset: 0; background: rgba(3,3,14,0.88); backdrop-filter: blur(10px);
+      display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 20; gap: 22px;
+    }
+    [data-theme="light"] .tk-loading { background: rgba(240,240,255,0.9); }
+    .tk-loading.show { display: flex; }
+    
+    .tk-content { display: none; padding: 24px; flex-direction: column; animation: fadeUp 0.45s var(--ease) both; }
+    .tk-content.show { display: flex; }
+    
+    .tk-actions {
+      display: flex; justify-content: space-between; align-items: center; padding: 11px 16px; margin-bottom: 16px;
+      background: rgba(0,242,254,0.07); border: 1px solid rgba(0,242,254,0.18); border-radius: 12px; flex-wrap: wrap; gap: 10px;
+    }
+    .tk-btns { display: flex; gap: 7px; flex-wrap: wrap; }
+    .tk-action-btn {
+      padding: 7px 14px; border-radius: 8px; background: rgba(0,242,254,0.15); border: 1px solid rgba(0,242,254,0.28);
+      color: #00f2fe; font-size: 0.77rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    }
+    .tk-action-btn:hover { background: rgba(0,242,254,0.3); }
+
+    .tk-result-box {
+      background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 12px;
+      padding: 18px; margin-bottom: 16px; color: var(--text); font-size: 0.9rem; line-height: 1.6;
+    }
+    [data-theme="light"] .tk-result-box { background: rgba(255,255,255,0.5); }
+    .tk-result-box h3 { color: #00f2fe; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    
+    .tk-premium-lock {
+      margin-top: 20px; padding: 24px; text-align: center; background: rgba(245,158,11,0.1);
+      border: 1px dashed rgba(245,158,11,0.4); border-radius: 12px;
+    }
+    .tk-premium-lock h4 { color: #fcd34d; margin-bottom: 8px; }
+    
+    .tk-toast {
+      position: fixed; bottom: 28px; right: 28px; z-index: 9999; background: var(--bg2);
+      border: 1px solid rgba(0,242,254,0.4); border-radius: 14px; padding: 13px 22px;
+      font-size: 0.875rem; font-weight: 600; color: var(--text); box-shadow: 0 16px 50px rgba(0,0,0,0.5);
+      transform: translateY(90px); opacity: 0; transition: all 0.4s var(--ease); pointer-events: none;
+    }
+    .tk-toast.show { transform: translateY(0); opacity: 1; }
+  
+    /* Premium Grid for TikTok */
+    .premium-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      padding: 0 0 40px;
+    }
+    @media(max-width: 1200px) { .premium-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media(max-width: 900px) { .premium-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media(max-width: 600px) { .premium-grid { grid-template-columns: 1fr; } }
+    
+    .tool-card-premium {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.4));
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    .tool-card-premium::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 20px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.8), rgba(168,85,247,0.8));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    
+    .tool-card-premium:hover {
+      transform: translateY(-6px);
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7));
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.15);
+    }
+    
+    .tool-card-premium:hover::before { opacity: 1; }
+    
+    .tc-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex; align-items: center; justify-content: center; font-size: 24px;
+      margin-bottom: 24px; transition: transform 0.3s ease;
+    }
+    
+    .tool-card-premium:hover .tc-icon {
+      transform: scale(1.1); background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.3);
+    }
+    
+    .tc-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; color: #f8fafc; }
+    .tc-desc { color: #94a3b8; font-size: 0.85rem; line-height: 1.5; margin-bottom: 24px; flex-grow: 1; }
+    .tc-btn { background: transparent; color: #818cf8; border: none; padding: 0; font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: gap 0.3s ease; align-self: flex-start; }
+    .tool-card-premium:hover .tc-btn { gap: 12px; color: #a5b4fc; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px;
+      background: rgba(255,255,255,0.05); color: #fff; padding: 8px 16px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.1); transform: translateX(-4px); }
+
+  
+    /* Navbar Dropdown styling */
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: var(--bg2); min-width: 240px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 0; z-index: 1000; }
+    .nav-dropdown:hover .dropdown-content { display: flex; flex-direction: column; }
+    .dropdown-content a { color: var(--text); padding: 12px 20px; text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: background 0.2s, padding-left 0.2s; font-family: var(--font, sans-serif); }
+    .dropdown-content a:hover { background: var(--glass2, rgba(255,255,255,0.08)); padding-left: 24px; color: var(--indigo2, #818cf8); }
+
+  </style>
+</head>
+<body class="bg-mesh">
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-inner">
+            <a href="../index.html" class="nav-logo">
+                <div class="nav-logo-icon">⚡</div>
+                Chafiktech Ai
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Home</a>
+                <div class="nav-dropdown">
+                    <a href="../index.html#tools" class="nav-link" style="cursor:pointer;">Tools ▾</a>
+                    <div class="dropdown-content">
+                        <a href="../tools/seo-article-generator.html">SEO Article Generator</a>
+                        <a href="../tools/video-to-prompt.html">Video to Prompt</a>
+                        <a href="../tools/tiktok-tools.html">AI Tiktok Creator Suite</a>
+                        <a href="../tools/prompt-viral.html">Prompt Viral</a>
+                        <a href="../tools/youtube-suite.html">YouTube Suite</a>
+                        <a href="../tools/ai-humanizer.html">AI Humanizer</a>
+                        <a href="../tools/digital-product-creator.html">Digital Product Creator</a>
+                        <a href="../tools/prompt-article.html">Article Prompt</a>
+                    </div>
+                </div>
+                <a href="../ecommerce.html" class="nav-link">Create Your Digital Product</a>
+                <a href="../pricing.html" class="nav-link">Pricing</a>
+                <a href="../about.html" class="nav-link">About</a>
+                <a href="../contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle theme-btn" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+                <a href="../login.html" class="btn btn-secondary btn-sm">Log In</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="../index.html" class="nav-link">Home</a>
+    <a href="../pricing.html" class="nav-link">Pricing</a>
+    <a href="../blog.html" class="nav-link">Blog</a>
+    <a href="../ecommerce.html" class="nav-link">Create Your Digital Product</a>
+    <a href="../login.html" class="nav-link">Log In</a>
+    <a href="../register.html" class="nav-link">Sign Up</a>
+  </div>
+
+  <!-- Page Header -->
+  <header class="page-header reveal" style="padding-top:120px; padding-bottom:20px; text-align:center;">
+    <div class="container">
+      <div class="tool-page-icon" style="font-size:3rem; margin-bottom:15px; display:inline-block;">🎵</div>
+      <h1 style="font-family:var(--font-display); font-size:3rem; font-weight:900;">AI Tiktok Creator Suite</h1>
+      <p style="color:var(--text2); max-width:600px; margin:0 auto;">Create viral TikTok content with 10 powerful AI-powered creation tools.</p>
+    </div>
+  </header>
+
+  <!-- TikTok SaaS Workspace -->
+  <div class="tk-wrap reveal">
+    
+    <!-- Tab Navigation -->
+    
+    <!-- Tool Grid -->
+    <div class="premium-grid" id="tk-grid">
+      <div class="tool-card-premium" onclick="openTkPane('script')">
+        <div class="tc-icon">📝</div>
+        <h3 class="tc-title">Viral Script Generator</h3>
+        <p class="tc-desc">Hook, Story, and CTA for your next viral video.</p>
+        <button class="tc-btn">Open Tool &rarr;</button>
+      </div>
+      <div class="tool-card-premium" onclick="openTkPane('hook')">
+        <div class="tc-icon">🪝</div>
+        <h3 class="tc-title">Viral Hook Generator</h3>
+        <p class="tc-desc">10 scroll-stopping hooks tailored to your niche.</p>
+        <button class="tc-btn">Open Tool &rarr;</button>
+      </div>
+      <div class="tool-card-premium" onclick="openTkPane('rewrite')">
+        <div class="tc-icon" style="position:relative;">🔄</div>
+        <h3 class="tc-title">Trend Rewriter AI</h3>
+        <p class="tc-desc">Rewrite any idea into a highly engaging trending format.</p>
+        <button class="tc-btn">Open Tool &rarr;</button>
+      </div>
+      <div class="tool-card-premium" onclick="openTkPane('faceless')">
+        <div class="tc-icon">🎭</div>
+        <h3 class="tc-title">Faceless Video Script</h3>
+        <p class="tc-desc">Fast-paced facts and stories without showing your face.</p>
+        <button class="tc-btn">Open Tool &rarr;</button>
+      </div>
+      <div class="tool-card-premium" onclick="openTkPane('ideas')">
+        <div class="tc-icon" style="position:relative;">💡</div>
+        <h3 class="tc-title">30-Day Idea Generator</h3>
+        <p class="tc-desc">Get a complete month of TikTok video ideas instantly.</p>
+        <button class="tc-btn">Open Tool &rarr;</button>
+      </div>
+      <div class="tool-card-premium" onclick="openTkPane('caphash')">
+        <div class="tc-icon">#️⃣</div>
+        <h3 class="tc-title">Caption & Hashtag SEO</h3>
+        <p class="tc-desc">SEO-optimized captions and viral hashtag sets.</p>
+        <button class="tc-btn">Open Tool &rarr;</button>
+      </div>
+      <div class="tool-card-premium" onclick="openTkPane('engage')">
+        <div class="tc-icon" style="position:relative;">🔥</div>
+        <h3 class="tc-title">Engagement Booster</h3>
+        <p class="tc-desc">Optimize existing scripts to maximize viewer retention.</p>
+        <button class="tc-btn">Open Tool &rarr;</button>
+      </div>
+      <div class="tool-card-premium" onclick="openTkPane('timing')">
+        <div class="tc-icon">⏰</div>
+        <h3 class="tc-title">Timing & Strategy AI</h3>
+        <p class="tc-desc">Find the perfect posting times and growth strategy.</p>
+        <button class="tc-btn">Open Tool &rarr;</button>
+      </div>
+      <div class="tool-card-premium" onclick="openTkPane('prompt')">
+        <div class="tc-icon">🎬</div>
+        <h3 class="tc-title">Script to Video Prompt</h3>
+        <p class="tc-desc">Generate AI video prompts (Sora/Midjourney) from scripts.</p>
+        <button class="tc-btn">Open Tool &rarr;</button>
+      </div>
+      <div class="tool-card-premium" onclick="openTkPane('channel')">
+        <div class="tc-icon" style="position:relative;">👑</div>
+        <h3 class="tc-title">Faceless Channel Builder</h3>
+        <p class="tc-desc">Generate a full 30-day automated channel blueprint.</p>
+        <button class="tc-btn">Open Tool &rarr;</button>
+      </div>
+    </div>
+
+
+    <!-- PANE 1: Viral Script -->
+    <div class="tk-app-layout" id="tk-app-layout">
+
+      <!-- In-Tool Sidebar -->
+      <div class="tk-in-tool-sidebar">
+        <button class="back-btn" onclick="closeTkPane()" style="margin-bottom: 24px; justify-content: center;">← Back to Grid</button>
+        <button class="tk-its-btn" onclick="openTkPane('script')" id="its-script">📝 Viral Script</button>
+        <button class="tk-its-btn" onclick="openTkPane('hook')" id="its-hook">🪝 Viral Hook</button>
+        <button class="tk-its-btn" onclick="openTkPane('rewrite')" id="its-rewrite">🔄 Trend Rewriter</button>
+        <button class="tk-its-btn" onclick="openTkPane('faceless')" id="its-faceless">🎭 Faceless Script</button>
+        <button class="tk-its-btn" onclick="openTkPane('ideas')" id="its-ideas">💡 30-Day Ideas</button>
+        <button class="tk-its-btn" onclick="openTkPane('caphash')" id="its-caphash">#️⃣ Caption & Tags</button>
+        <button class="tk-its-btn" onclick="openTkPane('engage')" id="its-engage">🔥 Engage Boost</button>
+        <button class="tk-its-btn" onclick="openTkPane('timing')" id="its-timing">⏰ Timing & Strategy</button>
+        <button class="tk-its-btn" onclick="openTkPane('prompt')" id="its-prompt">🎬 Script to Prompt</button>
+        <button class="tk-its-btn" onclick="openTkPane('channel')" id="its-channel">👑 Channel Builder</button>
+      </div>
+      <!-- Pane Container -->
+      <div class="tk-pane-container" style="flex: 1;">
+
+<div class="tk-pane" id="pane-script">
+      
+      <div class="tk-layout">
+        <div class="tk-input-panel">
+          <h3 style="margin-bottom:5px;">📝 TikTok Viral Script</h3>
+          <p style="font-size:0.8rem; color:var(--text2); margin-bottom:20px;">Generate a complete TikTok script with a powerful hook, engaging story, and CTA.</p>
+          <div style="margin-bottom:15px;">
+            <label class="form-label">Video Idea / Topic</label>
+            <textarea class="form-textarea" id="script-input" placeholder="e.g., 3 productivity hacks for students..."></textarea>
+          </div>
+          <button class="tk-btn" onclick="runTool('script')">⚡ Generate Script</button>
+        </div>
+        <div class="tk-output-panel" id="out-script">
+           <div class="tk-placeholder">Enter your idea and generate to see your viral script.</div>
+           <div class="tk-loading">Loading...</div>
+           <div class="tk-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 2: Viral Hook -->
+    <div class="tk-pane" id="pane-hook">
+      
+      <div class="tk-layout">
+        <div class="tk-input-panel">
+          <h3 style="margin-bottom:5px;">🪝 Viral Hook Generator</h3>
+          <p style="font-size:0.8rem; color:var(--text2); margin-bottom:20px;">Generate 10 scroll-stopping hooks (first 3 seconds) for your niche.</p>
+          <div style="margin-bottom:15px;">
+            <label class="form-label">Niche or Topic</label>
+            <input type="text" class="form-input" id="hook-input" placeholder="e.g., fitness, finance, tech">
+          </div>
+          <button class="tk-btn" onclick="runTool('hook')">⚡ Generate Hooks</button>
+        </div>
+        <div class="tk-output-panel" id="out-hook">
+           <div class="tk-placeholder">Enter your niche to generate viral hooks.</div>
+           <div class="tk-loading">Loading...</div>
+           <div class="tk-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 3: Trend Rewriter -->
+    <div class="tk-pane" id="pane-rewrite">
+      
+      <div class="tk-layout">
+        <div class="tk-input-panel">
+          <h3 style="margin-bottom:5px;">🔄 Trend Rewriter</h3>
+          <p style="font-size:0.8rem; color:var(--text2); margin-bottom:20px;">Rewrite any normal idea into a viral trending format.</p>
+          <div style="margin-bottom:15px;">
+            <label class="form-label">Original Idea</label>
+            <textarea class="form-textarea" id="rewrite-input" placeholder="e.g., Drink water every day for better skin"></textarea>
+          </div>
+          <button class="tk-btn" onclick="runTool('rewrite')">⚡ Rewrite to Trend</button>
+        </div>
+        <div class="tk-output-panel" id="out-rewrite">
+           <div class="tk-placeholder">Enter an idea to trend-ify it.</div>
+           <div class="tk-loading">Loading...</div>
+           <div class="tk-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 4: Faceless Script -->
+    <div class="tk-pane" id="pane-faceless">
+      
+      <div class="tk-layout">
+        <div class="tk-input-panel">
+          <h3 style="margin-bottom:5px;">🎭 Faceless Script</h3>
+          <p style="font-size:0.8rem; color:var(--text2); margin-bottom:20px;">Generate fast-paced scripts for faceless channels (facts, stories, history).</p>
+          <div style="margin-bottom:15px;">
+            <label class="form-label">Topic</label>
+            <input type="text" class="form-input" id="faceless-input" placeholder="e.g., Scary facts about space">
+          </div>
+          <button class="tk-btn" onclick="runTool('faceless')">⚡ Generate Faceless Script</button>
+        </div>
+        <div class="tk-output-panel" id="out-faceless">
+           <div class="tk-placeholder">Enter a topic for your faceless video.</div>
+           <div class="tk-loading">Loading...</div>
+           <div class="tk-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 5: 30-Day Ideas -->
+    <div class="tk-pane" id="pane-ideas">
+      
+      <div class="tk-layout">
+        <div class="tk-input-panel">
+          <h3 style="margin-bottom:5px;">💡 30-Day Idea Generator</h3>
+          <p style="font-size:0.8rem; color:var(--text2); margin-bottom:20px;">Get a complete month of TikTok video ideas for your niche.</p>
+          <div style="margin-bottom:15px;">
+            <label class="form-label">Your Niche</label>
+            <input type="text" class="form-input" id="ideas-input" placeholder="e.g., Digital Marketing">
+          </div>
+          <button class="tk-btn" onclick="runTool('ideas')">⚡ Generate 30 Days</button>
+        </div>
+        <div class="tk-output-panel" id="out-ideas">
+           <div class="tk-placeholder">Enter your niche to plan your month.</div>
+           <div class="tk-loading">Loading...</div>
+           <div class="tk-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 6: Caption & Tags -->
+    <div class="tk-pane" id="pane-caphash">
+      
+      <div class="tk-layout">
+        <div class="tk-input-panel">
+          <h3 style="margin-bottom:5px;">#️⃣ Caption + Hashtag</h3>
+          <p style="font-size:0.8rem; color:var(--text2); margin-bottom:20px;">Generate SEO-optimized captions and viral hashtags.</p>
+          <div style="margin-bottom:15px;">
+            <label class="form-label">What is your video about?</label>
+            <textarea class="form-textarea" id="caphash-input" placeholder="e.g., A tutorial on how to edit videos in CapCut"></textarea>
+          </div>
+          <button class="tk-btn" onclick="runTool('caphash')">⚡ Generate SEO Data</button>
+        </div>
+        <div class="tk-output-panel" id="out-caphash">
+           <div class="tk-placeholder">Enter video details to generate captions.</div>
+           <div class="tk-loading">Loading...</div>
+           <div class="tk-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 7: Engage Boost -->
+    <div class="tk-pane" id="pane-engage">
+      
+      <div class="tk-layout">
+        <div class="tk-input-panel">
+          <h3 style="margin-bottom:5px;">🔥 Engagement Booster</h3>
+          <p style="font-size:0.8rem; color:var(--text2); margin-bottom:20px;">Optimize any existing script to maximize watch time and retention.</p>
+          <div style="margin-bottom:15px;">
+            <label class="form-label">Paste Your Script</label>
+            <textarea class="form-textarea" id="engage-input" placeholder="Paste script here..."></textarea>
+          </div>
+          <button class="tk-btn" onclick="runTool('engage')">⚡ Boost Engagement</button>
+        </div>
+        <div class="tk-output-panel" id="out-engage">
+           <div class="tk-placeholder">Paste your script to optimize it.</div>
+           <div class="tk-loading">Loading...</div>
+           <div class="tk-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 8: Timing/Strategy -->
+    <div class="tk-pane" id="pane-timing">
+      
+      <div class="tk-layout">
+        <div class="tk-input-panel">
+          <h3 style="margin-bottom:5px;">⏰ Timing & Strategy</h3>
+          <p style="font-size:0.8rem; color:var(--text2); margin-bottom:20px;">Find the best posting times and growth strategy for your niche.</p>
+          <div style="margin-bottom:15px;">
+            <label class="form-label">Your Niche & Audience Location</label>
+            <input type="text" class="form-input" id="timing-input" placeholder="e.g., Gaming in the US">
+          </div>
+          <button class="tk-btn" onclick="runTool('timing')">⚡ Get Strategy</button>
+        </div>
+        <div class="tk-output-panel" id="out-timing">
+           <div class="tk-placeholder">Enter niche and location to see strategy.</div>
+           <div class="tk-loading">Loading...</div>
+           <div class="tk-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 9: Script -> Prompt -->
+    <div class="tk-pane" id="pane-prompt">
+      
+      <div class="tk-layout">
+        <div class="tk-input-panel">
+          <h3 style="margin-bottom:5px;">🎬 Script → Video Prompt</h3>
+          <p style="font-size:0.8rem; color:var(--text2); margin-bottom:20px;">Convert a TikTok script into visual prompts for Sora/Midjourney/Runway.</p>
+          <div style="margin-bottom:15px;">
+            <label class="form-label">Paste TikTok Script</label>
+            <textarea class="form-textarea" id="prompt-input" placeholder="Paste script here..."></textarea>
+          </div>
+          <button class="tk-btn" onclick="runTool('prompt')">⚡ Convert to Prompts</button>
+        </div>
+        <div class="tk-output-panel" id="out-prompt">
+           <div class="tk-placeholder">Paste your script to generate AI video prompts.</div>
+           <div class="tk-loading">Loading...</div>
+           <div class="tk-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 10: Channel Builder -->
+    <div class="tk-pane" id="pane-channel">
+      
+      <div class="tk-layout">
+        <div class="tk-input-panel">
+          <h3 style="margin-bottom:5px;">👑 Faceless Channel Builder</h3>
+          <p style="font-size:0.8rem; color:var(--text2); margin-bottom:20px;">Generate a full 30-day automated channel blueprint.</p>
+          <div style="margin-bottom:15px;">
+            <label class="form-label">Channel Niche</label>
+            <input type="text" class="form-input" id="channel-input" placeholder="e.g., Motivation, Crypto, Facts">
+          </div>
+          <button class="tk-btn" onclick="runTool('channel')">⚡ Build My Channel</button>
+        </div>
+        <div class="tk-output-panel" id="out-channel">
+           <div class="tk-placeholder">Enter niche to build your automated channel.</div>
+           <div class="tk-loading">Loading...</div>
+           <div class="tk-content"></div>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+
+  </div><!-- tk-wrap -->
+
+  <div class="tk-toast" id="tk-toast">✅ Copied successfully!</div>
+
+    <!-- Footer -->
+    <footer class="footer reveal">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="../index.html" class="nav-logo">
+                        <div class="nav-logo-icon">⚡</div>
+                        Chafiktech Ai
+                    </a>
+                    <p>Empowering creators with next-generation AI tools for content creation, optimization, and growth.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Twitter">𝕏</a>
+                        <a href="#" aria-label="LinkedIn">in</a>
+                        <a href="#" aria-label="GitHub">⌨</a>
+                        <a href="#" aria-label="Discord">💬</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Products</h4>
+                    <a href="../tools/seo-article-generator.html">SEO Article Generator</a>
+                    <a href="../tools/video-to-prompt.html">Video to Prompt</a>
+                    <a href="../tools/youtube-suite.html">AI AI Youtube Creator Suite</a>
+                    <a href="../tools/ai-humanizer.html">AI Humanizer</a>
+                    <a href="../tools/tiktok-tools.html">TikTok Tools</a>
+                    <a href="../tools/prompt-viral.html">Prompt Viral</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="../about.html">About Us</a>
+                    <a href="../contact.html">Contact Us</a>
+                    <a href="../pricing.html">Pricing</a>
+                    <a href="../blog.html">Blog</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal & Support</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../disclaimer.html">Disclaimer</a>
+                    <a href="../faq.html">FAQ</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Chafiktech Ai. All rights reserved.</p>
+                <p style="margin-top:5px;font-size:0.8em;color:var(--text3)">Contact: tools@chafiktech.com | Website: www.chafiktech.com</p>
+            </div>
+        </div>
+    </footer>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/AdManager.js"></script>
+  <script src="../js/saas-ux.js"></script>
+  <script>
+    // --- Tabs Logic ---
+
+    
+    function openTkPane(id) {
+      document.getElementById('tk-grid').style.display = 'none';
+      document.getElementById('tk-app-layout').classList.add('active');
+      document.querySelectorAll('.tk-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById('pane-' + id).classList.add('active');
+      
+      document.querySelectorAll('.tk-its-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('its-' + id);
+      if(activeBtn) activeBtn.classList.add('active');
+      
+      window.scrollTo({top: document.querySelector('.tk-wrap').offsetTop - 100, behavior: 'smooth'});
+    }
+    function closeTkPane() {
+      document.querySelectorAll('.tk-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById('tk-app-layout').classList.remove('active');
+      document.getElementById('tk-grid').style.display = 'grid';
+    }
+
+
+
+    // --- Toast Logic ---
+    function showTkToast(msg) {
+      const t = document.getElementById('tk-toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+    function copyTkText(text) {
+      navigator.clipboard.writeText(text).then(() => showTkToast('✅ Copied to clipboard!'))
+      .catch(() => showTkToast('❌ Copy failed.'));
+    }
+    function downloadTkTxt(text, filename) {
+      const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a); URL.revokeObjectURL(a.href);
+      showTkToast('⬇️ Downloaded!');
+    }
+
+    // --- Mock Backend Logic ---
+    const MOCK_DATA = {
+      script: input => `<h3>🔥 Viral Hook (0-3s)</h3><p>Stop scrolling! If you care about [${input}], you need to hear this right now.</p><h3>📖 The Story (3-15s)</h3><p>I used to struggle with this exactly like you. Until I discovered a simple 3-step method that completely changed the game. Step 1: Do X. Step 2: Avoid Y. Step 3: Implement Z immediately.</p><h3>🎯 CTA (15-20s)</h3><p>Save this video so you don't forget it, and hit the plus button for more daily tips!</p>`,
+      
+      hook: input => `<h3>🪝 10 Viral Hooks for ${input}</h3>
+        <p>1. [Curiosity] What the ${input} industry doesn't want you to know...</p>
+        <p>2. [Shock] You're doing ${input} completely wrong. Here's why.</p>
+        <p>3. [FOMO] If you ignore this ${input} trend, you'll be left behind in 2026.</p>
+        <p>4. [Story] How I achieved X in ${input} without doing Y.</p>
+        <p>5. [Listicle] 3 secret ${input} hacks I wish I knew earlier.</p>
+        <p>6. [Negative] Stop doing THIS if you want to succeed in ${input}.</p>
+        <p>7. [Direct] This one ${input} trick changed my life.</p>
+        <p>8. [Question] Do you still struggle with ${input}? Watch this.</p>
+        <p>9. [Time] How to master ${input} in under 60 seconds.</p>
+        <p>10. [Authority] I've analyzed 100+ ${input} videos, and they all do this.</p>`,
+        
+      rewrite: input => `<h3>🔄 Trend-ified Script</h3><p><strong>Original:</strong> ${input}</p><p><strong>Viral Version:</strong> POV: You finally discovered the exact method to [Subject]. (Use trending CapCut template + trending audio). Text on screen: "When you realize [Subject] is actually this simple..."</p>`,
+      
+      faceless: input => `<h3>🎭 Faceless Video Script: ${input}</h3><p><strong>Visuals:</strong> Fast-paced stock footage/AI generated images relevant to ${input}.</p><p><strong>Voiceover (AI Voice):</strong> Here are 3 insane facts about [${input}] that will blow your mind. Number 1: Did you know... [Fact 1]. Number 2: It gets crazier... [Fact 2]. Number 3: But the most shocking part is... [Fact 3]. Subscribe for more!</p>`,
+      
+      ideas: input => `<h3>💡 30-Day Content Plan: ${input}</h3><p><strong>Day 1:</strong> Introduction to your unique angle on ${input}.</p><p><strong>Day 2:</strong> Top 3 tools/resources for ${input}.</p><p><strong>Day 3:</strong> A common myth about ${input} busted.</p><p>... [Pro Feature: Showing full 30 days in actual output] ...</p><p><strong>Day 30:</strong> Monthly recap/results.</p>`,
+      
+      caphash: input => `<h3>#️⃣ SEO Caption & Hashtags</h3><p><strong>Caption:</strong> Unlocking the secrets of [Topic]! Watch till the end to see the final result. Drop a comment if you've tried this! 👇✨</p><p><strong>Viral Hashtags:</strong> #fyp #viral #tiktoktrend #${input.replace(/\s+/g,'')} #learning #tipsandtricks</p><p><strong>SEO Keywords to put on screen:</strong> ${input} tutorial, best ${input} tips, how to do ${input}</p>`,
+      
+      engage: input => `<h3>🔥 Optimized for Retention</h3><p><strong>Original Script Detected.</strong></p><p><strong>Enhancements applied:</strong> Added pattern interrupt at 5s. Cut dead air. Boosted hook energy.</p><p><strong>New Script:</strong> [Action Hook] WAIT! Before you scroll... [Fast Transition] Here's the truth about... [Text Pop-ups]...</p>`,
+      
+      timing: input => `<h3>⏰ Strategy for: ${input}</h3><p><strong>Best Days to Post:</strong> Tuesday, Thursday, Sunday</p><p><strong>Optimal Times:</strong> 11:30 AM, 6:00 PM, 9:30 PM (Local Audience Time)</p><p><strong>Frequency Strategy:</strong> Post 2-3 times per day. 1 high-effort hook video, 2 casual/trend-following videos.</p>`,
+      
+      prompt: input => `<h3>🎬 AI Video Generator Prompts</h3><p><strong>Prompt 1 (Opening):</strong> Cinematic shot, hyperrealistic, [Subject from script], 8k resolution, dramatic lighting, fast motion blur --ar 9:16</p><p><strong>Prompt 2 (Middle):</strong> Dynamic close-up, [Action from script], neon aesthetic, highly detailed, photorealistic --ar 9:16</p>`,
+      
+      channel: input => `
+        <h3>👑 Faceless Channel Blueprint: ${input}</h3>
+        <p><strong>Channel Name Idea:</strong> The ${input} File / Daily ${input}</p>
+        <p><strong>Visual Identity:</strong> Dark aesthetic, neon yellow text, fast cuts.</p>
+        <hr style="border:0;border-top:1px solid rgba(255,255,255,0.1);margin:15px 0;">
+        <h4 style="color:#00f2fe;margin-bottom:10px;">🟢 Free Sample (Days 1-3)</h4>
+        <p><strong>Day 1:</strong> "3 things nobody tells you about ${input}" (Hook + Listicle)</p>
+        <p><strong>Day 2:</strong> "The biggest mistake beginners make in ${input}" (Educational)</p>
+        <p><strong>Day 3:</strong> "How [Famous Entity] handles ${input}" (Storytelling)</p>
+        
+        <p><strong>Day 4-30:</strong> [Full schedule unlocked automatically]</p>
+      `
+    };
+
+    // --- Tool Execution (Connected to SaaS Backend) ---
+    function runTool(toolId) {
+      const btn = document.querySelector(`#pane-${toolId} .tk-btn`);
+      const inputEl = document.getElementById(toolId + '-input');
+      
+      const outPanel = document.getElementById('out-' + toolId);
+      const placeholder = outPanel.querySelector('.tk-placeholder');
+      const loading = outPanel.querySelector('.tk-loading');
+      const content = outPanel.querySelector('.tk-content');
+      
+      // Reset UI
+      if(placeholder) placeholder.style.display = 'none';
+      content.classList.remove('show');
+      loading.classList.add('show');
+      loading.innerHTML = `
+        <div style="text-align:center;">
+          <div class="saas-spinner" style="width:36px;height:36px;border-width:4px;margin:0 auto 16px;"></div>
+          <p style="font-weight:700;font-size:1rem;margin-bottom:4px;">AI is generating your result...</p>
+          <p style="font-size:0.8rem;opacity:0.7;">Please wait, this takes a few seconds</p>
+          <div class="saas-progress-bar-wrap" style="max-width:240px;margin:16px auto 0;">
+            <div class="saas-progress-bar"></div>
+          </div>
+        </div>
+      `;
+
+      // Use global SaaS UX system
+      window.executeSaaSAction(btn, toolId, inputEl, function(html, source) {
+        loading.classList.remove('show');
+        
+        const textToCopy = html.replace(/<[^>]*>?/gm, '').replace(/\n+/g, '\n').trim();
+        const sourceBadge = source === 'mock' 
+          ? '<span style="font-size:0.7rem;opacity:0.6;margin-left:8px;">(demo mode)</span>' 
+          : '<span style="font-size:0.7rem;opacity:0.6;margin-left:8px;color:#10b981;">(AI)</span>';
+        
+        content.innerHTML = `
+          <div class="tk-actions saas-result-fade">
+            <span style="font-weight:700;color:#00f2fe;">✨ Result Ready${sourceBadge}</span>
+            <div class="tk-btns">
+              <button class="tk-action-btn" onclick="copyTkText(this)">📋 Copy</button>
+              <button class="tk-action-btn" onclick="saveTkResult(this)">💾 Save</button>
+              <button class="tk-action-btn" onclick="downloadTkTxt(this, '${toolId}-result.txt')">⬇️ Download</button>
+              <button class="tk-action-btn" onclick="runTool('${toolId}')">🔄 Regenerate</button>
+            </div>
+          </div>
+          <div class="tk-result-box saas-result-fade" data-raw-text="${encodeURIComponent(textToCopy)}">
+            ${html}
+          </div>
+        `;
+        content.classList.add('show');
+      });
+    }
+
+    // Updated copy/download to work with encoded text
+    function copyTkText(btnOrText) {
+      let text = typeof btnOrText === 'string' ? btnOrText : '';
+      if (!text) {
+        const box = btnOrText.closest('.tk-content')?.querySelector('[data-raw-text]');
+        text = box ? decodeURIComponent(box.dataset.rawText) : '';
+      }
+      navigator.clipboard.writeText(text).then(() => showTkToast('✅ Copied to clipboard!'))
+        .catch(() => showTkToast('❌ Copy failed.'));
+    }
+    function downloadTkTxt(btnOrText, filename) {
+      let text = typeof btnOrText === 'string' ? btnOrText : '';
+      if (!text) {
+        const box = btnOrText.closest('.tk-content')?.querySelector('[data-raw-text]');
+        text = box ? decodeURIComponent(box.dataset.rawText) : '';
+      }
+      const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename || 'result.txt';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a); URL.revokeObjectURL(a.href);
+      showTkToast('⬇️ Downloaded!');
+    }
+  </script>
+
+  <!-- Global Floating Sidebar -->
+  <div class="global-floating-sidebar">
+    <div class="gfs-toggle">
+      <span>🧰</span>
+      <span class="gfs-text">Quick Tools</span>
+    </div>
+    <a href="../tools/seo-article-generator.html" class="gfs-link">
+      <span>📝</span><span class="gfs-text">SEO Generator</span>
+    </a>
+    <a href="../tools/tiktok-tools.html" class="gfs-link">
+      <span>🎵</span><span class="gfs-text">TikTok Suite</span>
+    </a>
+    <a href="../tools/youtube-suite.html" class="gfs-link">
+      <span>📺</span><span class="gfs-text">YouTube Suite</span>
+    </a>
+    <a href="../ecommerce.html" class="gfs-link">
+      <span>🛒</span><span class="gfs-text">Digital Product</span>
+    </a>
+  </div>
+
+<!-- Auth System (optional - no redirect for guests) -->
+<script src="../js/auth.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفاصيل المقالة - Prompt Viral</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="../css/style.css">
+  
+  <style>
+    body {
+      font-family: 'Cairo', var(--font-sans);
+    }
+    .article-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--space-2xl) 0;
+    }
+    .article-header-img {
+      width: 100%;
+      height: 350px;
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 100px;
+      background: var(--gradient-primary);
+      box-shadow: var(--shadow-md);
+    }
+    .article-title {
+      font-family: 'Cairo', sans-serif;
+      font-size: var(--text-4xl);
+      font-weight: 800;
+      margin-bottom: var(--space-lg);
+      color: var(--text-primary);
+      text-align: center;
+    }
+    
+    /* منع النسخ من المقالة */
+    .no-copy {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      font-size: var(--text-lg);
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-2xl);
+    }
+    
+    /* صندوق المطالبة بخلفية مغايرة */
+    .prompt-box {
+      background: #1e293b; /* لون مغاير */
+      color: #38bdf8;
+      padding: var(--space-xl);
+      border-radius: var(--radius-lg);
+      position: relative;
+      margin-top: var(--space-2xl);
+      font-family: monospace;
+      font-size: var(--text-base);
+      line-height: 1.8;
+      border: 2px solid #0ea5e9;
+      box-shadow: 0 10px 30px rgba(14, 165, 233, 0.15);
+      direction: ltr;
+      text-align: left;
+    }
+    
+    [data-theme="light"] .prompt-box {
+      background: #e0f2fe;
+      color: #0f172a;
+      border-color: #38bdf8;
+      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2);
+    }
+
+    /* زر النسخ في الركن الأعلى */
+    .copy-btn {
+      position: absolute;
+      top: -20px;
+      right: 20px; /* ليكون في اليمين (حتى لو كان الصندوق LTR) */
+      background: var(--gradient-primary);
+      color: white;
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: var(--text-sm);
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+    }
+    .copy-btn:disabled {
+      opacity: 0.8;
+      cursor: not-allowed;
+      transform: none;
+    }
+  
+    /* Navbar Dropdown styling */
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: var(--bg2); min-width: 240px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 0; z-index: 1000; }
+    .nav-dropdown:hover .dropdown-content { display: flex; flex-direction: column; }
+    .dropdown-content a { color: var(--text); padding: 12px 20px; text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: background 0.2s, padding-left 0.2s; font-family: var(--font, sans-serif); }
+    .dropdown-content a:hover { background: var(--glass2, rgba(255,255,255,0.08)); padding-left: 24px; color: var(--indigo2, #818cf8); }
+
+  </style>
+</head>
+<body class="bg-mesh bg-grid">
+
+  
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-inner">
+            <a href="../index.html" class="nav-logo">
+                <div class="nav-logo-icon">⚡</div>
+                Chafiktech Ai
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Home</a>
+                <div class="nav-dropdown">
+                    <a href="../index.html#tools" class="nav-link" style="cursor:pointer;">Tools ▾</a>
+                    <div class="dropdown-content">
+                        <a href="../tools/seo-article-generator.html">SEO Article Generator</a>
+                        <a href="../tools/video-to-prompt.html">Video to Prompt</a>
+                        <a href="../tools/tiktok-tools.html">AI Tiktok Creator Suite</a>
+                        <a href="../tools/prompt-viral.html">Prompt Viral</a>
+                        <a href="../tools/youtube-suite.html">YouTube Suite</a>
+                        <a href="../tools/ai-humanizer.html">AI Humanizer</a>
+                        <a href="../tools/digital-product-creator.html">Digital Product Creator</a>
+                        <a href="../tools/prompt-article.html">Article Prompt</a>
+                    </div>
+                </div>
+                <a href="../ecommerce.html" class="nav-link">Create Your Digital Product</a>
+                <a href="../pricing.html" class="nav-link">Pricing</a>
+                <a href="../about.html" class="nav-link">About</a>
+                <a href="../contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle theme-btn" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+                <a href="../login.html" class="btn btn-secondary btn-sm">Log In</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+
+  <!-- Page Content -->
+  <section class="section" style="padding-top: 120px;">
+    <div class="container">
+      
+      <div class="article-container reveal">
+        <!-- صورة المقالة في المنتصف -->
+        <div class="article-header-img">
+          🚀
+        </div>
+        
+        <h1 class="article-title">كيفية كتابة سكريبت تيك توك يحصد الملايين</h1>
+        
+        <!-- المقالة (غير قابلة للنسخ) -->
+        <div class="no-copy">
+          <p>
+            مرحباً بك في هذا الدليل الشامل حول كيفية استغلال الذكاء الاصطناعي لكتابة سكريبت (سيناريو) ناجح لمنصة تيك توك. في عالم الفيديوهات القصيرة، أول 3 ثوانٍ هي الأهم لجذب انتباه المشاهد وإيقافه عن التمرير.
+          </p>
+          <br>
+          <p>
+            تعتمد هذه الطريقة على إعطاء أوامر (Prompts) دقيقة للذكاء الاصطناعي ليقوم بتقسيم الفيديو إلى أجزاء: الخطاف (Hook)، المحتوى الرئيسي (Body)، والدعوة لاتخاذ إجراء (Call to Action). من خلال المطالبة الموجودة بالأسفل، يمكنك الحصول على سكريبت جاهز واحترافي لأي موضوع تريده.
+          </p>
+          <br>
+          <p>
+            قم بنسخ المطالبة في الأسفل وضعها في ChatGPT أو أي منصة ذكاء اصطناعي أخرى واستمتع بالنتائج الفيروسية المذهلة!
+          </p>
+        </div>
+
+        <!-- صندوق المطالبة -->
+        <div class="prompt-box">
+          <button class="copy-btn" onclick="startCopyCountdown(this, 'prompt-text')">
+            <span class="btn-text">📥 نسخ / تحميل المطالبة</span>
+            <span class="btn-timer" style="display: none;">5</span>
+          </button>
+          
+          <div id="prompt-text">
+Act as an expert TikTok content creator and viral copywriter. 
+
+I want you to write a highly engaging 30-second TikTok video script about [INSERT YOUR TOPIC HERE]. 
+
+The script must include:
+1. A strong HOOK (first 3 seconds) to stop the user from scrolling.
+2. An engaging BODY that delivers value quickly and uses storytelling elements.
+3. A clear CTA (Call to Action) at the end to encourage likes, comments, and saves.
+
+Format the output as a table with two columns: "Visuals/On-Screen Text" and "Audio/Voiceover". Keep the tone energetic and conversational.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  
+    <!-- Footer -->
+    <footer class="footer reveal">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="../index.html" class="nav-logo">
+                        <div class="nav-logo-icon">⚡</div>
+                        Chafiktech Ai
+                    </a>
+                    <p>Empowering creators with next-generation AI tools for content creation, optimization, and growth.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Twitter">𝕏</a>
+                        <a href="#" aria-label="LinkedIn">in</a>
+                        <a href="#" aria-label="GitHub">⌨</a>
+                        <a href="#" aria-label="Discord">💬</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Products</h4>
+                    <a href="../tools/seo-article-generator.html">SEO Article Generator</a>
+                    <a href="../tools/video-to-prompt.html">Video to Prompt</a>
+                    <a href="../tools/youtube-suite.html">AI AI Youtube Creator Suite</a>
+                    <a href="../tools/ai-humanizer.html">AI Humanizer</a>
+                    <a href="../tools/tiktok-tools.html">TikTok Tools</a>
+                    <a href="../tools/prompt-viral.html">Prompt Viral</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="../about.html">About Us</a>
+                    <a href="../contact.html">Contact Us</a>
+                    <a href="../pricing.html">Pricing</a>
+                    <a href="../blog.html">Blog</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal & Support</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../disclaimer.html">Disclaimer</a>
+                    <a href="../faq.html">FAQ</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Chafiktech Ai. All rights reserved.</p>
+                <p style="margin-top:5px;font-size:0.8em;color:var(--text3)">Contact: tools@chafiktech.com | Website: www.chafiktech.com</p>
+            </div>
+        </div>
+    </footer>
+
+
+  <script src="../js/app.js"></script>
+  <script src="../js/AdManager.js"></script>
+  <script src="../js/saas-ux.js"></script>
+  <script>
+    // تعطيل النقر بزر الماوس الأيمن على قسم المقالة لمنع النسخ
+    document.querySelector('.no-copy').addEventListener('contextmenu', event => event.preventDefault());
+
+    function startCopyCountdown(btn, elementId) {
+      if (btn.disabled) return;
+      btn.disabled = true;
+      
+      const textSpan = btn.querySelector('.btn-text');
+      const timerSpan = btn.querySelector('.btn-timer');
+      
+      textSpan.style.display = 'none';
+      timerSpan.style.display = 'inline';
+      
+      let timeLeft = 5;
+      timerSpan.textContent = `جاري التجهيز... ${timeLeft}ث`;
+      
+      const interval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          
+          // عملية النسخ
+          const textToCopy = document.getElementById(elementId).innerText;
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            timerSpan.textContent = '✅ تم النسخ بنجاح!';
+            
+            // إعادة الزر لحالته الأصلية بعد ثانيتين
+            setTimeout(() => {
+              textSpan.style.display = 'inline';
+              timerSpan.style.display = 'none';
+              btn.disabled = false;
+            }, 3000);
+          }).catch(err => {
+            timerSpan.textContent = '❌ فشل النسخ';
+            setTimeout(() => {
+              textSpan.style.display = 'inline';
+              timerSpan.style.display = 'none';
+              btn.disabled = false;
+            }, 3000);
+          });
+          
+        } else {
+          timerSpan.textContent = `جاري التجهيز... ${timeLeft}ث`;
+        }
+      }, 1000);
+    }
+  </script>
+
+  <!-- Global Floating Sidebar -->
+  <div class="global-floating-sidebar">
+    <div class="gfs-toggle">
+      <span>🧰</span>
+      <span class="gfs-text">Quick Tools</span>
+    </div>
+    <a href="../tools/seo-article-generator.html" class="gfs-link">
+      <span>📝</span><span class="gfs-text">SEO Generator</span>
+    </a>
+    <a href="../tools/tiktok-tools.html" class="gfs-link">
+      <span>🎵</span><span class="gfs-text">TikTok Suite</span>
+    </a>
+    <a href="../tools/youtube-suite.html" class="gfs-link">
+      <span>📺</span><span class="gfs-text">YouTube Suite</span>
+    </a>
+    <a href="../ecommerce.html" class="gfs-link">
+      <span>🛒</span><span class="gfs-text">Digital Product</span>
+    </a>
+  </div>
+
+<!-- Auth System (optional - no redirect for guests) -->
+<script src="../js/auth.js"></script>
+
+</body>
+</html>

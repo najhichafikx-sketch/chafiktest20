@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image to Prompt Generator | AI Suite</title>
+  <meta name="description" content="Upload any image and generate ultra-professional prompts for Midjourney, DALL-E, and Stable Diffusion using AI Vision.">
+  <link rel="stylesheet" href="../index.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* SaaS Dark Theme Overrides */
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text2: #cbd5e1;
+      --text3: #94a3b8;
+      --primary: #8b5cf6;
+      --primary-hover: #7c3aed;
+      --grad: linear-gradient(135deg, #8b5cf6, #ec4899);
+      --glass: rgba(30,41,59,0.7);
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text2: #334155;
+      --text3: #64748b;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Navbar */
+    .saas-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    .nav-actions { display: flex; gap: 1rem; align-items: center; }
+    .nav-btn {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .nav-btn.primary { background: var(--primary); color: #fff; border: none; }
+
+    /* Main Container */
+    .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; flex: 1; width: 100%; box-sizing: border-box; }
+    
+    .header { text-align: center; margin-bottom: 40px; }
+    .header h1 { font-size: 2.5rem; margin-bottom: 16px; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .header p { color: var(--text2); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+    @media (max-width: 768px) {
+      .tool-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    /* Drop Zone */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .drop-zone.dragover { border-color: var(--primary); background: rgba(139, 92, 246, 0.1); }
+    .drop-zone i { font-size: 3rem; color: var(--text3); margin-bottom: 16px; display: block; }
+    .drop-zone h3 { margin: 0 0 8px 0; font-size: 1.2rem; }
+    .drop-zone p { color: var(--text3); font-size: 0.9rem; margin: 0; }
+    
+    .image-preview-wrap { display: none; width: 100%; position: relative; border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+    .image-preview-wrap img { width: 100%; height: auto; display: block; }
+    .remove-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    
+    .gen-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 20px;
+    }
+    .gen-btn.disabled { background: var(--border); color: var(--text3); cursor: not-allowed; }
+    .gen-btn.ready { background: var(--grad); color: #fff; box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4); }
+    .gen-btn.ready:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(139, 92, 246, 0.6); }
+
+    /* Result Panel */
+    .result-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 150px;
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    .result-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text3);
+      text-align: center;
+      min-height: 200px;
+    }
+    
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+    }
+    .action-btn {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .action-btn:hover { background: var(--border); }
+    
+    /* Loading Animation */
+    .loader {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="saas-nav">
+    <a href="../index.html" class="logo-area">
+      <span style="font-size:1.5rem">📸</span> Image to Prompt
+    </a>
+    <div class="nav-actions">
+      <button class="nav-btn" id="theme-btn">☀️</button>
+      <a href="../login.html" class="nav-btn primary">Login</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <h1>Turn Any Image Into a Masterpiece Prompt</h1>
+      <p>Upload an image and let our AI Vision extract the perfect ultra-detailed prompt for Midjourney, DALL-E, and Stable Diffusion.</p>
+    </div>
+
+    <div class="tool-grid">
+      <!-- Input Panel -->
+      <div class="panel">
+        <h2 style="margin-top:0; margin-bottom: 20px; font-size: 1.25rem;">1. Upload Image</h2>
+        
+        <input type="file" id="file-input" accept="image/png, image/jpeg, image/webp" style="display: none;">
+        
+        <div class="drop-zone" id="drop-zone">
+          <div id="dz-placeholder">
+            <i>🖼️</i>
+            <h3>Drag & Drop</h3>
+            <p>or click to browse (PNG, JPG, WEBP)</p>
+          </div>
+          <div class="image-preview-wrap" id="img-wrap">
+            <button class="remove-btn" id="remove-btn">✕</button>
+            <img id="image-preview" src="" alt="Preview">
+          </div>
+        </div>
+
+        <button class="gen-btn disabled" id="gen-btn" disabled>Generate Prompt ✨</button>
+      </div>
+
+      <!-- Output Panel -->
+      <div class="panel">
+        <h2 style="margin-top:0; margin-bottom: 20px; font-size: 1.25rem;">2. Result</h2>
+        
+        <div id="result-container">
+          <div class="result-placeholder" id="result-placeholder">
+            <span style="font-size: 3rem; margin-bottom: 16px;">✨</span>
+            <p>Your AI-generated prompt will appear here.</p>
+          </div>
+          <div class="loader" id="loader"></div>
+          
+          <div id="result-content-wrap" style="display: none;">
+            <div class="result-box" id="result-box"></div>
+            <div class="action-row">
+              <button class="action-btn" id="copy-btn">📋 Copy Prompt</button>
+              <button class="action-btn" id="history-btn">🕒 History</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/AdManager.js"></script>
+  <script src="../js/saas-ux.js"></script>
+  
+  <script>
+    // State
+    let currentFile = null;
+
+    // Elements
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const genBtn = document.getElementById('gen-btn');
+    const imgWrap = document.getElementById('img-wrap');
+    const imgPreview = document.getElementById('image-preview');
+    const dzPlaceholder = document.getElementById('dz-placeholder');
+    const resultPlaceholder = document.getElementById('result-placeholder');
+    const loader = document.getElementById('loader');
+    const resultContentWrap = document.getElementById('result-content-wrap');
+    const resultBox = document.getElementById('result-box');
+    const copyBtn = document.getElementById('copy-btn');
+
+    // Theme
+    const themeBtn = document.getElementById('theme-btn');
+    themeBtn.addEventListener('click', () => {
+      const isLight = document.documentElement.dataset.theme === 'light';
+      document.documentElement.dataset.theme = isLight ? 'dark' : 'light';
+      themeBtn.textContent = isLight ? '☀️' : '🌙';
+    });
+
+    // File Handling
+    dropZone.addEventListener('click', (e) => {
+      if (e.target.id !== 'remove-btn') fileInput.click();
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault(); dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', (e) => {
+      e.preventDefault(); dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault(); dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload a valid image file.');
+        return;
+      }
+      currentFile = file;
+      const url = URL.createObjectURL(file);
+      imgPreview.src = url;
+      imgWrap.style.display = 'block';
+      dzPlaceholder.style.display = 'none';
+      
+      genBtn.disabled = false;
+      genBtn.className = 'gen-btn ready';
+      genBtn.textContent = 'Generate Prompt ✨';
+    }
+
+    document.getElementById('remove-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentFile = null;
+      imgPreview.src = '';
+      imgWrap.style.display = 'none';
+      dzPlaceholder.style.display = 'block';
+      fileInput.value = '';
+      
+      genBtn.disabled = true;
+      genBtn.className = 'gen-btn disabled';
+    });
+
+    // Generate
+    genBtn.addEventListener('click', async () => {
+      if (!currentFile) return;
+
+      // AdManager Integration
+      if (window.AdManager) {
+        const adRes = await window.AdManager.handlePreGeneration();
+        if (!adRes.proceed) return;
+      }
+
+      // UI Loading State
+      genBtn.disabled = true;
+      genBtn.textContent = 'Analyzing Image... ⏳';
+      resultPlaceholder.style.display = 'none';
+      resultContentWrap.style.display = 'none';
+      loader.style.display = 'block';
+
+      // API Request
+      const formData = new FormData();
+      formData.append('image', currentFile);
+
+      try {
+        const token = localStorage.getItem('token');
+        const headers = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const response = await fetch('/api/image-to-prompt', {
+          method: 'POST',
+          headers: headers,
+          body: formData
+        });
+
+        const data = await response.json();
+
+        loader.style.display = 'none';
+
+        if (data.success) {
+          resultBox.textContent = data.prompt;
+          resultContentWrap.style.display = 'block';
+          
+          // Save to Local History
+          saveToHistory(data.prompt);
+          
+          if (window.AdManager) {
+            const banner = window.AdManager.getConversionBannerHtml();
+            if (banner) resultContentWrap.insertAdjacentHTML('beforeend', banner);
+          }
+        } else {
+          alert('Error: ' + data.error);
+          resultPlaceholder.style.display = 'flex';
+        }
+      } catch (err) {
+        loader.style.display = 'none';
+        resultPlaceholder.style.display = 'flex';
+        alert('Failed to connect to the server.');
+      } finally {
+        genBtn.disabled = false;
+        genBtn.textContent = 'Generate Prompt ✨';
+      }
+    });
+
+    // Copy
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(resultBox.textContent).then(() => {
+        copyBtn.textContent = '✅ Copied!';
+        setTimeout(() => { copyBtn.textContent = '📋 Copy Prompt'; }, 2000);
+      });
+    });
+
+    // Local History
+    function saveToHistory(prompt) {
+      let history = JSON.parse(localStorage.getItem('imagePromptHistory') || '[]');
+      history.unshift({ prompt, date: new Date().toISOString() });
+      if (history.length > 20) history = history.slice(0, 20);
+      localStorage.setItem('imagePromptHistory', JSON.stringify(history));
+    }
+
+    document.getElementById('history-btn').addEventListener('click', () => {
+      const history = JSON.parse(localStorage.getItem('imagePromptHistory') || '[]');
+      if (history.length === 0) {
+        alert('History is empty.');
+        return;
+      }
+      let text = 'Your recent prompts:\n\n';
+      history.forEach((h, i) => {
+        text += `${i+1}. ${h.prompt}\n\n`;
+      });
+      alert(text); // Basic alert for now, could be a modal
+    });
+  </script>
+</body>
+</html>

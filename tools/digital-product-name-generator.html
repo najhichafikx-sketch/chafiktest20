@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Product Name Generator | Chafiktech Ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body { background-color: #0b0f19; color: #f8fafc; }
+    .creator-header { text-align: center; padding: 120px 20px 40px; }
+    .creator-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; margin-bottom: 16px; }
+    .creator-sub { color: #94a3b8; font-size: 1.05rem; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+    .creator-card { max-width: 800px; margin: 0 auto 40px; background: #111524; border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+    .creator-textarea { width: 100%; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; color: #f8fafc; font-size: 1rem; min-height: 120px; resize: vertical; margin-bottom: 32px; transition: all 0.3s; font-family: inherit; }
+    .creator-textarea:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+    .btn-generate { width: 100%; background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); padding: 18px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-generate:hover { background: rgba(99,102,241,0.25); box-shadow: 0 0 20px rgba(99,102,241,0.2); transform: translateY(-1px); }
+    .results-container { display: none; max-width: 800px; margin: 0 auto 80px; }
+    .result-block { background: linear-gradient(145deg, #111524 0%, #0d1120 100%); border: 1px solid rgba(99,102,241,0.15); border-radius: 20px; padding: 36px; }
+    .result-title { font-size: 1.15rem; font-weight: 600; color: #a5b4fc; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .prompt-output { background: #0b0f19; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px; line-height: 1.8; color: #e2e8f0; font-size: 0.97rem; white-space: pre-wrap; font-family: 'Inter', sans-serif; }
+    .btn-copy { margin-top: 20px; padding: 12px 24px; background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); color: #818cf8; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.3s; }
+    .btn-copy:hover { background: rgba(99,102,241,0.3); }
+    .loader { display: none; width: 48px; height: 48px; border: 4px solid rgba(99,102,241,0.2); border-top-color: #6366f1; border-radius: 50%; animation: spin 1s linear infinite; margin: 40px auto; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="bg-mesh">
+
+  <nav class="navbar" id="navbar">
+      <div class="container nav-inner">
+          <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">&#9889;</div>Chafiktech Ai</a>
+          <div class="nav-links">
+              <a href="../index.html" class="nav-link">Home</a>
+              <a href="../ecommerce.html" class="nav-link">E-commerce Tools</a>
+              <a href="../blog.html" class="nav-link">Blog</a>
+          </div>
+          <div class="nav-actions">
+              <a href="../login.html" class="btn btn-secondary btn-sm">Log In</a>
+          </div>
+      </div>
+  </nav>
+
+  <div class="creator-header reveal">
+    <div style="font-size:3rem; margin-bottom:15px;">&#127991;</div>
+    <h1 class="creator-title">Digital Product Name Generator</h1>
+    <p class="creator-sub">Enter your product or topic details below. We will generate a professional AI prompt you can copy and use in ChatGPT, Claude, Gemini, or any AI tool.</p>
+  </div>
+
+  <div class="container reveal reveal-delay-1">
+    <div class="creator-card">
+      <div style="font-weight:600; margin-bottom:16px;">Product / Topic Idea</div>
+      <textarea id="toolInput" class="creator-textarea" placeholder="e.g. Organic bamboo sunglasses for eco-conscious millennials..."></textarea>
+      <button id="toolGenerateBtn" class="btn-generate">&#10024; Generate AI Prompt</button>
+    </div>
+  </div>
+
+  <div class="loader" id="toolLoader"></div>
+
+  <div class="results-container" id="toolResults">
+    <div class="result-block">
+      <div class="result-title">&#10024; Your Professional AI Prompt (Ready to Copy)</div>
+      <div class="prompt-output" id="toolPromptOutput"></div>
+      <button class="btn-copy" id="toolCopyBtn">&#128203; Copy Prompt</button>
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script>
+  (function() {
+    var btn = document.getElementById('toolGenerateBtn');
+    var input = document.getElementById('toolInput');
+    var loader = document.getElementById('toolLoader');
+    var results = document.getElementById('toolResults');
+    var output = document.getElementById('toolPromptOutput');
+    var copyBtn = document.getElementById('toolCopyBtn');
+
+    var PROMPT_LINES = ["You are a branding expert specializing in digital products and online businesses.", "", "Generate creative names for the following digital product:", "Product Concept: [INPUT]", "", "Provide 10 name suggestions in the following categories:", "", "CATEGORY 1 - DESCRIPTIVE NAMES (3 names):", "- Clearly communicate what the product does", "- Easy to understand at first glance", "- SEO-friendly and searchable", "", "CATEGORY 2 - CREATIVE/BRANDABLE NAMES (4 names):", "- Unique, memorable, and catchy", "- Easy to pronounce and spell", "- Available as a .com domain (suggest checking)", "- Works well as a logo and brand identity", "", "CATEGORY 3 - EMOTIONAL/ASPIRATIONAL NAMES (3 names):", "- Evoke the transformation or result", "- Create desire and curiosity", "- Appeal to the target audience aspirations", "", "For EACH name provide:", "1. The Name", "2. Tagline suggestion (5-8 words)", "3. Why it works (1 sentence explanation)", "4. Domain availability tip", "", "Guidelines:", "- Avoid overused words (Pro, Master, Ultimate, Guru)", "- Keep names to 1-3 words maximum", "- Ensure names work across cultures", "- Consider trademark-friendly options"];
+
+    btn.addEventListener('click', function() {
+      var userInput = input.value.trim();
+      if (!userInput) {
+        alert('Please enter your product or topic details!');
+        return;
+      }
+
+      btn.innerHTML = '&#9881; Generating Prompt...';
+      btn.style.pointerEvents = 'none';
+      results.style.display = 'none';
+      loader.style.display = 'block';
+      loader.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      setTimeout(function() {
+        loader.style.display = 'none';
+        btn.innerHTML = '&#10024; Generate AI Prompt';
+        btn.style.pointerEvents = 'auto';
+
+        var finalPrompt = PROMPT_LINES.join('\n').replace(/\[INPUT\]/g, userInput);
+        output.textContent = finalPrompt;
+        results.style.display = 'block';
+        results.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 1500);
+    });
+
+    copyBtn.addEventListener('click', function() {
+      var text = output.textContent;
+      if (text) {
+        navigator.clipboard.writeText(text).then(function() {
+          copyBtn.textContent = 'Copied!';
+          setTimeout(function() { copyBtn.innerHTML = '&#128203; Copy Prompt'; }, 2000);
+        });
+      }
+    });
+  })();
+  </script>
+
+</body>
+</html>

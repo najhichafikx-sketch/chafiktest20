@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Viral - المقالات السريعة</title>
+  <meta name="description" content="قائمة مقالات المطالبات (Prompts) الفيروسية">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      font-family: 'Cairo', var(--font-sans);
+    }
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--space-2xl);
+      padding: var(--space-2xl) 0;
+    }
+    .article-card {
+      text-align: center;
+      padding: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .article-image {
+      width: 100%;
+      height: 220px;
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      box-shadow: var(--shadow-sm);
+    }
+    .article-title {
+      font-family: 'Cairo', sans-serif;
+      font-size: var(--text-xl);
+      font-weight: 800;
+      margin-bottom: var(--space-xl);
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+    
+    /* LED Button CSS */
+    .led-btn {
+      background: #0a0a0a;
+      color: #0f0;
+      border: 2px solid #0f0;
+      padding: 12px 24px;
+      font-family: 'Cairo', monospace;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 8px;
+      text-transform: uppercase;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.4), inset 0 0 10px rgba(0, 255, 0, 0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      position: relative;
+    }
+    .led-btn:hover {
+      background: #0f0;
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.8), inset 0 0 20px rgba(0, 255, 0, 0.5);
+    }
+    .led-btn:disabled {
+      background: #111;
+      color: #555;
+      border-color: #555;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+  
+    /* Navbar Dropdown styling */
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: var(--bg2); min-width: 240px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 0; z-index: 1000; }
+    .nav-dropdown:hover .dropdown-content { display: flex; flex-direction: column; }
+    .dropdown-content a { color: var(--text); padding: 12px 20px; text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: background 0.2s, padding-left 0.2s; font-family: var(--font, sans-serif); }
+    .dropdown-content a:hover { background: var(--glass2, rgba(255,255,255,0.08)); padding-left: 24px; color: var(--indigo2, #818cf8); }
+
+  </style>
+</head>
+<body class="bg-mesh bg-grid">
+
+  
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-inner">
+            <a href="../index.html" class="nav-logo">
+                <div class="nav-logo-icon">⚡</div>
+                Chafiktech Ai
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Home</a>
+                <div class="nav-dropdown">
+                    <a href="../index.html#tools" class="nav-link" style="cursor:pointer;">Tools ▾</a>
+                    <div class="dropdown-content">
+                        <a href="../tools/seo-article-generator.html">SEO Article Generator</a>
+                        <a href="../tools/video-to-prompt.html">Video to Prompt</a>
+                        <a href="../tools/tiktok-tools.html">AI Tiktok Creator Suite</a>
+                        <a href="../tools/prompt-viral.html">Prompt Viral</a>
+                        <a href="../tools/youtube-suite.html">YouTube Suite</a>
+                        <a href="../tools/ai-humanizer.html">AI Humanizer</a>
+                        <a href="../tools/digital-product-creator.html">Digital Product Creator</a>
+                        <a href="../tools/prompt-article.html">Article Prompt</a>
+                    </div>
+                </div>
+                <a href="../ecommerce.html" class="nav-link">Create Your Digital Product</a>
+                <a href="../pricing.html" class="nav-link">Pricing</a>
+                <a href="../about.html" class="nav-link">About</a>
+                <a href="../contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle theme-btn" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+                <a href="../login.html" class="btn btn-secondary btn-sm">Log In</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="../index.html" class="nav-link">Home</a>
+    <a href="../pricing.html" class="nav-link">Pricing</a>
+    <a href="../blog.html" class="nav-link">Blog</a>
+    <a href="../ecommerce.html" class="nav-link">Create Your Digital Product</a>
+    <a href="../login.html" class="nav-link">Log In</a>
+    <a href="../register.html" class="nav-link">Sign Up</a>
+  </div>
+
+  <!-- Page Content -->
+  <section class="section" style="padding-top: 120px;">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-badge">🚀 المطالبات الفيروسية</span>
+        <h1 class="section-title">مقالات Prompt Viral</h1>
+        <p class="section-subtitle">تصفح أقوى المطالبات وطرق استخدامها للوصول للترند</p>
+      </div>
+
+      <div class="articles-grid">
+        <!-- Article 1 -->
+        <div class="article-card glass-card reveal">
+          <div class="article-image" style="background: var(--gradient-primary);">🚀</div>
+          <h3 class="article-title">كيفية كتابة سكريبت تيك توك يحصد الملايين</h3>
+          <button class="led-btn" onclick="startCountdown(this, 'prompt-article.html')">
+            <span class="btn-text">اقرأ مزيد</span>
+            <span class="btn-timer" style="display: none;">3</span>
+          </button>
+        </div>
+
+        <!-- Article 2 -->
+        <div class="article-card glass-card reveal reveal-delay-1">
+          <div class="article-image" style="background: var(--gradient-secondary);">📸</div>
+          <h3 class="article-title">سر الحصول على صور واقعية في Midjourney</h3>
+          <button class="led-btn" onclick="startCountdown(this, 'prompt-article.html')">
+            <span class="btn-text">اقرأ مزيد</span>
+            <span class="btn-timer" style="display: none;">3</span>
+          </button>
+        </div>
+
+        <!-- Article 3 -->
+        <div class="article-card glass-card reveal reveal-delay-2">
+          <div class="article-image" style="background: var(--gradient-accent);">💰</div>
+          <h3 class="article-title">مطالبة تحويل الزوار إلى مشترين (كتابة إعلانات)</h3>
+          <button class="led-btn" onclick="startCountdown(this, 'prompt-article.html')">
+            <span class="btn-text">اقرأ مزيد</span>
+            <span class="btn-timer" style="display: none;">3</span>
+          </button>
+        </div>
+
+        <!-- Article 4 -->
+        <div class="article-card glass-card reveal">
+          <div class="article-image" style="background: var(--gradient-success);">📈</div>
+          <h3 class="article-title">تصدر نتائج بحث يوتيوب بمطالبة SEO ذكية</h3>
+          <button class="led-btn" onclick="startCountdown(this, 'prompt-article.html')">
+            <span class="btn-text">اقرأ مزيد</span>
+            <span class="btn-timer" style="display: none;">3</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+    <!-- Footer -->
+    <footer class="footer reveal">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="../index.html" class="nav-logo">
+                        <div class="nav-logo-icon">⚡</div>
+                        Chafiktech Ai
+                    </a>
+                    <p>Empowering creators with next-generation AI tools for content creation, optimization, and growth.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Twitter">𝕏</a>
+                        <a href="#" aria-label="LinkedIn">in</a>
+                        <a href="#" aria-label="GitHub">⌨</a>
+                        <a href="#" aria-label="Discord">💬</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Products</h4>
+                    <a href="../tools/seo-article-generator.html">SEO Article Generator</a>
+                    <a href="../tools/video-to-prompt.html">Video to Prompt</a>
+                    <a href="../tools/youtube-suite.html">AI AI Youtube Creator Suite</a>
+                    <a href="../tools/ai-humanizer.html">AI Humanizer</a>
+                    <a href="../tools/tiktok-tools.html">TikTok Tools</a>
+                    <a href="../tools/prompt-viral.html">Prompt Viral</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="../about.html">About Us</a>
+                    <a href="../contact.html">Contact Us</a>
+                    <a href="../pricing.html">Pricing</a>
+                    <a href="../blog.html">Blog</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal & Support</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../disclaimer.html">Disclaimer</a>
+                    <a href="../faq.html">FAQ</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Chafiktech Ai. All rights reserved.</p>
+                <p style="margin-top:5px;font-size:0.8em;color:var(--text3)">Contact: tools@chafiktech.com | Website: www.chafiktech.com</p>
+            </div>
+        </div>
+    </footer>
+
+
+  <script src="../js/app.js"></script>
+  <script>
+    function startCountdown(btn, url) {
+      if (btn.disabled) return;
+      btn.disabled = true;
+      const textSpan = btn.querySelector('.btn-text');
+      const timerSpan = btn.querySelector('.btn-timer');
+      
+      textSpan.style.display = 'none';
+      timerSpan.style.display = 'inline';
+      
+      let timeLeft = 3;
+      timerSpan.textContent = `Ø¬Ø§Ø±ÙŠ Ø§Ù„ØªØ­ÙˆÙŠÙ„... ${timeLeft}ث`;
+      
+      const interval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          window.location.href = url;
+        } else {
+          timerSpan.textContent = `جاري التحويل... ${timeLeft}ث`;
+        }
+      }, 1000);
+    }
+  </script>
+
+  <!-- Global Floating Sidebar -->
+  <div class="global-floating-sidebar">
+    <div class="gfs-toggle">
+      <span>🧰</span>
+      <span class="gfs-text">Quick Tools</span>
+    </div>
+    <a href="../tools/seo-article-generator.html" class="gfs-link">
+      <span>📝</span><span class="gfs-text">SEO Generator</span>
+    </a>
+    <a href="../tools/tiktok-tools.html" class="gfs-link">
+      <span>🎵</span><span class="gfs-text">TikTok Suite</span>
+    </a>
+    <a href="../tools/youtube-suite.html" class="gfs-link">
+      <span>📺</span><span class="gfs-text">YouTube Suite</span>
+    </a>
+    <a href="../ecommerce.html" class="gfs-link">
+      <span>🛒</span><span class="gfs-text">Digital Product</span>
+    </a>
+  </div>
+
+<!-- Auth System (optional - no redirect for guests) -->
+<script src="../js/auth.js"></script>
+
+</body>
+</html>
+

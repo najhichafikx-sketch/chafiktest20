@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Article Generator AI — Chafiktech Ai</title>
+  <meta name="description" content="Generate high-quality SEO articles, titles, and keywords optimized for Google ranking and AdSense approval. Free AI-powered SEO content generator.">
+  <meta name="keywords" content="SEO article generator, AI content writer, SEO titles, keyword research, AdSense content, blog generator, Chafiktech Ai">
+  <meta name="author" content="Chafiktech Ai">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="SEO Article Generator AI — Chafiktech Ai">
+  <meta property="og:description" content="Generate high-quality SEO articles, titles, and keywords optimized for Google ranking and AdSense approval.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       SEO Article Generator AI — Complete Design System
+       ============================================================ */
+    :root {
+      --bg:         #03030e;
+      --bg2:        #08081c;
+      --bg3:        #0e0e28;
+      --bg4:        #151535;
+      --glass:      rgba(255,255,255,0.04);
+      --glass2:     rgba(255,255,255,0.08);
+      --glass3:     rgba(255,255,255,0.13);
+      --border:     rgba(255,255,255,0.07);
+      --border2:    rgba(255,255,255,0.13);
+      --border-p:   rgba(99,102,241,0.35);
+      --text:       #eeeeff;
+      --text2:      #8888b0;
+      --text3:      #4a4a6a;
+      --indigo:     #6366f1;
+      --indigo2:    #818cf8;
+      --purple:     #a855f7;
+      --purple2:    #c084fc;
+      --blue:       #3b82f6;
+      --cyan:       #06b6d4;
+      --green:      #10b981;
+      --amber:      #f59e0b;
+      --pink:       #ec4899;
+      --grad:       linear-gradient(135deg, #6366f1 0%, #a855f7 60%, #3b82f6 100%);
+      --grad2:      linear-gradient(135deg, #06b6d4, #6366f1);
+      --grad3:      linear-gradient(135deg, #a855f7, #ec4899);
+      --shadow:     0 30px 80px rgba(0,0,0,0.75);
+      --r:          14px;
+      --r2:         22px;
+      --font:       'Inter', sans-serif;
+      --font2:      'Outfit', sans-serif;
+      --ease:       cubic-bezier(0.4,0,0.2,1);
+    }
+    [data-theme="light"] {
+      --bg:       #f0f0ff;
+      --bg2:      #ffffff;
+      --bg3:      #e8e8fa;
+      --bg4:      #ddddf5;
+      --glass:    rgba(255,255,255,0.6);
+      --glass2:   rgba(255,255,255,0.85);
+      --glass3:   rgba(255,255,255,0.95);
+      --border:   rgba(0,0,0,0.07);
+      --border2:  rgba(0,0,0,0.12);
+      --border-p: rgba(99,102,241,0.3);
+      --text:     #111128;
+      --text2:    #44447a;
+      --text3:    #9090b8;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- BACKGROUND ---- */
+    .bg-canvas { position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden; }
+    .orb {
+      position:absolute;border-radius:50%;
+      filter:blur(120px);opacity:0.22;
+      animation:orb-move 22s infinite ease-in-out;
+    }
+    .orb1{width:700px;height:700px;background:radial-gradient(circle,#6366f1,transparent 70%);top:-25%;left:-20%;animation-delay:0s;}
+    .orb2{width:550px;height:550px;background:radial-gradient(circle,#a855f7,transparent 70%);top:35%;right:-18%;animation-delay:-8s;}
+    .orb3{width:480px;height:480px;background:radial-gradient(circle,#06b6d4,transparent 70%);bottom:-15%;left:20%;animation-delay:-16s;}
+    @keyframes orb-move {
+      0%,100%{transform:translate(0,0) scale(1);}
+      33%{transform:translate(35px,-45px) scale(1.08);}
+      66%{transform:translate(-25px,25px) scale(0.92);}
+    }
+    .bg-grid {
+      position:fixed;inset:0;z-index:0;pointer-events:none;
+      background-image:
+        linear-gradient(rgba(99,102,241,0.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(99,102,241,0.03) 1px,transparent 1px);
+      background-size:64px 64px;
+    }
+    [data-theme="light"] .bg-grid{
+      background-image:
+        linear-gradient(rgba(99,102,241,0.05) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(99,102,241,0.05) 1px,transparent 1px);
+    }
+
+    /* ---- NAVBAR ---- */
+    .navbar {
+      position:fixed;top:0;left:0;right:0;z-index:200;
+      padding:14px 0;
+      background:rgba(3,3,14,0.78);
+      backdrop-filter:blur(28px) saturate(160%);
+      border-bottom:1px solid var(--border);
+      transition:background 0.3s;
+    }
+    [data-theme="light"] .navbar{background:rgba(240,240,255,0.82);}
+    .nav-inner{
+      max-width:1320px;margin:0 auto;
+      padding:0 28px;
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+    }
+    .nav-logo{
+      display:flex;align-items:center;gap:10px;
+      font-family:var(--font2);font-size:1.2rem;font-weight:800;
+      color:var(--text);text-decoration:none;letter-spacing:-0.02em;
+    }
+    .nav-logo-icon{
+      width:38px;height:38px;background:var(--grad);
+      border-radius:11px;display:flex;align-items:center;
+      justify-content:center;font-size:18px;
+      box-shadow:0 4px 20px rgba(99,102,241,0.5);flex-shrink:0;
+    }
+    .nav-links{display:flex;align-items:center;gap:4px;}
+    .nav-link{
+      font-size:0.83rem;font-weight:500;color:var(--text2);
+      text-decoration:none;padding:7px 13px;border-radius:9px;
+      transition:all 0.2s;white-space:nowrap;
+    }
+    .nav-link:hover{color:var(--text);background:var(--glass2);}
+    .theme-btn{
+      width:38px;height:38px;background:var(--glass);
+      border:1px solid var(--border);border-radius:10px;
+      cursor:pointer;font-size:17px;
+      display:flex;align-items:center;justify-content:center;
+      transition:all 0.2s;color:var(--text);flex-shrink:0;
+    }
+    .theme-btn:hover{background:var(--glass2);transform:rotate(18deg) scale(1.1);}
+
+    /* ---- HERO ---- */
+    .hero{
+      padding:124px 28px 52px;
+      text-align:center;position:relative;z-index:1;
+    }
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 18px;
+      background:rgba(99,102,241,0.1);
+      border:1px solid rgba(99,102,241,0.28);
+      border-radius:999px;
+      font-size:0.76rem;font-weight:700;color:var(--indigo2);
+      margin-bottom:24px;letter-spacing:0.05em;text-transform:uppercase;
+    }
+    .badge-dot{
+      width:7px;height:7px;background:var(--indigo2);
+      border-radius:50%;animation:pulse-dot 1.8s infinite;
+    }
+    @keyframes pulse-dot{
+      0%,100%{transform:scale(1);opacity:1;box-shadow:0 0 0 0 rgba(129,140,248,0.6)}
+      50%{transform:scale(1.5);opacity:0.6;box-shadow:0 0 0 6px rgba(129,140,248,0)}
+    }
+    .hero h1{
+      font-family:var(--font2);
+      font-size:clamp(2.4rem,6.5vw,4.5rem);
+      font-weight:900;line-height:1.06;
+      letter-spacing:-0.04em;margin-bottom:20px;
+    }
+    .grad-text{
+      background:var(--grad);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .hero-desc{
+      font-size:1.05rem;color:var(--text2);
+      max-width:620px;margin:0 auto 40px;line-height:1.8;
+    }
+    .hero-chips{
+      display:flex;flex-wrap:wrap;gap:10px;
+      justify-content:center;margin-bottom:52px;
+    }
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:7px 16px;border-radius:999px;
+      background:var(--glass);border:1px solid var(--border2);
+      font-size:0.8rem;font-weight:600;color:var(--text2);
+    }
+    .chip .dot{width:6px;height:6px;border-radius:50%;}
+
+    /* ---- TOOL TABS ---- */
+    .tool-tabs-wrap{
+      max-width:1320px;margin:0 auto;
+      padding:0 28px 120px;
+      position:relative;z-index:1;
+    }
+    .tool-tabs-nav{
+      display:flex;gap:6px;
+      background:rgba(0,0,0,0.2);
+      border:1px solid var(--border2);
+      border-radius:18px;padding:6px;
+      margin-bottom:28px;overflow-x:auto;
+      scrollbar-width:none;
+    }
+    .tool-tabs-nav::-webkit-scrollbar{display:none;}
+    [data-theme="light"] .tool-tabs-nav{background:rgba(0,0,0,0.04);}
+    .tab-btn{
+      flex:1;min-width:150px;
+      padding:13px 18px;border-radius:13px;
+      border:none;background:transparent;
+      font-family:var(--font2);font-size:0.88rem;font-weight:700;
+      color:var(--text2);cursor:pointer;
+      transition:all 0.25s var(--ease);
+      display:flex;align-items:center;gap:8px;
+      justify-content:center;white-space:nowrap;
+      letter-spacing:-0.01em;
+    }
+    .tab-btn.active{
+      background:var(--grad);color:#fff;
+      box-shadow:0 4px 24px rgba(99,102,241,0.45);
+    }
+    .tab-btn:not(.active):hover{background:var(--glass2);color:var(--text);}
+    .tab-pane{display:none;}
+    .tab-pane.active{display:block;animation:fadeUp 0.4s var(--ease) both;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ---- TOOL LAYOUT ---- */
+    .tool-layout{
+      display:grid;grid-template-columns:400px 1fr;gap:24px;align-items:start;
+    }
+    @media(max-width:1024px){.tool-layout{grid-template-columns:1fr;}}
+
+    /* ---- INPUT PANEL ---- */
+    .input-panel{
+      background:var(--glass);
+      backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+      border:1px solid var(--border);border-radius:var(--r2);
+      box-shadow:var(--shadow);padding:26px;
+      transition:border-color 0.3s;
+    }
+    .input-panel:hover{border-color:var(--border2);}
+    .panel-title{
+      font-family:var(--font2);font-size:1rem;font-weight:800;
+      display:flex;align-items:center;gap:9px;margin-bottom:5px;
+      letter-spacing:-0.02em;
+    }
+    .panel-title-icon{
+      width:32px;height:32px;border-radius:9px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:15px;flex-shrink:0;
+    }
+    .icon-indigo{background:rgba(99,102,241,0.18);border:1px solid rgba(99,102,241,0.3);}
+    .icon-purple{background:rgba(168,85,247,0.18);border:1px solid rgba(168,85,247,0.3);}
+    .icon-cyan{background:rgba(6,182,212,0.18);border:1px solid rgba(6,182,212,0.3);}
+    .icon-amber{background:rgba(245,158,11,0.18);border:1px solid rgba(245,158,11,0.3);}
+    .panel-sub{font-size:0.79rem;color:var(--text2);margin-bottom:22px;line-height:1.55;}
+
+    .form-group{margin-bottom:16px;}
+    .form-label{
+      display:block;font-size:0.78rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:0.07em;
+      color:var(--text3);margin-bottom:7px;
+    }
+    .form-input, .form-select, .form-textarea{
+      width:100%;padding:11px 14px;
+      background:rgba(0,0,0,0.2);
+      border:1px solid var(--border2);
+      border-radius:var(--r);
+      color:var(--text);font-family:var(--font);font-size:0.88rem;
+      transition:all 0.2s;outline:none;
+      -webkit-appearance:none;appearance:none;
+    }
+    [data-theme="light"] .form-input,
+    [data-theme="light"] .form-select,
+    [data-theme="light"] .form-textarea{
+      background:rgba(255,255,255,0.8);border-color:rgba(0,0,0,0.12);
+    }
+    .form-input:focus,.form-select:focus,.form-textarea:focus{
+      border-color:var(--indigo);
+      box-shadow:0 0 0 3px rgba(99,102,241,0.15);
+    }
+    .form-textarea{min-height:90px;resize:vertical;}
+    .form-select{cursor:pointer;}
+
+    .range-wrap{position:relative;}
+    .range-input{
+      width:100%;-webkit-appearance:none;
+      height:5px;border-radius:3px;
+      background:linear-gradient(to right,var(--indigo) 0%,var(--indigo) var(--pct,50%),var(--border2) var(--pct,50%));
+      outline:none;cursor:pointer;border:none;
+      padding:0;
+    }
+    .range-input::-webkit-slider-thumb{
+      -webkit-appearance:none;width:18px;height:18px;
+      border-radius:50%;background:var(--grad);
+      box-shadow:0 2px 10px rgba(99,102,241,0.5);cursor:pointer;
+    }
+    .range-val{
+      text-align:right;font-size:0.82rem;font-weight:700;
+      color:var(--indigo2);margin-top:4px;
+    }
+
+    .radio-group{display:flex;gap:8px;flex-wrap:wrap;}
+    .radio-btn{
+      padding:8px 16px;border-radius:9px;
+      background:var(--glass);border:1px solid var(--border);
+      color:var(--text2);font-size:0.8rem;font-weight:700;
+      cursor:pointer;transition:all 0.2s;
+      font-family:var(--font);
+    }
+    .radio-btn:hover{background:var(--glass2);color:var(--text);}
+    .radio-btn.active{
+      background:rgba(99,102,241,0.18);
+      border-color:rgba(99,102,241,0.4);
+      color:var(--indigo2);
+    }
+
+    /* ---- GENERATE BUTTON ---- */
+    .gen-btn{
+      width:100%;margin-top:20px;
+      padding:16px;border-radius:var(--r);border:none;
+      font-family:var(--font2);font-size:1rem;font-weight:800;
+      cursor:pointer;transition:all 0.28s var(--ease);
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      position:relative;overflow:hidden;letter-spacing:-0.01em;
+    }
+    .gen-btn::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+      transform:translateX(-100%);transition:transform 0.6s ease;
+    }
+    .gen-btn.ready{
+      background:var(--grad);color:#fff;
+      box-shadow:0 6px 32px rgba(99,102,241,0.5);
+    }
+    .gen-btn.ready:hover{transform:translateY(-2px);box-shadow:0 10px 44px rgba(99,102,241,0.65);}
+    .gen-btn.ready:hover::before{transform:translateX(100%);}
+    .gen-btn.ready:active{transform:translateY(0);}
+    .btn-spinner{
+      width:20px;height:20px;
+      border:2.5px solid rgba(255,255,255,0.3);
+      border-top-color:#fff;border-radius:50%;
+      animation:spin 0.8s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ---- OUTPUT PANEL ---- */
+    .output-panel{
+      background:var(--glass);
+      backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+      border:1px solid var(--border);border-radius:var(--r2);
+      box-shadow:var(--shadow);
+      min-height:600px;position:relative;overflow:hidden;
+      transition:border-color 0.3s;
+    }
+    .output-panel.has-results{border-color:rgba(99,102,241,0.25);}
+
+    /* Placeholder */
+    .out-placeholder{
+      position:absolute;inset:0;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      color:var(--text3);padding:40px;text-align:center;
+    }
+    .ph-icon{
+      width:88px;height:88px;
+      background:rgba(99,102,241,0.08);
+      border:1px solid rgba(99,102,241,0.14);
+      border-radius:24px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:3rem;margin-bottom:20px;
+      animation:float 4s ease-in-out infinite;
+    }
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    .ph-title{font-family:var(--font2);font-size:1.1rem;font-weight:800;color:var(--text2);margin-bottom:8px;}
+    .ph-desc{font-size:0.84rem;max-width:260px;line-height:1.65;color:var(--text3);}
+
+    /* Loading */
+    .out-loading{
+      position:absolute;inset:0;
+      background:rgba(3,3,14,0.88);
+      backdrop-filter:blur(10px);
+      display:none;flex-direction:column;
+      align-items:center;justify-content:center;z-index:20;gap:22px;
+    }
+    [data-theme="light"] .out-loading{background:rgba(240,240,255,0.9);}
+    .out-loading.show{display:flex;}
+    .load-rings{position:relative;width:78px;height:78px;}
+    .load-ring1{
+      position:absolute;inset:0;border-radius:50%;
+      border:3px solid rgba(99,102,241,0.15);
+      border-top-color:var(--indigo2);
+      border-right-color:var(--purple);
+      animation:spin 1s linear infinite;
+    }
+    .load-ring2{
+      position:absolute;top:10px;left:10px;right:10px;bottom:10px;
+      border-radius:50%;
+      border:2px solid rgba(6,182,212,0.15);
+      border-top-color:var(--cyan);
+      animation:spin 1.5s linear infinite reverse;
+    }
+    .load-emoji{
+      position:absolute;inset:0;display:flex;
+      align-items:center;justify-content:center;font-size:1.6rem;
+    }
+    .load-bar-track{
+      width:280px;height:5px;
+      background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;
+    }
+    .load-bar-fill{
+      height:100%;width:0%;background:var(--grad2);
+      border-radius:3px;transition:width 0.5s var(--ease);
+    }
+    .load-msg{font-size:0.9rem;font-weight:600;color:var(--text2);}
+    .load-sub{font-size:0.76rem;color:var(--text3);}
+
+    /* Result Content */
+    .out-content{
+      display:none;padding:24px;flex-direction:column;
+      animation:fadeUp 0.45s var(--ease) both;
+    }
+    .out-content.show{display:flex;}
+
+    /* Output action bar */
+    .out-actions-bar{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:11px 16px;margin-bottom:16px;
+      background:rgba(99,102,241,0.07);
+      border:1px solid rgba(99,102,241,0.18);
+      border-radius:12px;flex-wrap:wrap;gap:10px;
+    }
+    .out-label{font-size:0.8rem;font-weight:700;color:var(--indigo2);}
+    .out-btns{display:flex;gap:7px;flex-wrap:wrap;}
+    .out-btn{
+      padding:7px 14px;border-radius:8px;
+      background:rgba(99,102,241,0.15);
+      border:1px solid rgba(99,102,241,0.28);
+      color:var(--indigo2);font-size:0.77rem;font-weight:700;
+      cursor:pointer;transition:all 0.2s;
+      display:flex;align-items:center;gap:5px;font-family:var(--font);
+    }
+    .out-btn:hover{background:rgba(99,102,241,0.3);transform:translateY(-1px);}
+    .out-btn.success{background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3);color:var(--green);}
+
+    /* Article Output */
+    .article-output{
+      overflow-y:auto;max-height:520px;padding-right:4px;
+    }
+    .article-section{
+      margin-bottom:18px;padding:16px 18px;
+      background:rgba(0,0,0,0.18);
+      border:1px solid var(--border);border-radius:12px;
+      transition:border-color 0.2s;
+      animation:fadeUp 0.35s var(--ease) both;
+    }
+    [data-theme="light"] .article-section{background:rgba(255,255,255,0.45);}
+    .article-section:hover{border-color:var(--border2);}
+    .art-sec-label{
+      font-size:0.7rem;font-weight:800;text-transform:uppercase;
+      letter-spacing:0.09em;margin-bottom:10px;
+      display:flex;align-items:center;gap:6px;
+    }
+    .art-sec-content{
+      font-size:0.86rem;color:var(--text2);line-height:1.8;
+    }
+    .art-sec-content h2{font-size:1rem;font-weight:700;color:var(--text);margin:10px 0 6px;}
+    .art-sec-content h3{font-size:0.9rem;font-weight:600;color:var(--text);margin:8px 0 4px;}
+    .art-sec-content p{margin-bottom:8px;}
+
+    /* Title Cards */
+    .titles-grid{display:flex;flex-direction:column;gap:10px;overflow-y:auto;max-height:520px;padding-right:4px;}
+    .title-card{
+      display:flex;align-items:center;gap:12px;
+      padding:13px 16px;
+      background:rgba(0,0,0,0.18);
+      border:1px solid var(--border);border-radius:12px;
+      transition:all 0.2s;
+      animation:fadeUp 0.35s var(--ease) both;
+    }
+    [data-theme="light"] .title-card{background:rgba(255,255,255,0.45);}
+    .title-card:hover{border-color:var(--border-p);transform:translateX(4px);}
+    .title-num{
+      width:26px;height:26px;flex-shrink:0;
+      background:var(--grad);border-radius:7px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:0.72rem;font-weight:800;color:#fff;
+    }
+    .title-text{flex:1;font-size:0.88rem;color:var(--text);line-height:1.5;font-weight:500;}
+    .title-copy{
+      padding:5px 11px;border-radius:7px;
+      background:var(--glass2);border:1px solid var(--border);
+      color:var(--text3);font-size:0.72rem;font-weight:700;
+      cursor:pointer;transition:all 0.2s;flex-shrink:0;font-family:var(--font);
+    }
+    .title-copy:hover{color:var(--text);background:var(--glass3);}
+    .title-copy.ok{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.25);color:var(--green);}
+
+    /* Topics Grid */
+    .topics-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:10px;
+      overflow-y:auto;max-height:520px;padding-right:4px;
+    }
+    @media(max-width:640px){.topics-grid{grid-template-columns:1fr;}}
+    .topic-card{
+      padding:14px 16px;
+      background:rgba(0,0,0,0.18);
+      border:1px solid var(--border);border-radius:12px;
+      transition:all 0.2s;
+      animation:fadeUp 0.35s var(--ease) both;
+    }
+    [data-theme="light"] .topic-card{background:rgba(255,255,255,0.45);}
+    .topic-card:hover{border-color:var(--border-p);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.15);}
+    .topic-num{font-size:0.68rem;font-weight:800;color:var(--indigo2);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;}
+    .topic-title{font-size:0.84rem;color:var(--text);font-weight:600;line-height:1.45;margin-bottom:8px;}
+    .topic-meta{font-size:0.74rem;color:var(--text3);}
+    .topic-actions{display:flex;gap:5px;margin-top:10px;}
+    .topic-btn{
+      padding:4px 10px;border-radius:6px;
+      background:var(--glass2);border:1px solid var(--border);
+      color:var(--text3);font-size:0.71rem;font-weight:700;
+      cursor:pointer;transition:all 0.2s;font-family:var(--font);
+    }
+    .topic-btn:hover{color:var(--text);background:var(--glass3);}
+
+    /* Keywords */
+    .kw-sections{overflow-y:auto;max-height:520px;padding-right:4px;}
+    .kw-block{
+      margin-bottom:16px;padding:16px 18px;
+      background:rgba(0,0,0,0.18);
+      border:1px solid var(--border);border-radius:12px;
+      animation:fadeUp 0.35s var(--ease) both;
+    }
+    [data-theme="light"] .kw-block{background:rgba(255,255,255,0.45);}
+    .kw-block-title{
+      font-size:0.75rem;font-weight:800;text-transform:uppercase;
+      letter-spacing:0.08em;margin-bottom:12px;
+      display:flex;align-items:center;gap:6px;
+    }
+    .kw-tags{display:flex;flex-wrap:wrap;gap:7px;}
+    .kw-tag{
+      padding:5px 14px;border-radius:999px;
+      font-size:0.78rem;font-weight:600;cursor:default;
+      transition:all 0.2s;
+    }
+    .kw-tag:hover{transform:translateY(-1px);}
+    .kw-primary{background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25);color:var(--indigo2);}
+    .kw-secondary{background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:var(--purple2);}
+    .kw-longtail{background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.22);color:var(--cyan);}
+    .kw-lsi{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.22);color:var(--green);}
+
+    /* ---- TOAST ---- */
+    .toast{
+      position:fixed;bottom:28px;right:28px;z-index:9999;
+      background:var(--bg2);
+      border:1px solid rgba(99,102,241,0.4);
+      border-radius:14px;padding:13px 22px;
+      font-size:0.875rem;font-weight:600;color:var(--text);
+      box-shadow:0 16px 50px rgba(0,0,0,0.5);
+      display:flex;align-items:center;gap:10px;
+      transform:translateY(90px);opacity:0;
+      transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events:none;
+    }
+    .toast.show{transform:translateY(0);opacity:1;}
+
+    /* ---- FEATURES STRIP ---- */
+    .features-strip{
+      max-width:1320px;margin:0 auto;
+      padding:0 28px 80px;position:relative;z-index:1;
+    }
+    .features-title{
+      text-align:center;font-family:var(--font2);
+      font-size:1.6rem;font-weight:800;
+      letter-spacing:-0.03em;margin-bottom:30px;
+    }
+    .feats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+    @media(max-width:900px){.feats-grid{grid-template-columns:1fr 1fr;}}
+    @media(max-width:500px){.feats-grid{grid-template-columns:1fr;}}
+    .feat-card{
+      padding:20px;background:var(--glass);
+      border:1px solid var(--border);border-radius:var(--r2);
+      transition:all 0.25s var(--ease);text-align:center;
+    }
+    .feat-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.2);}
+    .feat-icon{font-size:2rem;margin-bottom:12px;display:block;}
+    .feat-h{font-family:var(--font2);font-size:0.9rem;font-weight:800;margin-bottom:6px;letter-spacing:-0.01em;}
+    .feat-p{font-size:0.79rem;color:var(--text2);line-height:1.6;}
+
+    /* ---- Scrollbar ---- */
+    ::-webkit-scrollbar{width:5px;height:5px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:rgba(99,102,241,0.2);border-radius:3px;}
+    ::-webkit-scrollbar-thumb:hover{background:rgba(99,102,241,0.4);}
+
+    /* ---- Responsive ---- */
+    @media(max-width:680px){
+      .hero{padding:108px 16px 36px;}
+      .tool-tabs-wrap{padding:0 16px 60px;}
+      .tab-btn{min-width:120px;font-size:0.8rem;padding:11px 12px;}
+      .features-strip{padding:0 16px 60px;}
+      .nav-links{display:none;}
+    }
+  
+    /* Navbar Dropdown styling */
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: var(--bg2); min-width: 240px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 0; z-index: 1000; }
+    .nav-dropdown:hover .dropdown-content { display: flex; flex-direction: column; }
+    .dropdown-content a { color: var(--text); padding: 12px 20px; text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: background 0.2s, padding-left 0.2s; font-family: var(--font, sans-serif); }
+    .dropdown-content a:hover { background: var(--glass2, rgba(255,255,255,0.08)); padding-left: 24px; color: var(--indigo2, #818cf8); }
+
+  </style>
+  <script src="../js/AdManager.js"></script>
+  <script src="../js/saas-ux.js"></script>
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="bg-canvas">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+  <div class="bg-grid"></div>
+
+  
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-inner">
+            <a href="../index.html" class="nav-logo">
+                <div class="nav-logo-icon">⚡</div>
+                Chafiktech Ai
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Home</a>
+                <div class="nav-dropdown">
+                    <a href="../index.html#tools" class="nav-link" style="cursor:pointer;">Tools ▾</a>
+                    <div class="dropdown-content">
+                        <a href="../tools/seo-article-generator.html">SEO Article Generator</a>
+                        <a href="../tools/video-to-prompt.html">Video to Prompt</a>
+                        <a href="../tools/tiktok-tools.html">AI Tiktok Creator Suite</a>
+                        <a href="../tools/prompt-viral.html">Prompt Viral</a>
+                        <a href="../tools/youtube-suite.html">YouTube Suite</a>
+                        <a href="../tools/ai-humanizer.html">AI Humanizer</a>
+                        <a href="../tools/digital-product-creator.html">Digital Product Creator</a>
+                        <a href="../tools/prompt-article.html">Article Prompt</a>
+                    </div>
+                </div>
+                <a href="../ecommerce.html" class="nav-link">Create Your Digital Product</a>
+                <a href="../pricing.html" class="nav-link">Pricing</a>
+                <a href="../about.html" class="nav-link">About</a>
+                <a href="../contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle theme-btn" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+                <a href="../login.html" class="btn btn-secondary btn-sm">Log In</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      AI-Powered — AdSense Ready
+    </div>
+    <h1>
+      SEO Article<br><span class="grad-text">Generator AI</span>
+    </h1>
+    <p class="hero-desc">
+      Generate high-quality SEO articles, titles, and keywords optimized for Google ranking and AdSense approval — in seconds.
+    </p>
+    <div class="hero-chips">
+      <span class="chip"><span class="dot" style="background:#10b981"></span>100% Original Content</span>
+      <span class="chip"><span class="dot" style="background:#6366f1"></span>SEO Optimized</span>
+      <span class="chip"><span class="dot" style="background:#a855f7"></span>AdSense Ready</span>
+      <span class="chip"><span class="dot" style="background:#06b6d4"></span>Arabic &amp; English</span>
+    </div>
+  </section>
+
+  <!-- Main Tool Area -->
+  <div class="tool-tabs-wrap">
+
+    <!-- Tab Navigation -->
+    <nav class="tool-tabs-nav" role="tablist" aria-label="SEO tools">
+      <button class="tab-btn active" data-tab="article" role="tab" aria-selected="true" id="tab-article">
+        🧠 Article Generator
+      </button>
+      <button class="tab-btn" data-tab="titles" role="tab" aria-selected="false" id="tab-titles">
+        🏷️ SEO Titles
+      </button>
+      <button class="tab-btn" data-tab="topics" role="tab" aria-selected="false" id="tab-topics">
+        💡 Topic Ideas
+      </button>
+      <button class="tab-btn" data-tab="keywords" role="tab" aria-selected="false" id="tab-keywords">
+        🔑 Keywords
+      </button>
+    </nav>
+
+    <!-- ======== TAB 1: ARTICLE GENERATOR ======== -->
+    <div class="tab-pane active" id="pane-article" role="tabpanel" aria-labelledby="tab-article">
+      <div class="tool-layout">
+
+        <!-- Input -->
+        <div class="input-panel">
+          <div class="panel-title">
+            <div class="panel-title-icon icon-indigo">🧠</div>
+            SEO Article Generator
+          </div>
+          <div class="panel-sub">Fill in the details below to generate a fully structured, SEO-optimized article.</div>
+
+          <div class="form-group">
+            <label class="form-label" for="art-topic">Article Topic *</label>
+            <input class="form-input" id="art-topic" type="text" placeholder="e.g., How to make money online in 2026">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="art-lang">Language</label>
+            <select class="form-select" id="art-lang">
+              <option value="english">🇺🇸 English</option>
+              <option value="arabic">🇸🇦 Arabic (عربي)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Word Count: <span id="word-val">1000</span> words</label>
+            <div class="range-wrap">
+              <input type="range" class="range-input" id="art-words" min="500" max="2000" value="1000" step="100">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">SEO Level</label>
+            <div class="radio-group" id="seo-level">
+              <button class="radio-btn" data-val="low">Low</button>
+              <button class="radio-btn active" data-val="medium">Medium</button>
+              <button class="radio-btn" data-val="high">High 🔥</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="art-focus-kw">Focus Keyword (optional)</label>
+            <input class="form-input" id="art-focus-kw" type="text" placeholder="e.g., make money online">
+          </div>
+
+          <button class="gen-btn ready" id="art-gen-btn">
+            ⚡ Generate SEO Article
+          </button>
+        </div>
+
+        <!-- Output -->
+        <div class="output-panel" id="art-output-panel">
+          <div class="out-placeholder" id="art-placeholder">
+            <div class="ph-icon">📝</div>
+            <div class="ph-title">Your Article Will Appear Here</div>
+            <p class="ph-desc">Enter a topic and click Generate to create a fully structured SEO article with meta data.</p>
+          </div>
+          <div class="out-loading" id="art-loading">
+            <div class="load-rings">
+              <div class="load-ring1"></div>
+              <div class="load-ring2"></div>
+              <div class="load-emoji">🧠</div>
+            </div>
+            <div class="load-bar-track"><div class="load-bar-fill" id="art-bar"></div></div>
+            <div class="load-msg" id="art-load-msg">Analyzing topic...</div>
+            <div class="load-sub">Generating your SEO article</div>
+          </div>
+          <div class="out-content" id="art-content">
+            <div class="out-actions-bar">
+              <span class="out-label" id="art-out-label">✨ SEO Article Generated</span>
+              <div class="out-btns">
+                <button class="out-btn" id="art-copy-btn">📋 Copy All</button>
+                <button class="out-btn" id="art-dl-btn">⬇ Download TXT</button>
+                <button class="out-btn" id="art-regen-btn">🔄 Regenerate</button>
+              </div>
+            </div>
+            <div class="article-output" id="article-output"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======== TAB 2: SEO TITLES ======== -->
+    <div class="tab-pane" id="pane-titles" role="tabpanel" aria-labelledby="tab-titles">
+      <div class="tool-layout">
+
+        <div class="input-panel">
+          <div class="panel-title">
+            <div class="panel-title-icon icon-purple">🏷️</div>
+            SEO Title Generator
+          </div>
+          <div class="panel-sub">Generate 10–20 click-worthy SEO titles packed with keywords and high CTR potential.</div>
+
+          <div class="form-group">
+            <label class="form-label" for="ttl-topic">Topic / Keyword *</label>
+            <input class="form-input" id="ttl-topic" type="text" placeholder="e.g., affiliate marketing for beginners">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ttl-lang">Language</label>
+            <select class="form-select" id="ttl-lang">
+              <option value="english">🇺🇸 English</option>
+              <option value="arabic">🇸🇦 Arabic (عربي)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Number of Titles: <span id="ttl-count-val">15</span></label>
+            <div class="range-wrap">
+              <input type="range" class="range-input" id="ttl-count" min="10" max="20" value="15" step="1">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Title Style</label>
+            <div class="radio-group" id="ttl-style">
+              <button class="radio-btn active" data-val="how-to">How-to</button>
+              <button class="radio-btn" data-val="listicle">Listicle</button>
+              <button class="radio-btn" data-val="question">Question</button>
+              <button class="radio-btn" data-val="mixed">Mixed</button>
+            </div>
+          </div>
+
+          <button class="gen-btn ready" id="ttl-gen-btn">
+            ⚡ Generate SEO Titles
+          </button>
+        </div>
+
+        <div class="output-panel" id="ttl-output-panel">
+          <div class="out-placeholder" id="ttl-placeholder">
+            <div class="ph-icon">🏷️</div>
+            <div class="ph-title">SEO Titles Will Appear Here</div>
+            <p class="ph-desc">Enter your topic and generate 10–20 professional, high-CTR SEO titles instantly.</p>
+          </div>
+          <div class="out-loading" id="ttl-loading">
+            <div class="load-rings">
+              <div class="load-ring1"></div>
+              <div class="load-ring2"></div>
+              <div class="load-emoji">🏷️</div>
+            </div>
+            <div class="load-bar-track"><div class="load-bar-fill" id="ttl-bar"></div></div>
+            <div class="load-msg" id="ttl-load-msg">Crafting titles...</div>
+            <div class="load-sub">Optimizing for CTR &amp; SEO</div>
+          </div>
+          <div class="out-content" id="ttl-content">
+            <div class="out-actions-bar">
+              <span class="out-label" id="ttl-out-label">🏷️ SEO Titles Generated</span>
+              <div class="out-btns">
+                <button class="out-btn" id="ttl-copy-btn">📋 Copy All</button>
+                <button class="out-btn" id="ttl-dl-btn">⬇ Download TXT</button>
+                <button class="out-btn" id="ttl-regen-btn">🔄 Regenerate</button>
+              </div>
+            </div>
+            <div class="titles-grid" id="titles-output"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======== TAB 3: TOPIC IDEAS ======== -->
+    <div class="tab-pane" id="pane-topics" role="tabpanel" aria-labelledby="tab-topics">
+      <div class="tool-layout">
+
+        <div class="input-panel">
+          <div class="panel-title">
+            <div class="panel-title-icon icon-cyan">💡</div>
+            Topic Ideas Generator
+          </div>
+          <div class="panel-sub">Generate 20 publishable blog topic ideas for your niche, ready to rank on Google.</div>
+
+          <div class="form-group">
+            <label class="form-label" for="top-niche">Your Niche *</label>
+            <input class="form-input" id="top-niche" type="text" placeholder="e.g., health &amp; fitness, make money online, tech">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="top-lang">Language</label>
+            <select class="form-select" id="top-lang">
+              <option value="english">🇺🇸 English</option>
+              <option value="arabic">🇸🇦 Arabic (عربي)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Audience Level</label>
+            <div class="radio-group" id="top-audience">
+              <button class="radio-btn active" data-val="beginner">Beginner</button>
+              <button class="radio-btn" data-val="intermediate">Intermediate</button>
+              <button class="radio-btn" data-val="expert">Expert</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Content Type</label>
+            <div class="radio-group" id="top-type">
+              <button class="radio-btn active" data-val="blog">Blog Posts</button>
+              <button class="radio-btn" data-val="guide">Guides</button>
+              <button class="radio-btn" data-val="review">Reviews</button>
+            </div>
+          </div>
+
+          <button class="gen-btn ready" id="top-gen-btn">
+            ⚡ Generate Topic Ideas
+          </button>
+        </div>
+
+        <div class="output-panel" id="top-output-panel">
+          <div class="out-placeholder" id="top-placeholder">
+            <div class="ph-icon">💡</div>
+            <div class="ph-title">Topic Ideas Will Appear Here</div>
+            <p class="ph-desc">Enter your niche and get 20 ready-to-publish blog topic ideas tailored for SEO and AdSense.</p>
+          </div>
+          <div class="out-loading" id="top-loading">
+            <div class="load-rings">
+              <div class="load-ring1"></div>
+              <div class="load-ring2"></div>
+              <div class="load-emoji">💡</div>
+            </div>
+            <div class="load-bar-track"><div class="load-bar-fill" id="top-bar"></div></div>
+            <div class="load-msg" id="top-load-msg">Researching your niche...</div>
+            <div class="load-sub">Finding high-value topic ideas</div>
+          </div>
+          <div class="out-content" id="top-content">
+            <div class="out-actions-bar">
+              <span class="out-label" id="top-out-label">💡 20 Topic Ideas Generated</span>
+              <div class="out-btns">
+                <button class="out-btn" id="top-copy-btn">📋 Copy All</button>
+                <button class="out-btn" id="top-dl-btn">⬇ Download TXT</button>
+                <button class="out-btn" id="top-regen-btn">🔄 Regenerate</button>
+              </div>
+            </div>
+            <div class="topics-grid" id="topics-output"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======== TAB 4: KEYWORDS ======== -->
+    <div class="tab-pane" id="pane-keywords" role="tabpanel" aria-labelledby="tab-keywords">
+      <div class="tool-layout">
+
+        <div class="input-panel">
+          <div class="panel-title">
+            <div class="panel-title-icon icon-amber">🔑</div>
+            Keyword Optimizer
+          </div>
+          <div class="panel-sub">Get a complete keyword strategy: primary, secondary, long-tail, and LSI keywords.</div>
+
+          <div class="form-group">
+            <label class="form-label" for="kw-main">Main Keyword *</label>
+            <input class="form-input" id="kw-main" type="text" placeholder="e.g., make money blogging">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="kw-lang">Language</label>
+            <select class="form-select" id="kw-lang">
+              <option value="english">🇺🇸 English</option>
+              <option value="arabic">🇸🇦 Arabic (عربي)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="kw-industry">Industry / Niche</label>
+            <input class="form-input" id="kw-industry" type="text" placeholder="e.g., digital marketing, finance">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Keyword Difficulty Target</label>
+            <div class="radio-group" id="kw-diff">
+              <button class="radio-btn active" data-val="low">Low 🟢</button>
+              <button class="radio-btn" data-val="medium">Medium 🟡</button>
+              <button class="radio-btn" data-val="high">High 🔴</button>
+            </div>
+          </div>
+
+          <button class="gen-btn ready" id="kw-gen-btn">
+            ⚡ Analyze Keywords
+          </button>
+        </div>
+
+        <div class="output-panel" id="kw-output-panel">
+          <div class="out-placeholder" id="kw-placeholder">
+            <div class="ph-icon">🔑</div>
+            <div class="ph-title">Keywords Will Appear Here</div>
+            <p class="ph-desc">Enter a keyword and get a complete strategy including primary, secondary, long-tail, and LSI keywords.</p>
+          </div>
+          <div class="out-loading" id="kw-loading">
+            <div class="load-rings">
+              <div class="load-ring1"></div>
+              <div class="load-ring2"></div>
+              <div class="load-emoji">🔑</div>
+            </div>
+            <div class="load-bar-track"><div class="load-bar-fill" id="kw-bar"></div></div>
+            <div class="load-msg" id="kw-load-msg">Scanning keyword database...</div>
+            <div class="load-sub">Building your keyword strategy</div>
+          </div>
+          <div class="out-content" id="kw-content">
+            <div class="out-actions-bar">
+              <span class="out-label" id="kw-out-label">🔑 Keyword Strategy Generated</span>
+              <div class="out-btns">
+                <button class="out-btn" id="kw-copy-btn">📋 Copy All</button>
+                <button class="out-btn" id="kw-dl-btn">⬇ Download TXT</button>
+                <button class="out-btn" id="kw-regen-btn">🔄 Regenerate</button>
+              </div>
+            </div>
+            <div class="kw-sections" id="kw-output"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /tool-tabs-wrap -->
+
+  <!-- Features Strip -->
+  <section class="features-strip">
+    <h2 class="features-title">Why Choose <span class="grad-text">Chafiktech Ai SEO?</span></h2>
+    <div class="feats-grid">
+      <div class="feat-card">
+        <span class="feat-icon">✅</span>
+        <div class="feat-h">100% Original</div>
+        <p class="feat-p">Every article is unique and passes plagiarism checks — ready for Google indexing.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">📈</span>
+        <div class="feat-h">Google Ranking Ready</div>
+        <p class="feat-p">Structured with proper H2/H3 headings, meta descriptions, and keyword density.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">💰</span>
+        <div class="feat-h">AdSense Approved</div>
+        <p class="feat-p">Content written in natural human style to pass AdSense quality reviews easily.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🌍</span>
+        <div class="feat-h">Bilingual Support</div>
+        <p class="feat-p">Generate professional SEO content in both Arabic and English for any market.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="alert"><span id="toast-msg">✅ Copied!</span></div>
+
+  <script>
+  /* ================================================================
+     SEO Article Generator AI — Complete Logic
+     Backend-ready: replace generate*() functions with API calls
+  ================================================================ */
+
+  // ---- LOADING MESSAGES PER TOOL ----
+  const LOAD_MSGS = {
+    article:  ["Analyzing topic...", "Building SEO structure...", "Writing introduction...", "Crafting paragraphs...", "Adding meta data...", "Finalizing article..."],
+    titles:   ["Researching keyword...","Generating title variations...","Optimizing for CTR...","Checking search intent...","Finalizing titles..."],
+    topics:   ["Researching your niche...","Finding trending topics...","Filtering high-value ideas...","Ranking by potential...","Finalizing 20 topics..."],
+    keywords: ["Scanning keyword database...","Finding related terms...","Analyzing search volume...","Building long-tail list...","Generating LSI keywords..."]
+  };
+
+  // ---- MOCK DATA GENERATOR ----
+  /* ================================================================
+     BACKEND-READY FUNCTIONS
+     Replace these with real API calls, e.g.:
+     async function generateSEOContent(input) {
+       const res = await fetch('/api/generate', { method:'POST', body: JSON.stringify(input) });
+       return res.json();
+     }
+  ================================================================ */
+
+  function generateArticle(topic, lang, words, seoLevel, focusKw) {
+    const kw = focusKw || topic;
+    const isArabic = lang === 'arabic';
+    if (isArabic) {
+      return {
+        title: `كيف تحقق ${topic} في عام 2026: الدليل الشامل للمبتدئين`,
+        metaDesc: `تعرّف على أفضل الطرق لـ${topic} في عام 2026. دليل شامل يغطي الخطوات العملية والنصائح الاحترافية لتحقيق النجاح.`,
+        keywords: [kw, `${kw} للمبتدئين`, `أفضل طرق ${kw}`, `كيفية ${kw}`, `${kw} 2026`],
+        intro: `يُعدّ موضوع ${topic} من أكثر المواضيع بحثاً على الإنترنت في الوقت الراهن، إذ يسعى الملايين حول العالم إلى إيجاد حلول عملية وفعّالة. في هذا المقال الشامل، سنستعرض معاً أهم الخطوات والاستراتيجيات المُجربة التي ستساعدك على تحقيق أهدافك بنجاح.`,
+        sections: [
+          { h2: `ما هو ${topic} ولماذا يهمك؟`, content: `قبل أن نبدأ في الحديث عن التفاصيل، من المهم أن نفهم المفهوم الأساسي. ${topic} هو مجال واسع يشمل العديد من الجوانب المتنوعة التي تؤثر بشكل مباشر على حياتك اليومية ومستقبلك المهني. الفهم الصحيح لهذا المجال يمنحك ميزة تنافسية كبيرة.` },
+          { h2: `أهم الاستراتيجيات الفعّالة في ${topic}`, content: `هناك عدة استراتيجيات أساسية يجب عليك اتباعها لضمان النجاح في مجال ${topic}. الاستراتيجية الأولى تتمحور حول التخطيط المُسبق ووضع أهداف واضحة وقابلة للقياس. الاستراتيجية الثانية تتعلق بالتعلم المستمر ومتابعة أحدث التطورات في المجال.`, h3s: [`التخطيط الاستراتيجي`, `التعلم المستمر`, `التطبيق العملي`] },
+          { h2: `الأخطاء الشائعة وكيفية تجنبها`, content: `يقع كثير من المبتدئين في أخطاء شائعة عند بدايتهم في مجال ${topic}. أبرز هذه الأخطاء هو التسرع في اتخاذ القرارات دون دراسة كافية، وعدم الاستفادة من تجارب الآخرين. تجنب هذه الأخطاء سيوفر عليك الكثير من الوقت والجهد.` },
+          { h2: `نصائح الخبراء لتحقيق النجاح`, content: `بناءً على تجارب المحترفين في مجال ${topic}، هناك مجموعة من النصائح الذهبية التي يجب الأخذ بها. أبرزها: الصبر والمثابرة، والتحليل المستمر للنتائج، والاستعداد للتعديل والتحسين المستمر.` }
+        ],
+        conclusion: `في الختام، يُعدّ ${topic} رحلة مثيرة تتطلب الصبر والتخطيط والعمل الجاد. باتباع الخطوات والنصائح الواردة في هذا المقال، ستكون على المسار الصحيح لتحقيق أهدافك. تذكر أن النجاح يأتي تدريجياً، والاستمرار هو المفتاح الحقيقي.`,
+        wordCount: words
+      };
+    }
+    return {
+      title: `How to ${topic} in 2026: The Ultimate Beginner's Guide`,
+      metaDesc: `Discover the best strategies for ${topic} in 2026. This comprehensive guide covers everything from getting started to advanced techniques for maximum results.`,
+      keywords: [kw, `${kw} for beginners`, `best ${kw} strategies`, `how to ${kw}`, `${kw} 2026 guide`],
+      intro: `In today's rapidly evolving digital landscape, mastering ${topic} has become more important than ever. Whether you're just starting out or looking to refine your approach, this comprehensive guide will walk you through everything you need to know to achieve outstanding results. By the end of this article, you'll have a clear roadmap and actionable strategies to get started immediately.`,
+      sections: [
+        { h2: `Understanding ${topic}: What You Need to Know`, content: `Before diving into the strategies, it's essential to build a solid foundation. ${topic} is a dynamic field that encompasses a wide range of techniques and approaches. Understanding the core principles will give you a significant competitive advantage and help you avoid common pitfalls that many beginners encounter.` },
+        { h2: `Top Strategies for ${topic} That Actually Work`, content: `When it comes to succeeding with ${topic}, having the right strategies in place is crucial. The most effective approach combines consistency, data-driven decision making, and continuous optimization. Here's a breakdown of the most powerful techniques used by industry experts.`, h3s: [`Strategy 1: Build a Strong Foundation`, `Strategy 2: Optimize for Long-term Growth`, `Strategy 3: Leverage Data & Analytics`] },
+        { h2: `Common Mistakes to Avoid`, content: `Many beginners make costly mistakes when starting with ${topic}. The most common include rushing the process without proper planning, ignoring analytics data, and failing to adapt their approach based on results. Learning from these mistakes early can save you significant time and resources.` },
+        { h2: `Advanced Tips from Industry Experts`, content: `To truly excel at ${topic}, you need to go beyond the basics. Industry experts consistently recommend focusing on quality over quantity, building authentic relationships in your niche, and staying updated with the latest algorithm changes and market trends.` }
+      ],
+      conclusion: `Mastering ${topic} is a journey that rewards patience, consistency, and strategic thinking. By implementing the strategies outlined in this guide, you'll be well-positioned to achieve your goals and stand out in a competitive market. Remember: success doesn't happen overnight, but with the right approach, remarkable results are absolutely achievable.`,
+      wordCount: words
+    };
+  }
+
+  function generateTitles(topic, lang, count, style) {
+    const isAr = lang === 'arabic';
+    const templates = isAr ? [
+      `كيفية ${topic}: دليل شامل للمبتدئين في 2026`,
+      `${count} طريقة مجربة لـ${topic} وتحقيق نتائج مذهلة`,
+      `هل تريد النجاح في ${topic}؟ اقرأ هذا أولاً`,
+      `أفضل استراتيجيات ${topic} التي لا يخبرك بها أحد`,
+      `الدليل النهائي لـ${topic} خطوة بخطوة`,
+      `لماذا يفشل 90% من الناس في ${topic} (وكيف تنجح أنت)`,
+      `${topic} من الصفر: كل ما تحتاج معرفته`,
+      `أسرار ${topic} التي يستخدمها المحترفون`,
+      `كيف حققت نجاحاً كبيراً في ${topic} خلال 30 يوماً فقط`,
+      `${topic} في 2026: ما الجديد وما الذي تغيّر؟`,
+      `أفضل أدوات ${topic} المجانية والمدفوعة`,
+      `مقارنة شاملة: أفضل طرق ${topic} لعام 2026`,
+      `${topic} للمحترفين: تقنيات متقدمة للنتائج السريعة`,
+      `تعلّم ${topic} في أسبوع واحد: الخطة الكاملة`,
+      `${topic} بدون خبرة: هل هو ممكن حقاً؟`
+    ] : [
+      `How to ${topic}: The Complete Beginner's Guide for 2026`,
+      `${count} Proven ${topic} Strategies That Actually Work`,
+      `Why Most People Fail at ${topic} (And How to Succeed)`,
+      `The Ultimate Guide to ${topic}: Step-by-Step for Beginners`,
+      `${topic} in 2026: What's Changed and What Still Works`,
+      `How I Mastered ${topic} in 30 Days (Exact Strategy Revealed)`,
+      `Top ${topic} Mistakes Beginners Make and How to Avoid Them`,
+      `${topic} for Beginners: Everything You Need to Know`,
+      `Is ${topic} Worth It in 2026? Honest Review`,
+      `${topic} Secrets the Experts Don't Want You to Know`,
+      `Best Free and Paid Tools for ${topic} in 2026`,
+      `${topic} vs Traditional Methods: Which is Better?`,
+      `Advanced ${topic} Techniques for Faster Results`,
+      `How to Start ${topic} With Zero Experience`,
+      `${topic} Masterclass: From Beginner to Expert in 60 Days`,
+      `The Real Truth About ${topic} Nobody Talks About`,
+      `${topic} Checklist: 10 Steps to Guaranteed Success`,
+      `How ${topic} Changed My Life (And Can Change Yours Too)`,
+      `${topic}: Common Questions Answered by Experts`,
+      `Boost Your Results with These ${topic} Power Tips`
+    ];
+    return templates.slice(0, count);
+  }
+
+  function generateTopics(niche, lang, audience, type) {
+    const isAr = lang === 'arabic';
+    const prefixes = isAr
+      ? ['كيفية','دليل شامل حول','أفضل','أسرار','مقارنة','لماذا','كيف','الدليل الكامل لـ','خطوات','نصائح لـ']
+      : ['How to','Complete Guide to','Best','Top','Why','Ultimate','Beginner\'s Guide to','Advanced','7 Ways to','Secrets of'];
+    const suffixes = isAr
+      ? ['للمبتدئين 2026','بدون خبرة','من الصفر','وتحقيق الأرباح','بسرعة ومن المنزل','باحتراف','في أقل من شهر','واختيار الأفضل','مجاناً وبدون رأس مال','بطريقة صحيحة']
+      : ['for Beginners 2026','Without Experience','From Scratch','and Make Money','Fast & Easy','Like a Pro','in 30 Days','A Complete Comparison','for Free','the Right Way'];
+    return Array.from({length:20},(_,i) => ({
+      id: i+1,
+      title: `${prefixes[i%prefixes.length]} ${niche} ${suffixes[i%suffixes.length]}`,
+      est_words: `${800 + Math.floor(Math.random()*1200)} words`,
+      difficulty: ['Easy','Medium','Easy','Hard','Medium'][i%5],
+      potential: ['High','High','Medium','Medium','High'][i%5]
+    }));
+  }
+
+  function generateKeywords(mainKw, lang, industry, difficulty) {
+    const isAr = lang === 'arabic';
+    return {
+      primary: isAr ? [mainKw, `${mainKw} 2026`, `أفضل ${mainKw}`] : [mainKw, `best ${mainKw}`, `${mainKw} 2026`],
+      secondary: isAr
+        ? [`كيفية ${mainKw}`, `${mainKw} للمبتدئين`, `${mainKw} مجانا`, `أدوات ${mainKw}`, `تعلم ${mainKw}`]
+        : [`how to ${mainKw}`, `${mainKw} for beginners`, `${mainKw} guide`, `${mainKw} tips`, `${mainKw} strategies`],
+      longtail: isAr
+        ? [`كيفية ${mainKw} من المنزل بدون خبرة`, `أفضل طرق ${mainKw} للمبتدئين 2026`, `كيف ابدأ في ${mainKw} وأربح منه`, `${mainKw} خطوة بخطوة للمبتدئين`, `أسرار النجاح في ${mainKw} بسرعة`]
+        : [`how to ${mainKw} from home with no experience`, `best ${mainKw} strategies for beginners 2026`, `how to start ${mainKw} and make money`, `step by step ${mainKw} guide for beginners`, `${mainKw} success secrets revealed`],
+      lsi: isAr
+        ? [`دخل سلبي`, `العمل الحر`, `الربح من الإنترنت`, `العمل من المنزل`, `التسويق الرقمي`, `المحتوى الرقمي`]
+        : [`passive income`, `freelancing`, `online business`, `digital marketing`, `content creation`, `remote work`, `side hustle`]
+    };
+  }
+
+  // ---- HELPERS ----
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._t);
+    t._t = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => showToast('✅ Copied to clipboard!')).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta); showToast('✅ Copied!');
+    });
+  }
+
+  function downloadTxt(text, filename) {
+    const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(a.href);
+    showToast('📄 File downloaded!');
+  }
+
+  function animateLoad(barId, msgId, msgs, duration) {
+    const bar = document.getElementById(barId);
+    const msg = document.getElementById(msgId);
+    bar.style.width = '0%';
+    let step = 0;
+    const interval = setInterval(() => {
+      if (step < msgs.length) {
+        msg.textContent = msgs[step];
+        bar.style.width = ((step+1)/msgs.length*90)+'%';
+        step++;
+      }
+    }, Math.floor(duration / msgs.length));
+    return interval;
+  }
+
+  function showLoading(panelId, loadId, contentId, phId) {
+    document.getElementById(phId).style.display = 'none';
+    document.getElementById(contentId).classList.remove('show');
+    document.getElementById(loadId).classList.add('show');
+  }
+
+  function showResults(panelId, loadId, contentId) {
+    const bar = document.getElementById(panelId);
+    document.getElementById(loadId).classList.remove('show');
+    document.getElementById(contentId).classList.add('show');
+    bar?.classList.add('has-results');
+  }
+
+  // ---- RADIO GROUPS ----
+  document.querySelectorAll('.radio-group').forEach(group => {
+    group.querySelectorAll('.radio-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  });
+
+  // ---- RANGE INPUTS ----
+  function initRange(inputId, valId, unit) {
+    const input = document.getElementById(inputId);
+    const val = document.getElementById(valId);
+    if (!input || !val) return;
+    const update = () => {
+      val.textContent = input.value + (unit || '');
+      const pct = ((input.value - input.min) / (input.max - input.min)) * 100;
+      input.style.setProperty('--pct', pct + '%');
+    };
+    input.addEventListener('input', update);
+    update();
+  }
+  initRange('art-words', 'word-val', '');
+  initRange('ttl-count', 'ttl-count-val', '');
+
+  // ---- TAB SWITCHING ----
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+      document.getElementById('pane-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ================================================================
+  // TOOL 1: ARTICLE GENERATOR
+  // ================================================================
+  let lastArticle = null;
+
+  document.getElementById('art-gen-btn').addEventListener('click', async (e) => {
+    if (window.AdManager) {
+      const adRes = await window.AdManager.handlePreGeneration();
+      if (!adRes.proceed) return;
+    }
+    const topic = document.getElementById('art-topic').value.trim();
+    if (!topic) { showToast('⚠️ Please enter a topic first!'); return; }
+    const lang   = document.getElementById('art-lang').value;
+    const words  = parseInt(document.getElementById('art-words').value);
+    const seoLvl = document.querySelector('#seo-level .radio-btn.active')?.dataset.val || 'medium';
+    const focusKw = document.getElementById('art-focus-kw').value.trim();
+
+    const btn = document.getElementById('art-gen-btn');
+    const inputEl = document.getElementById('art-topic');
+    const prompt = `Generate a fully structured SEO article about: "${topic}" in ${lang}. Target word count: ${words}. SEO level: ${seoLvl}. Focus keyword: "${focusKw || topic}". Include: SEO Title, Meta Description, 5 focus keywords, Introduction, 4 detailed sections with H2/H3 headings, and a Conclusion. Return as structured HTML.`;
+
+    showLoading('art-output-panel','art-loading','art-content','art-placeholder');
+    const interval = animateLoad('art-bar','art-load-msg', LOAD_MSGS.article, 4500);
+
+    window.executeSaaSAction(btn, 'seo-article', inputEl, function(html, source) {
+      clearInterval(interval);
+      document.getElementById('art-bar').style.width = '100%';
+      if (source === 'mock' || source === 'error') {
+        const data = generateArticle(topic, lang, words, seoLvl, focusKw);
+        lastArticle = data;
+        renderArticle(data);
+      } else {
+        document.getElementById('article-output').innerHTML = html;
+        lastArticle = { _rawHtml: html };
+      }
+      showResults('art-output-panel','art-loading','art-content');
+      document.getElementById('art-out-label').textContent = `✨ Article Generated — ~${words} words` + (source === 'api' ? ' 🤖' : ' (demo)');
+      showToast('✅ SEO Article ready!');
+    }, prompt);
+  });
+
+  function renderArticle(data) {
+    const el = document.getElementById('article-output');
+    el.innerHTML = `
+      <div class="article-section" style="animation-delay:0s">
+        <div class="art-sec-label" style="color:#6366f1">🏷️ SEO Title</div>
+        <div class="art-sec-content" style="font-size:1rem;font-weight:700;color:var(--text)">${data.title}</div>
+      </div>
+      <div class="article-section" style="animation-delay:0.06s">
+        <div class="art-sec-label" style="color:#06b6d4">📋 Meta Description</div>
+        <div class="art-sec-content">${data.metaDesc}</div>
+      </div>
+      <div class="article-section" style="animation-delay:0.12s">
+        <div class="art-sec-label" style="color:#10b981">🔑 Focus Keywords</div>
+        <div class="art-sec-content">${data.keywords.map(k=>`<span style="display:inline-block;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.22);border-radius:999px;padding:3px 11px;margin:2px;font-size:0.77rem;color:var(--green)">${k}</span>`).join('')}</div>
+      </div>
+      <div class="article-section" style="animation-delay:0.18s">
+        <div class="art-sec-label" style="color:#a855f7">📝 Introduction</div>
+        <div class="art-sec-content">${data.intro}</div>
+      </div>
+      ${data.sections.map((s,i) => `
+        <div class="article-section" style="animation-delay:${0.24+i*0.06}s">
+          <div class="art-sec-label" style="color:#f59e0b">📌 Section ${i+1}</div>
+          <div class="art-sec-content">
+            <h2>${s.h2}</h2>
+            ${s.h3s ? s.h3s.map(h=>`<h3>→ ${h}</h3>`).join('') : ''}
+            <p>${s.content}</p>
+          </div>
+        </div>
+      `).join('')}
+      <div class="article-section" style="animation-delay:${0.24+data.sections.length*0.06}s">
+        <div class="art-sec-label" style="color:#ec4899">🎯 Conclusion</div>
+        <div class="art-sec-content">${data.conclusion}</div>
+      </div>
+    `;
+  }
+
+  function getArticleText() {
+    if (!lastArticle) return '';
+    const d = lastArticle;
+    return `SEO TITLE:\n${d.title}\n\nMETA DESCRIPTION:\n${d.metaDesc}\n\nKEYWORDS:\n${d.keywords.join(', ')}\n\nINTRODUCTION:\n${d.intro}\n\n${d.sections.map(s=>`## ${s.h2}\n${s.content}`).join('\n\n')}\n\nCONCLUSION:\n${d.conclusion}`;
+  }
+
+  document.getElementById('art-copy-btn').addEventListener('click', () => { copyText(getArticleText()); });
+  document.getElementById('art-dl-btn').addEventListener('click', () => {
+    if (!lastArticle) return;
+    downloadTxt(getArticleText(), `seo-article-${Date.now()}.txt`);
+  });
+  document.getElementById('art-regen-btn').addEventListener('click', () => { document.getElementById('art-gen-btn').click(); });
+
+  // ================================================================
+  // TOOL 2: SEO TITLES
+  // ================================================================
+  let lastTitles = [];
+
+  document.getElementById('ttl-gen-btn').addEventListener('click', async (e) => {
+    if (window.AdManager) {
+      const adRes = await window.AdManager.handlePreGeneration();
+      if (!adRes.proceed) return;
+    }
+    const topic = document.getElementById('ttl-topic').value.trim();
+    if (!topic) { showToast('⚠️ Please enter a topic!'); return; }
+    const lang  = document.getElementById('ttl-lang').value;
+    const count = parseInt(document.getElementById('ttl-count').value);
+    const style = document.querySelector('#ttl-style .radio-btn.active')?.dataset.val || 'mixed';
+
+    const btn = document.getElementById('ttl-gen-btn');
+    const inputEl = document.getElementById('ttl-topic');
+    const prompt = `Generate ${count} high CTR, SEO-optimized blog titles for the topic: "${topic}" in ${lang}. Style: ${style}. Return as a plain numbered list, one title per line.`;
+
+    showLoading('ttl-output-panel','ttl-loading','ttl-content','ttl-placeholder');
+    const interval = animateLoad('ttl-bar','ttl-load-msg', LOAD_MSGS.titles, 3500);
+
+    window.executeSaaSAction(btn, 'seo-titles', inputEl, function(html, source) {
+      clearInterval(interval);
+      document.getElementById('ttl-bar').style.width = '100%';
+      lastTitles = generateTitles(topic, lang, count, style);
+      if (source === 'api') {
+        const rawLines = html.replace(/<[^>]*>/g,'').split('\n').filter(l => l.trim());
+        if (rawLines.length >= 5) lastTitles = rawLines.map(l => l.replace(/^\d+\.\s*/, '').trim()).filter(Boolean);
+      }
+      renderTitles(lastTitles);
+      showResults('ttl-output-panel','ttl-loading','ttl-content');
+      document.getElementById('ttl-out-label').textContent = `🏷️ ${lastTitles.length} SEO Titles Generated` + (source === 'api' ? ' 🤖' : ' (demo)');
+      showToast(`✅ ${lastTitles.length} titles ready!`);
+    }, prompt);
+  });
+
+  function renderTitles(titles) {
+    document.getElementById('titles-output').innerHTML = titles.map((t,i) => `
+      <div class="title-card" style="animation-delay:${i*0.04}s">
+        <div class="title-num">${i+1}</div>
+        <div class="title-text">${t}</div>
+        <button class="title-copy" onclick="copySingleTitle(this,'${t.replace(/'/g,'&#39;').replace(/"/g,'&quot;')}')">📋 Copy</button>
+      </div>
+    `).join('');
+  }
+
+  window.copySingleTitle = function(btn, text) {
+    copyText(text);
+    btn.classList.add('ok'); btn.textContent = '✅ Copied';
+    setTimeout(() => { btn.classList.remove('ok'); btn.textContent = '📋 Copy'; }, 2000);
+  };
+
+  document.getElementById('ttl-copy-btn').addEventListener('click', () => { copyText(lastTitles.join('\n')); });
+  document.getElementById('ttl-dl-btn').addEventListener('click', () => {
+    downloadTxt(lastTitles.map((t,i)=>`${i+1}. ${t}`).join('\n'), `seo-titles-${Date.now()}.txt`);
+  });
+  document.getElementById('ttl-regen-btn').addEventListener('click', () => { document.getElementById('ttl-gen-btn').click(); });
+
+  // ================================================================
+  // TOOL 3: TOPIC IDEAS
+  // ================================================================
+  let lastTopics = [];
+
+  document.getElementById('top-gen-btn').addEventListener('click', async (e) => {
+    if (window.AdManager) {
+      const adRes = await window.AdManager.handlePreGeneration();
+      if (!adRes.proceed) return;
+    }
+    const niche = document.getElementById('top-niche').value.trim();
+    if (!niche) { showToast('⚠️ Please enter your niche!'); return; }
+    const lang     = document.getElementById('top-lang').value;
+    const audience = document.querySelector('#top-audience .radio-btn.active')?.dataset.val || 'beginner';
+    const type     = document.querySelector('#top-type .radio-btn.active')?.dataset.val || 'blog';
+
+    const btn = document.getElementById('top-gen-btn');
+    const inputEl = document.getElementById('top-niche');
+    const prompt = `Generate 20 unique ${type} topic ideas for the niche: "${niche}" in ${lang}, targeting ${audience} audience. For each topic provide: title, estimated word count, difficulty (Easy/Medium/Hard), and traffic potential (High/Medium/Low). Return as a numbered list.`;
+
+    showLoading('top-output-panel','top-loading','top-content','top-placeholder');
+    const interval = animateLoad('top-bar','top-load-msg', LOAD_MSGS.topics, 3800);
+
+    window.executeSaaSAction(btn, 'seo-topics', inputEl, function(html, source) {
+      clearInterval(interval);
+      document.getElementById('top-bar').style.width = '100%';
+      lastTopics = generateTopics(niche, lang, audience, type);
+      renderTopics(lastTopics);
+      showResults('top-output-panel','top-loading','top-content');
+      document.getElementById('top-out-label').textContent = `💡 20 Topic Ideas for "${niche}"` + (source === 'api' ? ' 🤖' : ' (demo)');
+      showToast('✅ 20 topic ideas generated!');
+    }, prompt);
+  });
+
+  function renderTopics(topics) {
+    document.getElementById('topics-output').innerHTML = topics.map((t,i) => `
+      <div class="topic-card" style="animation-delay:${i*0.04}s">
+        <div class="topic-num">Idea #${t.id} · ${t.difficulty} · ${t.potential} Potential</div>
+        <div class="topic-title">${t.title}</div>
+        <div class="topic-meta">~${t.est_words}</div>
+        <div class="topic-actions">
+          <button class="topic-btn" onclick="copyText('${t.title.replace(/'/g,"\\'")}')">📋 Copy</button>
+          <button class="topic-btn" onclick="useAsArticle('${t.title.replace(/'/g,"\\'")}')">🧠 Generate Article</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.useAsArticle = function(title) {
+    document.getElementById('art-topic').value = title;
+    document.querySelector('[data-tab="article"]').click();
+    showToast('✅ Topic added to Article Generator!');
+  };
+
+  document.getElementById('top-copy-btn').addEventListener('click', () => {
+    copyText(lastTopics.map((t,i)=>`${i+1}. ${t.title}`).join('\n'));
+  });
+  document.getElementById('top-dl-btn').addEventListener('click', () => {
+    downloadTxt(lastTopics.map((t,i)=>`${i+1}. ${t.title}\nEstimated: ${t.est_words} | Difficulty: ${t.difficulty} | Potential: ${t.potential}`).join('\n\n'), `topic-ideas-${Date.now()}.txt`);
+  });
+  document.getElementById('top-regen-btn').addEventListener('click', () => { document.getElementById('top-gen-btn').click(); });
+
+  // ================================================================
+  // TOOL 4: KEYWORDS
+  // ================================================================
+  let lastKw = null;
+
+  document.getElementById('kw-gen-btn').addEventListener('click', async (e) => {
+    if (window.AdManager) {
+      const adRes = await window.AdManager.handlePreGeneration();
+      if (!adRes.proceed) return;
+    }
+    const mainKw = document.getElementById('kw-main').value.trim();
+    if (!mainKw) { showToast('⚠️ Please enter a main keyword!'); return; }
+    const lang     = document.getElementById('kw-lang').value;
+    const industry = document.getElementById('kw-industry').value.trim();
+    const diff     = document.querySelector('#kw-diff .radio-btn.active')?.dataset.val || 'low';
+
+    const btn = document.getElementById('kw-gen-btn');
+    const inputEl = document.getElementById('kw-main');
+    const prompt = `Generate a comprehensive SEO keyword strategy for the keyword: "${mainKw}" in ${lang}. Industry: ${industry || 'general'}. Difficulty: ${diff}. Include: 3 primary keywords, 5 secondary keywords, 5 long-tail keywords, 7 LSI/semantic keywords. Return as structured JSON or clearly labeled list.`;
+
+    showLoading('kw-output-panel','kw-loading','kw-content','kw-placeholder');
+    const interval = animateLoad('kw-bar','kw-load-msg', LOAD_MSGS.keywords, 3500);
+
+    window.executeSaaSAction(btn, 'seo-keywords', inputEl, function(html, source) {
+      clearInterval(interval);
+      document.getElementById('kw-bar').style.width = '100%';
+      lastKw = generateKeywords(mainKw, lang, industry, diff);
+      renderKeywords(lastKw, mainKw);
+      showResults('kw-output-panel','kw-loading','kw-content');
+      document.getElementById('kw-out-label').textContent = `🔑 Keyword Strategy for "${mainKw}"` + (source === 'api' ? ' 🤖' : ' (demo)');
+      showToast('✅ Keyword strategy ready!');
+    }, prompt);
+  });
+
+  function renderKeywords(data, mainKw) {
+    const blocks = [
+      { title:'🎯 Primary Keywords', cls:'kw-primary', keys:data.primary, color:'#6366f1' },
+      { title:'🔗 Secondary Keywords', cls:'kw-secondary', keys:data.secondary, color:'#a855f7' },
+      { title:'📌 Long-tail Keywords', cls:'kw-longtail', keys:data.longtail, color:'#06b6d4' },
+      { title:'🌐 LSI Keywords', cls:'kw-lsi', keys:data.lsi, color:'#10b981' }
+    ];
+    document.getElementById('kw-output').innerHTML = blocks.map((b,i) => `
+      <div class="kw-block" style="animation-delay:${i*0.08}s">
+        <div class="kw-block-title" style="color:${b.color}">${b.title}</div>
+        <div class="kw-tags">
+          ${b.keys.map(k=>`<span class="kw-tag ${b.cls}" onclick="copyText('${k.replace(/'/g,"\\'")}');showToast('✅ Keyword copied!')" title="Click to copy" style="cursor:pointer">${k}</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function getKwText() {
+    if (!lastKw) return '';
+    return `PRIMARY:\n${lastKw.primary.join(', ')}\n\nSECONDARY:\n${lastKw.secondary.join(', ')}\n\nLONG-TAIL:\n${lastKw.longtail.join('\n')}\n\nLSI KEYWORDS:\n${lastKw.lsi.join(', ')}`;
+  }
+
+  document.getElementById('kw-copy-btn').addEventListener('click', () => { copyText(getKwText()); });
+  document.getElementById('kw-dl-btn').addEventListener('click', () => {
+    downloadTxt(getKwText(), `keywords-${Date.now()}.txt`);
+  });
+  document.getElementById('kw-regen-btn').addEventListener('click', () => { document.getElementById('kw-gen-btn').click(); });
+
+  // ---- THEME TOGGLE ----
+  document.getElementById('theme-btn').addEventListener('click', () => {
+    const isLight = document.documentElement.dataset.theme === 'light';
+    document.documentElement.dataset.theme = isLight ? 'dark' : 'light';
+    document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+  });
+
+  // Expose globals
+  window.copyText  = copyText;
+  window.showToast = showToast;
+  </script>
+
+  <!-- Global Floating Sidebar -->
+  <div class="global-floating-sidebar">
+    <div class="gfs-toggle">
+      <span>🧰</span>
+      <span class="gfs-text">Quick Tools</span>
+    </div>
+    <a href="../tools/seo-article-generator.html" class="gfs-link">
+      <span>📝</span><span class="gfs-text">SEO Generator</span>
+    </a>
+    <a href="../tools/tiktok-tools.html" class="gfs-link">
+      <span>🎵</span><span class="gfs-text">TikTok Suite</span>
+    </a>
+    <a href="../tools/youtube-suite.html" class="gfs-link">
+      <span>📺</span><span class="gfs-text">YouTube Suite</span>
+    </a>
+    <a href="../ecommerce.html" class="gfs-link">
+      <span>🛒</span><span class="gfs-text">Digital Product</span>
+    </a>
+  </div>
+
+<!-- Auth System (optional - no redirect for guests) -->
+<script src="../js/auth.js"></script>
+
+</body>
+</html>

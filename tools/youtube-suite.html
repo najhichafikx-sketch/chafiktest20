@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI AI AI Youtube Creator Suite — Generate thumbnails, transcripts, SEO, viral ideas, growth plans, and a complete video pack in seconds.">
+  <meta name="keywords" content="YouTube AI tools, YouTube SEO, channel analyzer, viral ideas, thumbnail downloader, transcript generator, Chafiktech Ai">
+  <title>AI AI AI Youtube Creator Suite — Chafiktech Ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* ============================
+       YouTube Suite — Page Styles
+       ============================ */
+
+    /* Page Hero */
+    .yt-hero {
+      padding: 140px 0 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .yt-hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(circle, rgba(255,0,80,0.12) 0%, rgba(168,85,247,0.08) 40%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .yt-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      background: rgba(255,0,80,0.08);
+      border: 1px solid rgba(255,0,80,0.25);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: #ff4b4b;
+      font-weight: 600;
+      margin-bottom: 24px;
+      letter-spacing: 0.03em;
+    }
+    .yt-badge .dot { width:8px; height:8px; background:#ff4b4b; border-radius:50%; animation: pulse-dot 1.8s infinite; }
+    .yt-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .yt-hero h1 .red { background: linear-gradient(135deg, #ff4b4b, #ff9500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .yt-hero p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 620px;
+      margin: 0 auto 48px;
+      line-height: 1.75;
+    }
+
+    /* Stats bar */
+    .yt-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .yt-stat { text-align: center; }
+    .yt-stat-val {
+      font-family: var(--font-display);
+      font-size: 1.9rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff4b4b, #ff9500);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .yt-stat-lbl { font-size: 0.8rem; color: var(--text-tertiary); margin-top: 4px; }
+
+    /* ---- Tools Dashboard Grid ---- */
+    .tools-dashboard {
+      padding: 24px 0 100px;
+    }
+    
+    @media(max-width: 1200px) { .tools-dashboard-grid { grid-template-columns: repeat(3, 1fr) !important; } }
+    @media(max-width: 900px) { .tools-dashboard-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+    @media(max-width: 600px) { .tools-dashboard-grid { grid-template-columns: 1fr !important; } }
+
+    .tools-dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    /* Tool Card */
+
+    .yt-tool-card {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.4)) !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-radius: 20px !important;
+      padding: 32px !important;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .yt-tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 20px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.8), rgba(168,85,247,0.8));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+      height: auto;
+    }
+    .yt-tool-card:hover {
+      transform: translateY(-6px) !important;
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7)) !important;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.15) !important;
+    }
+    
+    .yt-tool-card-icon {
+      width: 48px !important; height: 48px !important; border-radius: 12px !important;
+      background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      display: flex; align-items: center; justify-content: center; font-size: 24px !important;
+      margin-bottom: 24px !important; transition: transform 0.3s ease !important;
+    }
+    .yt-tool-card:hover .yt-tool-card-icon {
+      transform: scale(1.1) !important; background: rgba(99, 102, 241, 0.1) !important; border-color: rgba(99, 102, 241, 0.3) !important;
+    }
+    
+    .yt-open-btn {
+      background: transparent !important; color: #818cf8 !important; border: none !important; padding: 0 !important; font-weight: 500 !important; font-size: 0.95rem !important; display: flex !important; align-items: center; gap: 8px !important; cursor: pointer; transition: gap 0.3s ease !important; align-self: flex-start;
+    }
+    .yt-tool-card:hover .yt-open-btn { gap: 12px !important; color: #a5b4fc !important; background: transparent !important; border: none !important; transform: none !important;}
+
+    /* ===== MODAL ===== */
+    .yt-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(5,5,12,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 900;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; visibility: hidden;
+      transition: all 0.3s;
+    }
+    .yt-modal-overlay.active { opacity: 1; visibility: visible; }
+
+    .yt-modal {
+      background: #111118;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 760px;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 40px;
+      position: relative;
+      transform: scale(0.95) translateY(20px);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .yt-modal-overlay.active .yt-modal { transform: scale(1) translateY(0); }
+
+    .yt-modal::-webkit-scrollbar { width: 6px; }
+    .yt-modal::-webkit-scrollbar-track { background: transparent; }
+    .yt-modal::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+    .yt-modal-close {
+      position: absolute; top: 20px; right: 20px;
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+    .yt-modal-close:hover { background: rgba(255,80,80,0.15); color: #ff4b4b; }
+
+    .yt-modal-header {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .yt-modal-icon {
+      width: 60px; height: 60px;
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .yt-modal-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .yt-modal-header p { font-size: 0.875rem; color: var(--text-secondary); }
+
+    /* Input */
+    .yt-modal-input-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 10px;
+    }
+    .yt-modal-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      resize: none;
+      min-height: 56px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      margin-bottom: 18px;
+    }
+    .yt-modal-input:focus {
+      outline: none;
+      border-color: rgba(99,102,241,0.5);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+    .yt-modal-input::placeholder { color: var(--text-muted); }
+
+    /* Generate Button */
+    .yt-generate-btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      font-family: var(--font-display);
+      cursor: pointer;
+      border: none;
+      transition: all 0.25s;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .yt-generate-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99,102,241,0.5);
+    }
+    .yt-generate-btn:disabled {
+      opacity: 0.6; cursor: not-allowed;
+    }
+
+    /* Loading */
+    .yt-loading {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 40px 0;
+      text-align: center;
+    }
+    .yt-loading.active { display: flex; }
+
+    .yt-loading-ring {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.07);
+      border-top-color: var(--neon-purple);
+      border-right-color: var(--neon-cyan);
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .yt-loading-bar-track {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .yt-loading-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6366f1, #a855f7, #06b6d4);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .yt-loading-msg {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      min-height: 24px;
+      transition: opacity 0.3s;
+    }
+
+    /* Results */
+    .yt-results { display: none; }
+    .yt-results.active { display: block; }
+
+    .yt-results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .yt-results-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .yt-export-btns {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .yt-export-btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .yt-export-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+
+    /* Result sections accordion */
+    .yt-result-section {
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .yt-result-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.04);
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .yt-result-section-header:hover { background: rgba(255,255,255,0.07); }
+    .yt-result-section-header .key-name { color: var(--neon-purple); }
+    .yt-section-chevron { transition: transform 0.25s; font-size: 12px; }
+    .yt-result-section.collapsed .yt-section-chevron { transform: rotate(-90deg); }
+
+    .yt-result-section-body {
+      padding: 16px 18px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      background: rgba(0,0,0,0.2);
+      display: block;
+    }
+    .yt-result-section.collapsed .yt-result-section-body { display: none; }
+
+    .yt-result-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      margin-bottom: 8px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .yt-result-item:last-child { margin-bottom: 0; }
+    .yt-result-item-text { flex: 1; }
+    .yt-copy-item-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-tertiary);
+      font-size: 0.75rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .yt-copy-item-btn:hover { background: rgba(99,102,241,0.15); color: var(--neon-purple); border-color: rgba(99,102,241,0.3); }
+    .yt-result-text {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+    }
+
+    /* Thumbnail result */
+    .yt-thumb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .yt-thumb-item { border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+    .yt-thumb-item img { width: 100%; display: block; }
+    .yt-thumb-item-label { padding: 10px 12px; font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center; }
+    .yt-thumb-download-btn { font-size: 0.75rem; color: var(--neon-cyan); cursor: pointer; background: none; border: none; }
+    .yt-thumb-download-btn:hover { text-decoration: underline; }
+
+    /* Toast */
+    .yt-toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 9999;
+      background: #1a1a28;
+      border: 1px solid rgba(99,102,241,0.4);
+      border-radius: 12px;
+      padding: 13px 22px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      display: flex; align-items: center; gap: 10px;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .yt-toast.show { transform: translateY(0); opacity: 1; }
+    .yt-toast-icon { font-size: 18px; }
+
+    /* Section header for tools grid */
+    .yt-section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+      margin: 40px 0 16px;
+      padding-left: 4px;
+    }
+
+    /* Scrollbar for modal */
+    .yt-modal::-webkit-scrollbar { width: 5px; }
+  
+    /* Navbar Dropdown styling */
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: var(--bg2); min-width: 240px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 0; z-index: 1000; }
+    .nav-dropdown:hover .dropdown-content { display: flex; flex-direction: column; }
+    .dropdown-content a { color: var(--text); padding: 12px 20px; text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: background 0.2s, padding-left 0.2s; font-family: var(--font, sans-serif); }
+    .dropdown-content a:hover { background: var(--glass2, rgba(255,255,255,0.08)); padding-left: 24px; color: var(--indigo2, #818cf8); }
+
+  </style>
+</head>
+<body class="bg-mesh">
+
+  
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-inner">
+            <a href="../index.html" class="nav-logo">
+                <div class="nav-logo-icon">⚡</div>
+                Chafiktech Ai
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Home</a>
+                <div class="nav-dropdown">
+                    <a href="../index.html#tools" class="nav-link" style="cursor:pointer;">Tools ▾</a>
+                    <div class="dropdown-content">
+                        <a href="../tools/seo-article-generator.html">SEO Article Generator</a>
+                        <a href="../tools/video-to-prompt.html">Video to Prompt</a>
+                        <a href="../tools/tiktok-tools.html">AI Tiktok Creator Suite</a>
+                        <a href="../tools/prompt-viral.html">Prompt Viral</a>
+                        <a href="../tools/youtube-suite.html">YouTube Suite</a>
+                        <a href="../tools/ai-humanizer.html">AI Humanizer</a>
+                        <a href="../tools/digital-product-creator.html">Digital Product Creator</a>
+                        <a href="../tools/prompt-article.html">Article Prompt</a>
+                    </div>
+                </div>
+                <a href="../ecommerce.html" class="nav-link">Create Your Digital Product</a>
+                <a href="../pricing.html" class="nav-link">Pricing</a>
+                <a href="../about.html" class="nav-link">About</a>
+                <a href="../contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle theme-btn" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+                <a href="../login.html" class="btn btn-secondary btn-sm">Log In</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="../index.html" class="nav-link">Home</a>
+    <a href="../pricing.html" class="nav-link">Pricing</a>
+    <a href="../blog.html" class="nav-link">Blog</a>
+    <a href="../ecommerce.html" class="nav-link">Create Your Digital Product</a>
+    <a href="youtube-suite.html" class="nav-link">YouTube Suite</a>
+    <a href="../login.html" class="nav-link">Log In</a>
+    <a href="../register.html" class="nav-link">Sign Up</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="yt-hero">
+    <div class="container">
+      <div class="yt-badge">
+        <span class="dot"></span>
+        12 AI-Powered YouTube Tools
+      </div>
+      <h1>
+        AI YouTube<br>
+        <span class="red">Creator Suite</span>
+      </h1>
+      <p>Generate thumbnails, transcripts, SEO assets, viral ideas, growth plans, and complete video packs in seconds — powered by real AI.</p>
+      <div class="yt-stats">
+        <div class="yt-stat"><div class="yt-stat-val">12</div><div class="yt-stat-lbl">AI Tools</div></div>
+        <div class="yt-stat"><div class="yt-stat-val">5s</div><div class="yt-stat-lbl">Generation Speed</div></div>
+        <div class="yt-stat"><div class="yt-stat-val">100%</div><div class="yt-stat-lbl">Free to Try</div></div>
+        <div class="yt-stat"><div class="yt-stat-val">∞</div><div class="yt-stat-lbl">Ideas Generated</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tools Dashboard -->
+  <section class="tools-dashboard">
+    <div class="container">
+
+      <div class="yt-section-label">📥 Content Extraction</div>
+      <div class="tools-dashboard-grid" id="tools-grid-extract"></div>
+
+      <div class="yt-section-label">✍️ Content Generation</div>
+      <div class="tools-dashboard-grid" id="tools-grid-create"></div>
+
+      <div class="yt-section-label">📊 Analysis & Strategy</div>
+      <div class="tools-dashboard-grid" id="tools-grid-analyze"></div>
+
+      <div class="yt-section-label">🚀 Flagship Tool</div>
+      <div class="tools-dashboard-grid" id="tools-grid-flagship"></div>
+
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div class="yt-modal-overlay" id="yt-modal-overlay">
+    <div class="yt-modal" id="yt-modal">
+      
+      <div class="yt-modal-sidebar" id="yt-modal-sidebar">
+        <!-- populated by JS -->
+      </div>
+      <div class="yt-modal-content-area">
+        <button class="yt-modal-close" id="yt-modal-close" style="top:20px; right:20px; z-index:100;">✕</button>
+        <div class="yt-modal-header">
+        <div class="yt-modal-icon" id="modal-icon"></div>
+        <div>
+          <h2 id="modal-title">Tool Title</h2>
+          <p id="modal-desc">Tool description.</p>
+        </div>
+      </div>
+
+      <label class="yt-modal-input-label" id="modal-input-label">Input</label>
+      <textarea class="yt-modal-input" id="modal-input" rows="2" placeholder="Enter here..."></textarea>
+
+      <button class="yt-generate-btn" id="modal-generate-btn">
+        ⚡ Generate
+      </button>
+
+      <!-- Loading -->
+      <div class="yt-loading" id="yt-loading">
+        <div class="yt-loading-ring"></div>
+        <div style="width:100%">
+          <div class="yt-loading-bar-track"><div class="yt-loading-bar-fill" id="yt-loading-bar"></div></div>
+        </div>
+        <div class="yt-loading-msg" id="yt-loading-msg">Analyzing...</div>
+      </div>
+
+      <!-- Results -->
+      <div class="yt-results" id="yt-results">
+        <div class="yt-results-header">
+          <div class="yt-results-title">✨ Generated Results</div>
+          <div class="yt-export-btns">
+            <button class="yt-export-btn" id="btn-copy-all">📋 Copy All</button>
+            <button class="yt-export-btn" id="btn-export-txt">📄 TXT</button>
+            <button class="yt-export-btn" id="btn-export-json">{ } JSON</button>
+          </div>
+        </div>
+        <div id="yt-results-body"></div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="yt-toast" id="yt-toast">
+    <span class="yt-toast-icon">✅</span>
+    <span id="yt-toast-msg">Copied!</span>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/AdManager.js"></script>
+  <script src="../js/saas-ux.js"></script>
+  <script>
+  // ================================================================
+  //  AI AI AI Youtube Creator Suite — Client Logic
+  // ================================================================
+
+  const LOADING_MESSAGES = [
+    "🔍 Analyzing your input...",
+    "🤖 Consulting the AI...",
+    "📊 Processing data...",
+    "✍️ Generating results...",
+    "🎯 Finalizing output...",
+    "✅ Almost done..."
+  ];
+
+  // ---- Tool Definitions ----
+  const ALL_TOOLS = [
+    // --- Extraction ---
+    {
+      id: "thumbnail", group: "extract",
+      icon: "🖼️", iconBg: "rgba(6,182,212,0.12)", iconBorder: "rgba(6,182,212,0.25)",
+      accent: "linear-gradient(135deg,#06b6d4,#3b82f6)",
+      glow: "0 0 30px rgba(6,182,212,0.15)",
+      name: "Thumbnail Downloader",
+      desc: "Download Max-Res, HD & SD thumbnails from any YouTube video instantly.",
+      inputLabel: "YouTube Video URL",
+      placeholder: "https://www.youtube.com/watch?v=...",
+      btnText: "⬇️ Download Thumbnails",
+      generate: (input) => {
+        const match = input.match(/(?:v=|youtu\.be\/)([^&?#\s]+)/);
+        if (!match) return { error: "❌ Invalid YouTube URL. Please paste a valid YouTube link." };
+        const id = match[1];
+        return {
+          type: "thumbnails",
+          items: [
+            { label: "Max Resolution", url: `https://img.youtube.com/vi/${id}/maxresdefault.jpg` },
+            { label: "HD Default",     url: `https://img.youtube.com/vi/${id}/hqdefault.jpg` },
+            { label: "Medium Quality", url: `https://img.youtube.com/vi/${id}/mqdefault.jpg` },
+            { label: "Standard",       url: `https://img.youtube.com/vi/${id}/sddefault.jpg` }
+          ]
+        };
+      }
+    },
+    {
+      id: "transcript", group: "extract",
+      icon: "🎙️", iconBg: "rgba(168,85,247,0.12)", iconBorder: "rgba(168,85,247,0.25)",
+      accent: "linear-gradient(135deg,#8b5cf6,#a855f7)",
+      glow: "0 0 30px rgba(168,85,247,0.15)",
+      name: "Transcript Generator",
+      desc: "Extract transcripts, key summaries, quotes, and action items from any video.",
+      inputLabel: "Video Topic or YouTube URL",
+      placeholder: "https://youtube.com/watch?v=... or describe the video",
+      btnText: "🎙️ Generate Transcript",
+      generate: (input) => ({
+        "📄 Full Transcript": [
+          "Welcome back to the channel! Today we're diving deep into a topic that every creator needs to master...",
+          "The first thing you need to understand is the importance of consistency in your posting schedule.",
+          "Studies show that channels posting 3x per week see 47% higher subscriber growth compared to weekly publishers.",
+          "Now let's talk about the three frameworks that top YouTubers use to retain viewers past the 50% mark...",
+          "Hook, Story, Offer — this is the golden formula for every video you create.",
+          "Remember: your thumbnail and title are doing 80% of the work before anyone clicks play.",
+          "Let me show you exactly how to structure your next video using what we've covered today.",
+          "If you found this valuable, please subscribe and hit the notification bell. See you in the next one!"
+        ],
+        "📝 AI Summary": ["This video covers the essential strategies for YouTube channel growth, including posting consistency, viewer retention techniques, and the Hook-Story-Offer framework. The creator shares data-backed insights on optimal upload frequency and explains how thumbnails and titles account for the majority of a video's clickability."],
+        "💡 Key Points": [
+          "Channels posting 3x per week grow 47% faster than weekly posters",
+          "The Hook-Story-Offer framework is used by top YouTube creators",
+          "Thumbnails and titles account for 80% of a video's click-through potential",
+          "Viewer retention past 50% is a key signal to the YouTube algorithm",
+          "Consistency is more important than production quality for new channels"
+        ],
+        "💬 Best Quotes": [
+          '"Hook, Story, Offer — this is the golden formula for every video you create."',
+          '"Your thumbnail and title are doing 80% of the work before anyone clicks play."',
+          '"Consistency beats perfection every single time on YouTube."'
+        ],
+        "✅ Action Items": [
+          "Establish a 3x per week posting schedule",
+          "Redesign thumbnails using the 3-element formula (face, text, emotion)",
+          "Implement the Hook-Story-Offer structure in your next video",
+          "Analyze your YouTube Analytics for the 50% retention drop-off point"
+        ],
+        "🏷️ Topics Covered": ["YouTube Algorithm", "Channel Growth", "Content Strategy", "Viewer Retention", "Thumbnail Design", "Hook Writing"]
+      })
+    },
+
+    // --- Creation ---
+    {
+      id: "seo", group: "create",
+      icon: "🔍", iconBg: "rgba(99,102,241,0.12)", iconBorder: "rgba(99,102,241,0.25)",
+      accent: "linear-gradient(135deg,#6366f1,#8b5cf6)",
+      glow: "0 0 30px rgba(99,102,241,0.15)",
+      name: "SEO Video Generator",
+      desc: "Generate SEO-optimized titles, descriptions, tags, hashtags, and chapters.",
+      inputLabel: "Video Topic or Niche",
+      placeholder: "e.g. How to grow on YouTube in 2025 as a beginner",
+      btnText: "🔍 Generate SEO Pack",
+      generate: (input) => ({
+        "🏷️ Title Options (A/B Test These)": [
+          `${input} | The Complete 2025 Guide`,
+          `I Tried ${input} For 30 Days — Here's What Happened`,
+          `Stop Making These ${input} Mistakes (Do This Instead)`,
+          `The ONLY ${input} Tutorial You'll Ever Need`,
+          `How I Mastered ${input} in 7 Days (Step-by-Step)`
+        ],
+        "📝 SEO Description": [`🚀 In this video, we cover everything you need to know about ${input}.\n\n✅ What you'll learn:\n• The top strategies professionals use\n• Common mistakes beginners make\n• A proven step-by-step framework\n• Real examples and case studies\n\n⏱️ Timestamps:\n00:00 Introduction\n02:30 The Core Framework\n07:15 Step-by-Step Walkthrough\n14:40 Real Examples\n21:00 Advanced Tips\n26:30 Conclusion & Next Steps\n\n🔔 Subscribe for weekly videos on growing your YouTube channel!\n\n📌 Resources mentioned:\n• Link 1: https://example.com\n• Link 2: https://example.com\n\n#YouTube #${input.split(' ')[0]} #ContentCreator`],
+        "🔑 Primary Keywords": [
+          input, `best ${input}`, `${input} tutorial`, `${input} guide 2025`, `how to ${input}`, `${input} for beginners`, `${input} tips`
+        ],
+        "🏷️ Long-Tail Keywords": [
+          `how to ${input} as a beginner`, `${input} step by step`, `${input} complete guide`, `${input} mistakes to avoid`, `${input} best practices 2025`
+        ],
+        "#️⃣ Hashtags": [
+          `#${input.split(' ').join('')}`, "#YouTube", "#CreatorTips", "#YouTubeGrowth", "#ContentCreation", "#YoutubeStrategy", "#AITools"
+        ],
+        "📊 SEO Scores": [
+          "SEO Score: 94/100", "CTR Potential: High", "Competition Level: Medium", "Search Volume: Growing (+32% YoY)"
+        ]
+      })
+    },
+    {
+      id: "viral", group: "create",
+      icon: "⚡", iconBg: "rgba(245,158,11,0.12)", iconBorder: "rgba(245,158,11,0.25)",
+      accent: "linear-gradient(135deg,#f59e0b,#f97316)",
+      glow: "0 0 30px rgba(245,158,11,0.15)",
+      name: "Viral Idea Generator",
+      desc: "Generate 30 viral video ideas with hooks, difficulty scores, and estimated CTR.",
+      inputLabel: "Channel Niche",
+      placeholder: "e.g. Personal Finance, Fitness, Tech Reviews, Gaming",
+      btnText: "⚡ Generate Viral Ideas",
+      generate: (input) => ({
+        "🔥 High-Impact Ideas (Easy to Rank)": [
+          `I Tried Every ${input} Hack for 30 Days — Here's the Truth | Hook: "Day 1 nearly broke me..."`,
+          `10 ${input} Mistakes I Made So You Don't Have To | Hook: "I lost $10,000 before learning this..."`,
+          `The ${input} Blueprint Nobody Talks About | Hook: "I'm giving away the exact system I used..."`,
+          `${input} Tier List 2025: From S to F | Hook: "Be honest — you've made these mistakes too..."`,
+          `I Quit ${input} for 30 Days — This Happened | Hook: "The results shocked even me..."`,
+        ],
+        "📈 Trending Ideas (High Search Volume)": [
+          `${input} in 2025: What Actually Works vs What's Dead`,
+          `The ${input} AI Revolution — How to Stay Ahead`,
+          `Why Everyone's Wrong About ${input} (According to Data)`,
+          `${input} Expert vs Beginner — Who Wins?`,
+          `I Asked 100 ${input} Experts for Their #1 Tip`,
+        ],
+        "🎯 Evergreen Ideas (Long-Term Traffic)": [
+          `The Complete Beginner's Guide to ${input}`,
+          `${input} 101: Everything You Need to Know`,
+          `Best Free Tools for ${input} in 2025`,
+          `How to Get Started with ${input} with No Experience`,
+          `${input} vs Alternatives — The Honest Comparison`
+        ],
+        "💡 Controversy & Debate (High Engagement)": [
+          `Unpopular Opinion: ${input} Is Overrated`,
+          `The Dark Side of ${input} Nobody Discusses`,
+          `I Tried the Most Hated ${input} Approach — It Actually Worked`,
+          `Why Top ${input} Creators Are Secretly Struggling`
+        ],
+        "🚀 Series Ideas (Channel Growth)": [
+          `${input} Masterclass: Part 1 of 10`,
+          `Following ${input} Advice for a Week — Episode 1`,
+          `My ${input} Journey: Starting from Zero`
+        ]
+      })
+    },
+    {
+      id: "prompt", group: "create",
+      icon: "🎨", iconBg: "rgba(236,72,153,0.12)", iconBorder: "rgba(236,72,153,0.25)",
+      accent: "linear-gradient(135deg,#ec4899,#a855f7)",
+      glow: "0 0 30px rgba(236,72,153,0.15)",
+      name: "Thumbnail Prompt Generator",
+      desc: "Generate Midjourney, DALL·E and Flux prompts for viral YouTube thumbnails.",
+      inputLabel: "Video Topic",
+      placeholder: "e.g. How I made $10,000 with YouTube automation",
+      btnText: "🎨 Generate Prompts",
+      generate: (input) => ({
+        "🖼️ Midjourney Prompt": [`/imagine prompt: A hyperrealistic YouTube thumbnail showing a shocked content creator pointing at glowing text that reads "${input.toUpperCase().slice(0,20)}" — cinematic lighting, red and yellow color scheme, 4K ultra detailed, face showing emotion of amazement, dramatic composition, professional photography style, black background with neon accents --ar 16:9 --style raw --v 6`],
+        "🤖 DALL·E 3 Prompt": [`Create a YouTube thumbnail: Bold background with a dramatic gradient (deep red to orange). In the center, show a realistic person with an excited, surprised expression pointing to bold white text "${input.slice(0,25)}". Add sparkle effects and high contrast. Style: Professional, high energy, clickable.`],
+        "⚡ Flux / Stable Diffusion Prompt": [`(youtube thumbnail:1.3), (shocked person:1.2) pointing at bold text, (${input}:1.1), cinematic composition, dramatic lighting, red orange gradient background, ultra sharp, photorealistic face, (high CTR composition:1.2), vibrant colors, professional thumbnail design`],
+        "🎯 Design Tips": [
+          "Use contrasting colors (Red + Yellow = highest CTR on YouTube)",
+          "Show a human face with exaggerated emotion (surprise, excitement, or shock)",
+          "Keep text to 3-5 words maximum — use the biggest font possible",
+          "Leave breathing room — don't overcrowd the thumbnail",
+          "Test 2-3 variants with YouTube's thumbnail A/B testing tool"
+        ],
+        "🎨 Recommended Color Palettes": [
+          "🔥 High-Energy: #FF3B30 + #FF9500 + #FFFFFF",
+          "💎 Premium: #000000 + #6366F1 + #FFFFFF",
+          "🌟 Viral: #FFD700 + #FF4500 + #000000"
+        ]
+      })
+    },
+
+    // --- Analysis ---
+    {
+      id: "analyzer", group: "analyze",
+      icon: "📊", iconBg: "rgba(16,185,129,0.12)", iconBorder: "rgba(16,185,129,0.25)",
+      accent: "linear-gradient(135deg,#10b981,#06b6d4)",
+      glow: "0 0 30px rgba(16,185,129,0.15)",
+      name: "Channel Analyzer",
+      desc: "Analyze any YouTube channel's stats, growth rate, estimated earnings, and monetization likelihood.",
+      inputLabel: "YouTube Channel Name or URL",
+      placeholder: "e.g. MrBeast  or  https://youtube.com/@MrBeast",
+      btnText: "📊 Analyze Channel",
+      generate: (input) => {
+        const name = input.replace(/https?:\/\/(www\.)?youtube\.com\/@?/, '') || input;
+        return {
+          "📈 Channel Overview": [
+            `Channel: @${name}`, "Subscribers: 847K", "Total Views: 42.3M", "Total Videos: 312", "Avg Views/Video: 135,600"
+          ],
+          "💰 Estimated Earnings": [
+            "Monthly Ad Revenue: $4,200 – $12,800",
+            "Yearly Ad Revenue: $50,400 – $153,600",
+            "Estimated CPM: $3.5 – $7.2",
+            "Estimated RPM (after YouTube cut): $2.1 – $4.3"
+          ],
+          "✅ Monetization Status": [
+            "Likely Monetized ✓ (Meets YouTube Partner Program criteria)",
+            "Estimated Eligibility: Subscribers ✓ | Watch Hours ✓ | Policy ✓",
+            "Monetization Likelihood Score: 91/100"
+          ],
+          "📅 Growth Analysis": [
+            "Monthly Subscriber Growth: +12,400 (+1.5%)",
+            "Monthly View Growth: +920,000 (+2.2%)",
+            "Upload Frequency: ~4 videos/week",
+            "Growth Trend: 📈 Accelerating (vs previous 90 days)"
+          ],
+          "🎯 Content Strategy": [
+            "Top performing format: Long-form tutorials (>12 min)",
+            "Best upload day: Tuesday & Thursday",
+            "Peak engagement time: 2pm–6pm EST",
+            "Most viral video type: 'I Did X for Y Days' format"
+          ],
+          "💡 Recommendations": [
+            "Add YouTube Chapters to improve session watch time",
+            "A/B test thumbnails — current CTR estimated at 4.2% (industry avg: 3.8%)",
+            "Shorts strategy could accelerate subscriber growth by ~30%",
+            "Email list + community post engagement is low — activate both"
+          ]
+        };
+      }
+    },
+    {
+      id: "trend", group: "analyze",
+      icon: "📈", iconBg: "rgba(249,115,22,0.12)", iconBorder: "rgba(249,115,22,0.25)",
+      accent: "linear-gradient(135deg,#f97316,#ef4444)",
+      glow: "0 0 30px rgba(249,115,22,0.15)",
+      name: "Trend Finder",
+      desc: "Discover rising keywords, trending topics, and untapped content gaps in your niche.",
+      inputLabel: "Niche or Topic",
+      placeholder: "e.g. Digital Marketing, AI Tools, Home Workout",
+      btnText: "📈 Find Trends",
+      generate: (input) => ({
+        "🔥 Trending Keywords (Rising Fast)": [
+          `${input} 2025 — Search trend: +187% (30 days)`,
+          `best ${input} tools — Search trend: +94% (30 days)`,
+          `${input} for beginners — Search trend: +71% (30 days)`,
+          `${input} vs AI — Search trend: +215% (30 days)`,
+          `${input} automation — Search trend: +143% (30 days)`
+        ],
+        "💎 Low Competition, High Volume Keywords": [
+          `how to learn ${input} fast`,
+          `${input} secrets nobody talks about`,
+          `${input} mistakes beginners make`,
+          `is ${input} worth it in 2025`,
+          `${input} complete roadmap`
+        ],
+        "🎯 Untapped Content Gaps (Few Videos, High Demand)": [
+          `${input} for complete beginners (under 20 min)`,
+          `${input} side by side comparison 2025`,
+          `${input} with AI — what changed`,
+          `${input} in different countries — culture comparison`
+        ],
+        "📰 Trending Topics This Week": [
+          `AI's impact on ${input} in 2025`,
+          `${input} industry news: Major platform updates`,
+          `Viral ${input} challenges on YouTube Shorts`,
+          `Top ${input} creators reveal their strategies`
+        ],
+        "🚀 Predicted Future Trends (Next 90 Days)": [
+          `Short-form ${input} content will dominate`,
+          `AI-assisted ${input} tutorials will spike`,
+          `Community-driven ${input} challenges will trend`
+        ]
+      })
+    },
+    {
+      id: "competitor", group: "analyze",
+      icon: "🎯", iconBg: "rgba(239,68,68,0.12)", iconBorder: "rgba(239,68,68,0.25)",
+      accent: "linear-gradient(135deg,#ef4444,#f97316)",
+      glow: "0 0 30px rgba(239,68,68,0.15)",
+      name: "Competitor Analyzer",
+      desc: "Analyze why a competitor video is successful and how to beat it.",
+      inputLabel: "Competitor Video URL or Title",
+      placeholder: "https://youtube.com/watch?v=... or paste the video title",
+      btnText: "🎯 Analyze Competitor",
+      generate: (input) => ({
+        "🔍 Video Performance Analysis": [
+          "Estimated Views: 1.2M (Top 8% in niche)",
+          "Like Ratio: 97.3% (Exceptional)",
+          "Estimated Comments: 4,800",
+          "Share Rate: High (estimated 2.1% of viewers shared)"
+        ],
+        "🏆 Why This Video Went Viral": [
+          "Thumbnail uses HIGH-CONTRAST red/yellow color scheme (top 5% CTR triggers)",
+          "Title uses the 'I Did X For Y Days' formula — proven viral format",
+          "Hook answers the viewer's question within the first 8 seconds",
+          "Video length (14:23) is optimal for watch time + ad revenue",
+          "Posted on Tuesday at 3pm EST — peak YouTube traffic window"
+        ],
+        "💡 Weaknesses You Can Exploit": [
+          "No chapters or timestamps — viewers can't navigate easily",
+          "Description SEO is weak — missing long-tail keywords",
+          "Comments are not being replied to — low community engagement",
+          "No email capture or Patreon mentioned — monetization gap",
+          "No follow-up video planned — single traffic spike, no funnel"
+        ],
+        "🚀 How to Beat This Video": [
+          "Create a more comprehensive 'Part 2' that answers the top 10 comments",
+          "Use A/B thumbnail testing with 3 variants to optimize CTR",
+          "Add proper chapters and 20+ targeted tags for SEO",
+          "Engage with EVERY comment in the first 2 hours after posting",
+          "Build a video series to capture long-term viewers, not one-offs"
+        ],
+        "🎯 Your Winning Title Strategy": [
+          `I Watched This ${input.slice(0,20)} Video 50 Times — Here's What I Learned`,
+          `The ${input.slice(0,20)} Video EVERYONE Is Watching (And Why)`,
+          `Reacting to the Most Viral ${input.slice(0,15)} Video of 2025`
+        ]
+      })
+    },
+    {
+      id: "success", group: "analyze",
+      icon: "🏆", iconBg: "rgba(20,184,166,0.12)", iconBorder: "rgba(20,184,166,0.25)",
+      accent: "linear-gradient(135deg,#14b8a6,#06b6d4)",
+      glow: "0 0 30px rgba(20,184,166,0.15)",
+      name: "Success Predictor",
+      desc: "Calculate the success probability, CTR score, and virality potential of any video.",
+      inputLabel: "Proposed Video Title or Topic",
+      placeholder: "e.g. I Built a YouTube Channel in 30 Days With No Subscribers",
+      btnText: "🏆 Predict Success",
+      generate: (input) => ({
+        "🎯 Success Scores": [
+          "Overall Success Probability: 87/100 — 🟢 High",
+          "CTR Prediction: 7.2% (Industry Average: 3.8%)",
+          "Virality Score: 79/100 — Strong",
+          "SEO Ranking Potential: 91/100 — Excellent",
+          "Audience Retention Estimate: 58% average view duration"
+        ],
+        "✅ Strengths": [
+          "Title creates curiosity gap — reader NEEDS to know the answer",
+          "Numbers in title (30 Days, 0 Subscribers) increase CTR by 36%",
+          "First-person format builds authenticity and parasocial connection",
+          "High search intent — 'YouTube channel' gets 550K+ monthly searches",
+          "Story arc is clear: challenge → journey → result"
+        ],
+        "⚠️ Risks & Weaknesses": [
+          "Title is slightly long (>60 chars) — may get cut off on mobile",
+          "High competition in YouTube growth niche — needs strong thumbnail",
+          "Needs a powerful hook in the first 30 seconds to retain viewers"
+        ],
+        "💡 Optimization Suggestions": [
+          "Shorten to: 'I Built a YouTube Channel in 30 Days From Zero'",
+          "Add a shocking statistic in the thumbnail (e.g. '847 Subs in 30 Days')",
+          "Include chapters and a timestamp for the 'results reveal'",
+          "Film a reaction to the analytics — viewers love real data reveals"
+        ],
+        "🚀 Final Verdict": [
+          "This video has strong viral potential with the right thumbnail.",
+          "Recommended: Produce this video. Prioritize a high-emotion thumbnail.",
+          "Optimal upload time: Tuesday or Thursday, 2pm–4pm EST."
+        ]
+      })
+    },
+    {
+      id: "growth", group: "analyze",
+      icon: "📅", iconBg: "rgba(59,130,246,0.12)", iconBorder: "rgba(59,130,246,0.25)",
+      accent: "linear-gradient(135deg,#3b82f6,#6366f1)",
+      glow: "0 0 30px rgba(59,130,246,0.15)",
+      name: "Growth Planner",
+      desc: "Generate a customized 30-day channel growth plan with daily tasks and milestones.",
+      inputLabel: "Channel Niche",
+      placeholder: "e.g. Personal Finance for Millennials",
+      btnText: "📅 Generate Growth Plan",
+      generate: (input) => ({
+        "🎯 Week 1: Foundation (Days 1–7)": [
+          "Day 1: Conduct keyword research — find 50 low-competition topics",
+          "Day 2: Redesign your channel banner and profile picture",
+          "Day 3: Optimize your 'About' section with SEO keywords",
+          "Day 4: Create a content calendar for the next 30 days",
+          "Day 5: Film and upload your first optimized video",
+          "Day 6: Engage in 5 communities related to your niche",
+          "Day 7: Analyze your first video's analytics and adjust"
+        ],
+        "📈 Week 2: Content Acceleration (Days 8–14)": [
+          "Day 8: Upload video #2 — use A/B thumbnail test",
+          "Day 9: Create 3 YouTube Shorts from existing content",
+          "Day 10: Reach out to 3 similar-sized creators for collaborations",
+          "Day 11: Respond to every comment on your videos",
+          "Day 12: Post in 3 Reddit communities with helpful content",
+          "Day 13: Upload video #3 — target a trending keyword",
+          "Day 14: Week 2 review — identify your top performing content type"
+        ],
+        "🚀 Week 3: Audience Building (Days 15–21)": [
+          "Day 15: Launch a community post asking followers what they want to see",
+          "Day 16: Upload video #4 — answer your audience's top question",
+          "Day 17: Create a lead magnet (free guide) related to your niche",
+          "Day 18: Start collecting email subscribers with a pinned comment CTA",
+          "Day 19: Cross-promote on Twitter/X and LinkedIn",
+          "Day 20: Upload video #5 + 2 Shorts",
+          "Day 21: Record a 'behind the scenes' video"
+        ],
+        "💰 Week 4: Monetization Prep (Days 22–30)": [
+          "Day 22–23: Create a 'value bomb' video targeting your best keyword",
+          "Day 24: Research affiliate programs in your niche",
+          "Day 25: Mention an affiliate product naturally in your next video",
+          "Day 26: Upload video #7 — your most comprehensive guide yet",
+          "Day 27: Email your subscriber list for the first time",
+          "Day 28: Create a Notion or PDF template to sell as a digital product",
+          "Day 29: Compile a 30-day stats report",
+          "Day 30: Set 90-day goals based on what worked"
+        ],
+        "🎯 KPIs to Track": [
+          "Daily: Views, Watch Time, Subscriber Change",
+          "Weekly: CTR, Average View Duration, Top Traffic Sources",
+          "Monthly: Revenue, RPM, Brand Deal Inquiries"
+        ]
+      })
+    },
+    {
+      id: "monetization", group: "analyze",
+      icon: "💰", iconBg: "rgba(16,185,129,0.12)", iconBorder: "rgba(16,185,129,0.25)",
+      accent: "linear-gradient(135deg,#10b981,#06b6d4)",
+      glow: "0 0 30px rgba(16,185,129,0.15)",
+      name: "Monetization Planner",
+      desc: "Discover affiliate programs, digital products, and sponsorship opportunities for your niche.",
+      inputLabel: "Channel Niche or Topic",
+      placeholder: "e.g. Productivity, Tech Reviews, Cooking",
+      btnText: "💰 Generate Monetization Plan",
+      generate: (input) => ({
+        "💰 Ad Revenue Projection": [
+          "At 10K subs: $150–$400/month (CPM avg: $3–$8)",
+          "At 50K subs: $700–$2,000/month",
+          "At 100K subs: $1,500–$5,000/month",
+          "At 1M subs: $15,000–$60,000/month"
+        ],
+        "🔗 Top Affiliate Programs for Your Niche": [
+          `${input} Software Tools — Avg Commission: 20–40% recurring`,
+          `Amazon Associates — Avg Commission: 3–10%`,
+          `ClickBank Products (${input}) — Avg Commission: 30–75%`,
+          `Course Platforms (Teachable, Kajabi) — Avg Commission: 30%`,
+          `NordVPN / ExpressVPN — $40–$120 per conversion`
+        ],
+        "📦 Digital Products to Create": [
+          `${input} Masterclass (Video Course) — Potential: $97–$497/sale`,
+          `${input} Notion Template Pack — Potential: $7–$47/sale`,
+          `${input} eBook Guide — Potential: $9–$29/sale`,
+          `${input} Coaching / Consulting — Potential: $100–$500/hour`,
+          `${input} Community (Paid Discord/Circle) — Potential: $7–$47/month`
+        ],
+        "🤝 Sponsorship Strategy": [
+          "0–10K subs: Seek micro-sponsorships ($50–$500 per video)",
+          "10K–100K: Approach mid-tier brands directly ($500–$5,000/video)",
+          "100K+: Use Grapevine, Creator.co, or AspireIQ platforms",
+          "Niche relevance is more important than sub count for brands"
+        ],
+        "🚀 Quick Wins (Start This Week)": [
+          "Add affiliate links to your top 5 videos immediately",
+          "Create a simple free lead magnet → collect emails → sell later",
+          "Pitch 3 small brands in your niche for paid integrations",
+          "Pin a comment on every video with your affiliate or product link"
+        ]
+      })
+    },
+
+    // --- Flagship ---
+    {
+      id: "pack", group: "flagship",
+      icon: "🚀", iconBg: "rgba(99,102,241,0.15)", iconBorder: "rgba(99,102,241,0.35)",
+      accent: "linear-gradient(135deg,#6366f1,#a855f7,#ec4899)",
+      glow: "0 0 40px rgba(99,102,241,0.25)",
+      name: "🚀 AI Video Pack Generator",
+      desc: "The ultimate tool. Generate a complete video package: script, SEO, thumbnail prompts, social posts, email, and growth strategy — all in one click.",
+      inputLabel: "Video Topic",
+      placeholder: "e.g. How to build a $10K/month YouTube channel from scratch",
+      btnText: "🚀 Generate Complete Pack",
+      generate: (input) => ({
+        "🎬 Video Script (Full)": [
+          `[HOOK — First 30 Seconds]`,
+          `"What if I told you that ${input} is actually possible for anyone — even if you're starting from zero with no experience? In the next 15 minutes, I'm going to show you the exact framework I used to achieve this. Stay till the end, because the strategy I reveal at 12:30 is the one nobody else is talking about."`,
+          `[SECTION 1: The Problem]`,
+          `"Most people approach ${input} completely wrong. They focus on [common mistake] when the real key is [key insight]..."`,
+          `[SECTION 2: The Framework]`,
+          `"Here's the 3-step system that actually works: First, you need to [step 1]. Then, [step 2]. Finally, [step 3]."`,
+          `[SECTION 3: Proof & Examples]`,
+          `"Let me show you exactly what this looks like in action with a real example..."`,
+          `[CALL TO ACTION]`,
+          `"If you found this valuable, click subscribe right now — I post videos like this every week. And comment below: which step are you going to start with today?"`
+        ],
+        "🏷️ SEO Titles (Test These)": [
+          `${input} | The 2025 Complete Guide`,
+          `I Mastered ${input} — Here's My Exact System`,
+          `The TRUTH About ${input} Nobody Will Tell You`,
+          `How To ${input} From Scratch (Even Without Experience)`,
+          `Stop Failing at ${input} — Watch This`
+        ],
+        "📝 Video Description": [`🎬 In this video I reveal the complete strategy for ${input}.\n\n✅ What we cover:\n• Why most people fail at this\n• The 3-step framework that works\n• Real examples and proof\n• Step-by-step action plan\n\n⏱️ Chapters:\n00:00 Hook\n00:45 Why Most People Fail\n03:00 The 3-Step Framework\n09:30 Real Examples\n13:45 Your Action Plan\n16:00 Final Thoughts\n\n🔔 Subscribe for more videos!\n\n#YouTube #${input.replace(/\s+/g,'').slice(0,20)}`],
+        "🎨 Thumbnail Prompts": [
+          `Midjourney: /imagine cinematic YouTube thumbnail, shocked person pointing at "${input.slice(0,20).toUpperCase()}", red yellow gradient, 4K, high emotion --ar 16:9 --v 6`,
+          `DALL·E 3: Bold thumbnail with amazed face, dramatic lighting, text "${input.slice(0,15)}", professional design, high CTR style`
+        ],
+        "📱 Social Media Posts": [
+          `Twitter/X: 🔥 New video is LIVE! I just revealed my complete framework for ${input}. This is the video I wish existed when I started. Watch here 👇`,
+          `Instagram: 🎬 New YouTube video! Everything you need to know about ${input} — link in bio! Save this post if you want to watch later 📌`,
+          `LinkedIn: I just published a comprehensive guide on ${input} that breaks down the exact framework I use. Would love to hear your thoughts! [link]`
+        ],
+        "📧 Email Newsletter": [`Subject: I just released my best video yet 🎬\n\nHey [Name],\n\nI've been working on this one for a while and I'm really proud of how it turned out.\n\nToday's video covers: ${input}\n\nHere's what you'll learn:\n→ The #1 mistake people make\n→ My exact 3-step framework\n→ Real examples with proof\n\n👉 Watch here: [LINK]\n\nLet me know what you think — I read every reply.\n\n[Your Name]`],
+        "🚀 90-Day Growth Strategy": [
+          "Month 1: Publish 3 videos on the same topic cluster — signal authority to YouTube",
+          "Month 2: Create 6 Shorts from this video's content — multiply reach",
+          "Month 3: Launch a free lead magnet related to this topic — build your email list",
+          "Ongoing: Reply to every comment for the first 2 hours after publishing",
+          "Target: Use this video as a 'hub' and link to related 'spoke' videos"
+        ]
+      })
+    }
+  ];
+
+  // ---- Render Tools ----
+  function renderTools() {
+    const groups = { extract: [], create: [], analyze: [], flagship: [] };
+    ALL_TOOLS.forEach(t => (groups[t.group] || groups.analyze).push(t));
+
+    const render = (arr, containerId) => {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      el.innerHTML = arr.map(t => `
+        <div class="yt-tool-card" 
+          style="--card-accent:${t.accent}; --card-glow:${t.glow}; --card-icon-bg:${t.iconBg}; --card-icon-border:${t.iconBorder};"
+          data-tool-id="${t.id}">
+          <div class="yt-tool-card-icon">${t.icon}</div>
+          <h3>${t.name}</h3>
+          <p>${t.desc}</p>
+          <button class="yt-open-btn" data-tool-id="${t.id}">Open Tool →</button>
+        </div>
+      `).join('');
+    };
+
+    render(groups.extract,   'tools-grid-extract');
+    render(groups.create,    'tools-grid-create');
+    render(groups.analyze,   'tools-grid-analyze');
+    render(groups.flagship,  'tools-grid-flagship');
+  }
+
+  // ---- Modal Logic ----
+  let currentTool = null;
+  let lastResult = null;
+
+  
+  function openModal(toolId) {
+    currentTool = ALL_TOOLS.find(t => t.id === toolId);
+    if (!currentTool) return;
+    
+    document.getElementById('modal-icon').innerHTML = currentTool.icon;
+    document.getElementById('modal-icon').style.background = currentTool.iconBg;
+    document.getElementById('modal-icon').style.borderColor = currentTool.iconBorder;
+    document.getElementById('modal-title').textContent = currentTool.name;
+    document.getElementById('modal-desc').textContent = currentTool.desc;
+    document.getElementById('modal-input-label').textContent = currentTool.inputLabel;
+    document.getElementById('modal-input').placeholder = currentTool.placeholder;
+    document.getElementById('modal-generate-btn').innerHTML = currentTool.btnText;
+    document.getElementById('modal-input').value = '';
+
+    // Render Sidebar
+    const sidebar = document.getElementById('yt-modal-sidebar');
+    sidebar.innerHTML = '<div style="color:var(--text-tertiary); font-size:0.75rem; font-weight:700; padding:10px 12px; letter-spacing:0.1em; text-transform:uppercase;">Quick Switch</div>';
+    ALL_TOOLS.forEach(t => {
+      sidebar.innerHTML += `<button class="yt-ms-btn ${t.id === toolId ? 'active' : ''}" onclick="openModal('${t.id}')">${t.icon} ${t.name.split(' ')[0]} ${t.name.split(' ')[1] || ''}</button>`;
+    });
+
+    resetModal();
+    document.getElementById('yt-modal-overlay').classList.add('active');
+    setTimeout(() => document.getElementById('modal-input').focus(), 300);
+  }
+
+  function closeModal() {
+    document.getElementById('yt-modal-overlay').classList.remove('active');
+  }
+
+  function resetModal() {
+    document.getElementById('yt-results').classList.remove('active');
+    document.getElementById('yt-results-body').innerHTML = '';
+    document.getElementById('modal-generate-btn').disabled = false;
+    document.getElementById('modal-generate-btn').style.display = 'flex';
+    lastResult = null;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('yt-toast');
+    document.getElementById('yt-toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function renderResults(data) {
+    const body = document.getElementById('yt-results-body');
+    
+    if (data.error) {
+      body.innerHTML = `<div style="padding:20px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:12px;color:#f87171;font-weight:500;">${data.error}</div>`;
+      return;
+    }
+
+    if (data.type === 'thumbnails') {
+      body.innerHTML = `<div class="yt-thumb-grid">
+        ${data.items.map(item => `
+          <div class="yt-thumb-item">
+            <img src="${item.url}" alt="${item.label}" loading="lazy" onerror="this.src='https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg'">
+            <div class="yt-thumb-item-label">
+              <span>${item.label}</span>
+              <a href="${item.url}" download class="yt-thumb-download-btn" target="_blank">⬇ Download</a>
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+      lastResult = data;
+      return;
+    }
+
+    lastResult = data;
+
+    if (typeof data === 'object' && !Array.isArray(data)) {
+      body.innerHTML = Object.entries(data).map(([key, val]) => {
+        const isArray = Array.isArray(val);
+        const items = isArray ? val : [val];
+        return `
+          <div class="yt-result-section">
+            <div class="yt-result-section-header" onclick="toggleSection(this)">
+              <span class="key-name">${key}</span>
+              <span class="yt-section-chevron">▾</span>
+            </div>
+            <div class="yt-result-section-body">
+              ${items.map(item => `
+                <div class="yt-result-item">
+                  <span class="yt-result-item-text">${item}</span>
+                  <button class="yt-copy-item-btn" onclick="copyText('${item.replace(/'/g,"&#39;")}')">Copy</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  function toggleSection(header) {
+    header.parentElement.classList.toggle('collapsed');
+  }
+
+  function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => showToast("Copied!"));
+  }
+
+  // ---- Generate ----
+  function startGenerate() {
+    const inputEl = document.getElementById('modal-input');
+    const input = inputEl.value.trim();
+    if (!input || !currentTool) return;
+
+    const btn = document.getElementById('modal-generate-btn');
+    document.getElementById('yt-results').classList.remove('active');
+    document.getElementById('yt-results-body').innerHTML = '';
+
+    const prompt = `Generate youtube content for ${currentTool.name}. Input: ${input}. Return the output as HTML using <div class="yt-result-section"> with a header and body containing <div class="yt-result-item"> items.`;
+
+    window.executeSaaSAction(btn, currentTool.id, inputEl, function(html, source) {
+      if (source === 'mock') {
+        const mockResult = currentTool.generate(input);
+        renderResults(mockResult);
+      } else {
+        document.getElementById('yt-results-body').innerHTML = html;
+      }
+      document.getElementById('yt-results').classList.add('active');
+    }, prompt);
+  }
+
+  // ---- Export ----
+  document.getElementById('btn-copy-all').addEventListener('click', () => {
+    if (!lastResult) return;
+    let text = '';
+    if (typeof lastResult === 'object' && !Array.isArray(lastResult)) {
+      Object.entries(lastResult).forEach(([k, v]) => {
+        text += `\n${k}\n${'─'.repeat(40)}\n`;
+        const items = Array.isArray(v) ? v : [v];
+        text += items.join('\n') + '\n';
+      });
+    }
+    navigator.clipboard.writeText(text.trim()).then(() => showToast("All results copied!"));
+  });
+
+  document.getElementById('btn-export-txt').addEventListener('click', () => {
+    if (!lastResult) return;
+    let text = `${currentTool.name}\n${'='.repeat(currentTool.name.length)}\n\n`;
+    if (typeof lastResult === 'object' && !Array.isArray(lastResult)) {
+      Object.entries(lastResult).forEach(([k, v]) => {
+        text += `${k}\n${'─'.repeat(40)}\n`;
+        const items = Array.isArray(v) ? v : [v];
+        text += items.join('\n') + '\n\n';
+      });
+    }
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${currentTool.id}-result.txt`;
+    a.click();
+    showToast("TXT file downloaded!");
+  });
+
+  document.getElementById('btn-export-json').addEventListener('click', () => {
+    if (!lastResult) return;
+    const blob = new Blob([JSON.stringify(lastResult, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${currentTool.id}-result.json`;
+    a.click();
+    showToast("JSON file downloaded!");
+  });
+
+  // ---- Event Listeners ----
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-tool-id]');
+    if (btn) openModal(btn.dataset.toolId);
+  });
+
+  document.getElementById('yt-modal-close').addEventListener('click', closeModal);
+  document.getElementById('yt-modal-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('yt-modal-overlay')) closeModal();
+  });
+
+  document.getElementById('modal-generate-btn').addEventListener('click', startGenerate);
+  document.getElementById('modal-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); startGenerate(); }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // ---- Init ----
+  renderTools();
+  </script>
+
+  <!-- Global Floating Sidebar -->
+  <div class="global-floating-sidebar">
+    <div class="gfs-toggle">
+      <span>🧰</span>
+      <span class="gfs-text">Quick Tools</span>
+    </div>
+    <a href="../tools/seo-article-generator.html" class="gfs-link">
+      <span>📝</span><span class="gfs-text">SEO Generator</span>
+    </a>
+    <a href="../tools/tiktok-tools.html" class="gfs-link">
+      <span>🎵</span><span class="gfs-text">TikTok Suite</span>
+    </a>
+    <a href="../tools/youtube-suite.html" class="gfs-link">
+      <span>📺</span><span class="gfs-text">YouTube Suite</span>
+    </a>
+    <a href="../ecommerce.html" class="gfs-link">
+      <span>🛒</span><span class="gfs-text">Digital Product</span>
+    </a>
+  </div>
+
+<!-- Auth System (optional - no redirect for guests) -->
+<script src="../js/auth.js"></script>
+
+</body>
+</html>

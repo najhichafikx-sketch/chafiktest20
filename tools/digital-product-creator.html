@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Product Creator | Chafiktech Ai</title>
+  <meta name="description" content="Enter one idea, get complete product packs ready to sell on 4 platforms.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Global CSS -->
+  <link rel="stylesheet" href="../css/style.css">
+  
+  <style>
+    body {
+      background-color: #0b0f19; /* Very dark blue matching the screenshot */
+      color: #f8fafc;
+    }
+    
+    .bg-mesh { background: none; } /* Override default mesh for this specific tool */
+
+    .creator-header {
+      text-align: center;
+      padding: 120px 20px 40px;
+    }
+    
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 99px;
+      color: #818cf8;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .creator-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    .creator-subtitle {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Main Card */
+    .creator-card {
+      max-width: 900px;
+      margin: 0 auto 40px;
+      background: #111524; /* Dark blue/gray */
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .input-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #e2e8f0;
+      margin-bottom: 16px;
+    }
+
+    .input-label .asterisk {
+      color: #ef4444;
+    }
+
+    .creator-textarea {
+      width: 100%;
+      background: #0b0f19;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      color: #f8fafc;
+      font-size: 1rem;
+      min-height: 120px;
+      resize: vertical;
+      margin-bottom: 32px;
+      transition: all 0.3s;
+    }
+
+    .creator-textarea:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+    
+    .creator-textarea::placeholder {
+      color: #475569;
+    }
+
+    .section-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+
+    /* Platform Badges */
+    .platforms-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 768px) {
+      .platforms-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .platform-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 12px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .platform-badge.etsy { background: linear-gradient(135deg, #f97316, #f43f5e); }
+    .platform-badge.gumroad { background: linear-gradient(135deg, #d946ef, #a855f7); }
+    .platform-badge.amazon { background: linear-gradient(135deg, #eab308, #f97316); }
+    .platform-badge.pinterest { background: linear-gradient(135deg, #ef4444, #be123c); }
+
+    .platform-badge:hover { filter: brightness(1.1); transform: translateY(-2px); }
+    
+    .platform-badge:not(.active) {
+      background: #1e293b;
+      color: #64748b;
+      border: 2px solid rgba(255, 255, 255, 0.05);
+      filter: none;
+    }
+
+    /* Advanced Options */
+    .advanced-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #94a3b8;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-bottom: 32px;
+      transition: color 0.2s;
+    }
+    .advanced-trigger:hover { color: #e2e8f0; }
+
+    /* Generate Button */
+    .btn-generate {
+      width: 100%;
+      background: #334155; /* Disabled state */
+      color: #94a3b8;
+      border: none;
+      padding: 18px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: not-allowed;
+      transition: all 0.3s;
+    }
+
+    .btn-generate.ready {
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      cursor: pointer;
+    }
+    
+    .btn-generate.ready:hover {
+      background: rgba(99, 102, 241, 0.25);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.9rem;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Results Section */
+    .results-container {
+      display: none;
+      max-width: 1400px;
+      margin: 0 auto 80px;
+      padding: 0 20px;
+    }
+
+    .results-header-text {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: white;
+    }
+
+    .result-block {
+      background: #0b0f19;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .rb-header {
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .rb-header.etsy { background: #f97316; }
+    .rb-header.gumroad { background: #d946ef; }
+    .rb-header.amazon { background: #eab308; }
+    .rb-header.pinterest { background: #ef4444; }
+
+    .rb-header .copy-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .rb-header .copy-btn:hover { background: rgba(255,255,255,0.3); }
+
+    .rb-content {
+      padding: 32px;
+      background: #111524;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .field-group {
+      background: #0b0f19;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .field-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .field-value {
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      font-family: var(--font-sans);
+    }
+    
+    .field-copy {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: #1e293b;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #94a3b8;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .field-copy:hover { color: white; background: #334155; }
+
+    /* Tags styling */
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .tag {
+      background: #1e293b;
+      color: #94a3b8;
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 0.85rem;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* Loader */
+    .loader {
+      display: none;
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(99, 102, 241, 0.2);
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 40px auto;
+    }
+
+  
+    /* Navbar Dropdown styling */
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: var(--bg2); min-width: 240px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 0; z-index: 1000; }
+    .nav-dropdown:hover .dropdown-content { display: flex; flex-direction: column; }
+    .dropdown-content a { color: var(--text); padding: 12px 20px; text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: background 0.2s, padding-left 0.2s; font-family: var(--font, sans-serif); }
+    .dropdown-content a:hover { background: var(--glass2, rgba(255,255,255,0.08)); padding-left: 24px; color: var(--indigo2, #818cf8); }
+
+  </style>
+</head>
+<body class="bg-mesh">
+
+  
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-inner">
+            <a href="../index.html" class="nav-logo">
+                <div class="nav-logo-icon">⚡</div>
+                Chafiktech Ai
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Home</a>
+                <div class="nav-dropdown">
+                    <a href="../index.html#tools" class="nav-link" style="cursor:pointer;">Tools ▾</a>
+                    <div class="dropdown-content">
+                        <a href="../tools/seo-article-generator.html">SEO Article Generator</a>
+                        <a href="../tools/video-to-prompt.html">Video to Prompt</a>
+                        <a href="../tools/tiktok-tools.html">AI Tiktok Creator Suite</a>
+                        <a href="../tools/prompt-viral.html">Prompt Viral</a>
+                        <a href="../tools/youtube-suite.html">YouTube Suite</a>
+                        <a href="../tools/ai-humanizer.html">AI Humanizer</a>
+                        <a href="../tools/digital-product-creator.html">Digital Product Creator</a>
+                        <a href="../tools/prompt-article.html">Article Prompt</a>
+                    </div>
+                </div>
+                <a href="../ecommerce.html" class="nav-link">Create Your Digital Product</a>
+                <a href="../pricing.html" class="nav-link">Pricing</a>
+                <a href="../about.html" class="nav-link">About</a>
+                <a href="../contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle theme-btn" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+                <a href="../login.html" class="btn btn-secondary btn-sm">Log In</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+
+  <!-- Creator Header -->
+  <div class="creator-header reveal">
+    <div class="ai-badge">âœ¨ AI-Powered</div>
+    <h1 class="creator-title">Create Your Digital Product</h1>
+    <p class="creator-subtitle">Enter one idea, get complete product packs ready to sell on 4 platforms.</p>
+  </div>
+
+  <!-- Input Section -->
+  <div class="container reveal reveal-delay-1">
+    <div class="creator-card">
+      
+      <div class="input-label">
+        💡 Product Idea <span class="asterisk">*</span>
+      </div>
+      
+      <textarea id="ideaInput" class="creator-textarea" placeholder="e.g., kids funny animal coloring book, budget planner for students, yoga workout calendar..."></textarea>
+      
+      <div class="section-label">GENERATE FOR PLATFORMS</div>
+      
+      <div class="platforms-grid">
+        <div class="platform-badge etsy active" onclick="this.classList.toggle('active')">
+          <span>📌§¶</span> Etsy
+        </div>
+        <div class="platform-badge gumroad active" onclick="this.classList.toggle('active')">
+          <span>🛒</span> Gumroad
+        </div>
+        <div class="platform-badge amazon active" onclick="this.classList.toggle('active')">
+          <span>📚</span> Amazon KDP
+        </div>
+        <div class="platform-badge pinterest active" onclick="this.classList.toggle('active')">
+          <span>📝Œ</span> Pinterest
+        </div>
+      </div>
+      
+      <div class="advanced-trigger">
+        ⚙️ Advanced options (niche, audience)
+      </div>
+      
+      <button id="generateBtn" class="btn-generate">
+        âœ¨ Generate Product Pack
+      </button>
+      
+    </div>
+    
+    <p class="footer-note reveal reveal-delay-2">
+      Get SEO-optimized Etsy listings, Gumroad sales pages, Amazon KDP descriptions, and Pinterest marketing — all from one idea.
+    </p>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loader" id="loader"></div>
+
+  <!-- Results Section -->
+  <div class="results-container" id="resultsContainer">
+    <h2 class="results-header-text">Product Pack Ready <span style="font-size: 0.9rem; color: #64748b; font-weight: 400; margin-left: 12px;">Generated in 4.2s</span></h2>
+    
+    <!-- Etsy Block -->
+    <div class="result-block reveal">
+      <div class="rb-header etsy">
+        <div>📌§¶ Etsy Listing</div>
+        <button class="copy-btn">📝‹ Copy All</button>
+      </div>
+      <div class="rb-content">
+        <div class="field-group">
+          <div class="field-label">SEO Title (Max 140 chars)</div>
+          <div class="field-value" id="e-title">Kids Funny Animal Coloring Book | Toddler Activity Pages | Printable PDF Download | Educational Animal Art | Preschool Learning Resource</div>
+          <button class="field-copy" onclick="copyText('e-title')">Copy</button>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Description</div>
+          <div class="field-value" id="e-desc">
+            Keep your little ones entertained for hours with this hilarious Funny Animal Coloring Book! Perfect for toddlers and preschoolers, this printable PDF contains 30 unique, high-quality illustrations of animals in silly situations.<br><br>
+            🌐Ÿ WHAT YOU GET 🌐Ÿ<br>
+            "¢ 1 PDF file containing 30 coloring pages<br>
+            "¢ Size: 8.5" x 11" (US Letter)<br>
+            "¢ High-resolution images (300 DPI) for crisp printing<br><br>
+            📝¥ INSTANT DOWNLOAD<br>
+            This is a digital product. No physical item will be shipped. Print as many copies as you need for personal use!
+          </div>
+          <button class="field-copy" onclick="copyText('e-desc')">Copy</button>
+        </div>
+        <div class="field-group">
+          <div class="field-label">13 Tags (Comma separated)</div>
+          <div class="tags-container">
+            <span class="tag">coloring book kids</span>
+            <span class="tag">animal coloring</span>
+            <span class="tag">printable activity</span>
+            <span class="tag">toddler craft</span>
+            <span class="tag">preschool learning</span>
+            <span class="tag">funny animals</span>
+            <span class="tag">digital download</span>
+            <span class="tag">homeschool resource</span>
+            <span class="tag">kids art</span>
+            <span class="tag">pdf coloring pages</span>
+            <span class="tag">nursery printable</span>
+            <span class="tag">kindergarten prep</span>
+            <span class="tag">activity book</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gumroad Block -->
+    <div class="result-block reveal">
+      <div class="rb-header gumroad">
+        <div>🛒 Gumroad Sales Page</div>
+        <button class="copy-btn">📝‹ Copy All</button>
+      </div>
+      <div class="rb-content">
+        <div class="field-group">
+          <div class="field-label">Product Name</div>
+          <div class="field-value" id="g-title">The Silly Safari: 30 Printable Coloring Pages for Kids</div>
+          <button class="field-copy" onclick="copyText('g-title')">Copy</button>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Sales Copy / Description</div>
+          <div class="field-value" id="g-desc">
+            Looking for a fun, screen-free activity that will make your kids giggle while developing their fine motor skills?<br><br>
+            Introducing <strong>The Silly Safari Coloring Book!</strong> 📌¦📌Ž¨<br><br>
+            This isn't your average animal coloring book. We've packed 30 pages of animals doing ridiculous things: a monkey wearing sunglasses, an elephant riding a skateboard, and a giraffe trying to hide behind a tiny bush.<br><br>
+            <strong>Why parents love it:</strong><br>
+            ✅ Print instantly at home<br>
+            ✅ Unlimited printing for siblings or re-dos<br>
+            ✅ Screen-free entertainment for rainy days or road trips<br><br>
+            Get your instant PDF download now and let the creativity flow!
+          </div>
+          <button class="field-copy" onclick="copyText('g-desc')">Copy</button>
+        </div>
+        <div class="field-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; background: transparent; padding: 0; border: none;">
+          <div class="field-group" style="margin: 0;">
+            <div class="field-label">Suggested Pricing</div>
+            <div class="field-value" style="font-size: 1.25rem; font-weight: 700;">$3.99 - $5.99</div>
+          </div>
+          <div class="field-group" style="margin: 0;">
+            <div class="field-label">Call to Action Button</div>
+            <div class="field-value" style="font-weight: 600;">I want this! 📌Ž¨</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Amazon KDP Block -->
+    <div class="result-block reveal">
+      <div class="rb-header amazon">
+        <div>📚 Amazon KDP</div>
+        <button class="copy-btn">📝‹ Copy All</button>
+      </div>
+      <div class="rb-content">
+        <div class="field-group">
+          <div class="field-label">Book Title</div>
+          <div class="field-value" id="a-title">Funny Animal Coloring Book for Kids</div>
+          <button class="field-copy" onclick="copyText('a-title')">Copy</button>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Subtitle</div>
+          <div class="field-value" id="a-sub">30 Hilarious Animals in Silly Situations | Activity Book for Toddlers, Preschoolers, and Kids Ages 3-8</div>
+          <button class="field-copy" onclick="copyText('a-sub')">Copy</button>
+        </div>
+        <div class="field-group">
+          <div class="field-label">HTML Description</div>
+          <div class="field-value" id="a-desc">
+            &lt;h2&gt;Unleash Your Child's Creativity with Lots of Laughs!&lt;/h2&gt;<br>
+            &lt;p&gt;Does your child love animals? Do they love to color? &lt;b&gt;The Funny Animal Coloring Book&lt;/b&gt; combines both into hours of screen-free entertainment!&lt;/p&gt;<br>
+            &lt;p&gt;Inside this book, you'll find 30 unique, hand-drawn illustrations of animals doing the silliest things. From a skateboarding rhino to a panda eating pizza, these pages are guaranteed to bring a smile to your little one's face.&lt;/p&gt;<br>
+            &lt;h3&gt;Why this book is special:&lt;/h3&gt;<br>
+            &lt;ul&gt;<br>
+            &lt;li&gt;&lt;b&gt;Single-Sided Pages:&lt;/b&gt; Every image is placed on its own black-backed page to reduce the bleed-through problem found in other coloring books.&lt;/li&gt;<br>
+            &lt;li&gt;&lt;b&gt;Large Format:&lt;/b&gt; 8.5" x 11" size provides plenty of space for little hands.&lt;/li&gt;<br>
+            &lt;li&gt;&lt;b&gt;Age-Appropriate:&lt;/b&gt; Perfect for toddlers, preschoolers, and kids ages 3 to 8.&lt;/li&gt;<br>
+            &lt;/ul&gt;<br>
+            &lt;p&gt;Scroll up and click &lt;b&gt;'Buy Now'&lt;/b&gt; to grab your copy today!&lt;/p&gt;
+          </div>
+          <button class="field-copy" onclick="copyText('a-desc')">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pinterest Block -->
+    <div class="result-block reveal">
+      <div class="rb-header pinterest">
+        <div>📝Œ Pinterest Marketing</div>
+        <button class="copy-btn">📝‹ Copy All</button>
+      </div>
+      <div class="rb-content">
+        <div class="field-group">
+          <div class="field-label">Pin Title</div>
+          <div class="field-value" id="p-title">Printable Funny Animal Coloring Pages for Kids 📌Ž¨</div>
+          <button class="field-copy" onclick="copyText('p-title')">Copy</button>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Pin Description</div>
+          <div class="field-value" id="p-desc">Looking for fun, screen-free activities for your kids? Grab this printable Funny Animal Coloring Book! 📌¦ Featuring 30 hilarious animal pages perfect for toddlers and preschoolers. Easy instant PDF download to print at home! #KidsActivities #PrintablesForKids #ColoringPages</div>
+          <button class="field-copy" onclick="copyText('p-desc')">Copy</button>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Hashtags</div>
+          <div class="field-value" id="p-tags">#KidsCrafts #ToddlerActivities #ColoringBook #Printables #HomeschoolMom #MomHack #KidsArt</div>
+          <button class="field-copy" onclick="copyText('p-tags')">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/AdManager.js"></script>
+  <script src="../js/saas-ux.js"></script>
+  <script>
+    // Handle Input & Button State
+    const input = document.getElementById('ideaInput');
+    const btn = document.getElementById('generateBtn');
+    
+    input.addEventListener('input', () => {
+      if (input.value.trim().length > 5) {
+        btn.classList.add('ready');
+      } else {
+        btn.classList.remove('ready');
+      }
+    });
+
+    // Handle Generate Click
+    btn.addEventListener('click', () => {
+      if (!btn.classList.contains('ready')) return;
+      
+      // Update button state
+      btn.innerHTML = '<span style="display:inline-block; animation: spin 1s linear infinite;">⚙️</span> Generating Magic...';
+      btn.style.pointerEvents = 'none';
+      
+      // Hide results if already showing
+      document.getElementById('resultsContainer').style.display = 'none';
+      
+      // Show loader
+      const loader = document.getElementById('loader');
+      loader.style.display = 'block';
+      
+      // Scroll to loader
+      loader.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Simulate API call
+      setTimeout(() => {
+        loader.style.display = 'none';
+        btn.innerHTML = 'âœ¨ Generate Product Pack';
+        btn.style.pointerEvents = 'auto';
+        
+        // Show results
+        const results = document.getElementById('resultsContainer');
+        results.style.display = 'block';
+        
+        // Scroll to results
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Trigger reveals in results
+        document.querySelectorAll('.results-container .reveal').forEach((el, index) => {
+          setTimeout(() => {
+            el.classList.add('active');
+          }, index * 100);
+        });
+        
+      }, 2500);
+    });
+
+    // Simple Copy Function
+    function copyText(elementId) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied!';
+        btn.style.background = '#6366f1';
+        btn.style.color = 'white';
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.background = '';
+          btn.style.color = '';
+        }, 2000);
+      });
+    }
+  </script>
+
+  <!-- Global Floating Sidebar -->
+  <div class="global-floating-sidebar">
+    <div class="gfs-toggle">
+      <span>🧰</span>
+      <span class="gfs-text">Quick Tools</span>
+    </div>
+    <a href="../tools/seo-article-generator.html" class="gfs-link">
+      <span>📝</span><span class="gfs-text">SEO Generator</span>
+    </a>
+    <a href="../tools/tiktok-tools.html" class="gfs-link">
+      <span>🎵</span><span class="gfs-text">TikTok Suite</span>
+    </a>
+    <a href="../tools/youtube-suite.html" class="gfs-link">
+      <span>📺</span><span class="gfs-text">YouTube Suite</span>
+    </a>
+    <a href="../ecommerce.html" class="gfs-link">
+      <span>🛒</span><span class="gfs-text">Digital Product</span>
+    </a>
+  </div>
+
+<!-- Auth System (optional - no redirect for guests) -->
+<script src="../js/auth.js"></script>
+
+</body>
+</html>
+

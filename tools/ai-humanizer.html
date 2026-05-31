@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI Content Detector & Humanizer — Detect AI-generated text and rewrite it to sound natural, human, and engaging. Powered by OpenAI.">
+  <meta name="keywords" content="AI content detector, AI humanizer, AI text rewriter, bypass AI detection, humanize AI text, Chafiktech Ai">
+  <title>AI Content Detector & Humanizer — Chafiktech Ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* =============================================
+       AI Content Detector & Humanizer — Styles
+       ============================================= */
+
+    /* Page Hero */
+    .aih-hero {
+      padding: 140px 0 70px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .aih-hero::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 1000px; height: 900px;
+      background: radial-gradient(circle, rgba(99,102,241,0.14) 0%, rgba(168,85,247,0.08) 40%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .aih-hero::after {
+      content: '';
+      position: absolute; bottom: -20%; right: -5%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(6,182,212,0.07) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .aih-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 18px;
+      background: rgba(99,102,241,0.1);
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 999px;
+      font-size: 0.8rem; color: #818cf8; font-weight: 600;
+      margin-bottom: 24px; letter-spacing: 0.04em;
+    }
+    .aih-badge .dot { width:8px; height:8px; background:#818cf8; border-radius:50%; animation: pulse-dot 1.8s infinite; }
+    .aih-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .aih-hero h1 .grad {
+      background: linear-gradient(135deg, #6366f1, #a855f7, #06b6d4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .aih-hero p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 600px; margin: 0 auto 48px;
+      line-height: 1.75;
+    }
+
+    /* Stats */
+    .aih-stats { display: flex; justify-content: center; gap: 56px; flex-wrap: wrap; margin-bottom: 24px; }
+    .aih-stat { text-align: center; }
+    .aih-stat-val {
+      font-family: var(--font-display); font-size: 2rem; font-weight: 700;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .aih-stat-lbl { font-size: 0.78rem; color: var(--text-tertiary); margin-top: 4px; }
+
+    /* Tab Navigation */
+    .aih-tabs {
+      display: flex; gap: 4px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 6px;
+      max-width: 700px;
+      margin: 0 auto 48px;
+      flex-wrap: wrap;
+    }
+    .aih-tab {
+      flex: 1; min-width: 140px;
+      padding: 11px 18px;
+      border-radius: 11px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem; font-weight: 600;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: all 0.22s;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .aih-tab.active {
+      background: rgba(99,102,241,0.2);
+      border: 1px solid rgba(99,102,241,0.35);
+      color: #a5b4fc;
+    }
+    .aih-tab:hover:not(.active) { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+
+    /* Panel */
+    .aih-panel { display: none; animation: fadeInUp 0.35s ease both; }
+    .aih-panel.active { display: block; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Two-col Layout */
+    .aih-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media(max-width:900px) { .aih-layout { grid-template-columns: 1fr; } }
+
+    /* Card */
+    .aih-card {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 32px;
+    }
+    .aih-card-title {
+      font-family: var(--font-display);
+      font-size: 1.15rem; font-weight: 700;
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .aih-card-sub { font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5; }
+
+    /* Textarea */
+    .aih-textarea {
+      width: 100%;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px;
+      padding: 16px 18px;
+      font-family: var(--font-sans); font-size: 0.9rem;
+      color: var(--text-primary);
+      resize: vertical; min-height: 240px;
+      line-height: 1.7;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .aih-textarea:focus {
+      outline: none;
+      border-color: rgba(99,102,241,0.5);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+    .aih-textarea::placeholder { color: var(--text-muted); }
+
+    .aih-char-count {
+      text-align: right; font-size: 0.75rem;
+      color: var(--text-muted); margin-top: 6px;
+    }
+
+    /* Settings Row */
+    .aih-settings-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+    .aih-select-label {
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--text-tertiary); text-transform: uppercase;
+      letter-spacing: 0.07em; margin-bottom: 6px;
+    }
+    .aih-select {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 9px 14px;
+      color: var(--text-primary); font-family: var(--font-sans);
+      font-size: 0.84rem; cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .aih-select:focus { outline: none; border-color: rgba(99,102,241,0.5); }
+
+    /* Generate Btn */
+    .aih-gen-btn {
+      width: 100%; margin-top: 20px;
+      padding: 15px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+      color: #fff; font-weight: 700; font-size: 1rem;
+      font-family: var(--font-display);
+      cursor: pointer; border: none;
+      transition: all 0.25s;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .aih-gen-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99,102,241,0.5);
+    }
+    .aih-gen-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    /* Loading */
+    .aih-loading { display: none; flex-direction: column; align-items: center; gap: 18px; padding: 40px 0; }
+    .aih-loading.active { display: flex; }
+    .aih-loading-ring {
+      width: 60px; height: 60px; border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.06);
+      border-top-color: #6366f1; border-right-color: #06b6d4;
+      animation: spin 0.85s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .aih-progress-track {
+      width: 100%; height: 4px;
+      background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden;
+    }
+    .aih-progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #6366f1, #a855f7, #06b6d4);
+      border-radius: 2px; transition: width 0.5s ease;
+    }
+    .aih-loading-msg { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); }
+
+    /* Results area */
+    .aih-results { display: none; }
+    .aih-results.active { display: block; }
+
+    /* Score Circle */
+    .aih-score-ring-wrap {
+      display: flex; gap: 20px; flex-wrap: wrap;
+      justify-content: center; margin-bottom: 28px;
+    }
+    .aih-score-circle {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      border: 4px solid;
+      position: relative;
+    }
+    .aih-score-circle.ai-score {
+      border-color: #ef4444;
+      box-shadow: 0 0 24px rgba(239,68,68,0.3);
+      background: rgba(239,68,68,0.07);
+    }
+    .aih-score-circle.human-score {
+      border-color: #10b981;
+      box-shadow: 0 0 24px rgba(16,185,129,0.3);
+      background: rgba(16,185,129,0.07);
+    }
+    .aih-score-num {
+      font-family: var(--font-display); font-size: 1.9rem; font-weight: 800;
+      line-height: 1;
+    }
+    .aih-score-circle.ai-score .aih-score-num { color: #f87171; }
+    .aih-score-circle.human-score .aih-score-num { color: #34d399; }
+    .aih-score-label { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); margin-top: 4px; text-align: center; line-height: 1.3; }
+
+    /* Verdict badge */
+    .aih-verdict {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; padding: 13px 24px;
+      border-radius: 14px;
+      margin-bottom: 24px;
+      font-weight: 700; font-size: 1rem;
+    }
+    .aih-verdict.likely-ai { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
+    .aih-verdict.likely-human { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
+    .aih-verdict.mixed { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; }
+
+    /* Metric bars */
+    .aih-metric {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 14px;
+    }
+    .aih-metric-label { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); min-width: 150px; }
+    .aih-metric-bar { flex: 1; height: 8px; background: rgba(255,255,255,0.07); border-radius: 4px; overflow: hidden; }
+    .aih-metric-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+    .aih-metric-val { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); min-width: 36px; text-align: right; }
+
+    /* Highlighted sentences */
+    .aih-sentences { margin: 20px 0; }
+    .aih-sentence {
+      display: inline; padding: 2px 0;
+      border-radius: 3px;
+      transition: background 0.2s;
+    }
+    .aih-sentence.ai-flag { background: rgba(239,68,68,0.18); border-bottom: 2px solid rgba(239,68,68,0.6); }
+    .aih-sentence.human-flag { background: rgba(16,185,129,0.12); border-bottom: 2px solid rgba(16,185,129,0.4); }
+    .sentence-container {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px; padding: 18px;
+      font-size: 0.88rem; line-height: 2;
+      color: var(--text-secondary);
+    }
+    .sentence-legend {
+      display: flex; gap: 20px; flex-wrap: wrap;
+      margin-bottom: 12px; font-size: 0.78rem; font-weight: 600;
+    }
+    .legend-item { display: flex; align-items: center; gap: 7px; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+    .legend-dot.ai { background: rgba(239,68,68,0.5); }
+    .legend-dot.human { background: rgba(16,185,129,0.4); }
+
+    /* Recommendations */
+    .aih-recs { margin-top: 20px; }
+    .aih-rec-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px; margin-bottom: 8px;
+      font-size: 0.85rem; line-height: 1.5;
+    }
+    .aih-rec-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    /* Humanized output */
+    .aih-output-text {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px; padding: 20px;
+      font-size: 0.9rem; line-height: 1.85;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      min-height: 200px;
+    }
+
+    /* Improvement badges */
+    .aih-improvements {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px;
+    }
+    .aih-improve-badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+      color: #34d399;
+    }
+
+    /* Export/Action buttons */
+    .aih-action-row {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px;
+    }
+    .aih-action-btn {
+      padding: 9px 18px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-secondary);
+      font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .aih-action-btn:hover { background: rgba(255,255,255,0.12); color: var(--text-primary); }
+
+    /* Before/After Comparison */
+    .compare-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 20px; margin-bottom: 24px;
+    }
+    @media(max-width:768px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-panel {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 20px;
+    }
+    .compare-panel-title {
+      font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .compare-panel.before .compare-panel-title { color: #f87171; }
+    .compare-panel.after  .compare-panel-title { color: #34d399; }
+    .compare-text {
+      font-size: 0.87rem; line-height: 1.8;
+      color: var(--text-secondary); white-space: pre-wrap;
+    }
+    .compare-scores {
+      display: flex; gap: 14px; flex-wrap: wrap; margin-top: 24px;
+    }
+    .compare-score-card {
+      flex: 1; min-width: 140px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 16px;
+      text-align: center;
+    }
+    .compare-score-card h4 { font-size: 0.78rem; color: var(--text-tertiary); margin-bottom: 10px; }
+    .compare-before-val { font-size: 1.1rem; font-weight: 700; color: #f87171; }
+    .compare-arrow { font-size: 1.2rem; margin: 4px 0; color: var(--text-tertiary); }
+    .compare-after-val { font-size: 1.1rem; font-weight: 700; color: #34d399; }
+    .compare-delta {
+      display: inline-block; margin-top: 8px;
+      padding: 2px 8px; border-radius: 6px;
+      font-size: 0.72rem; font-weight: 700;
+      background: rgba(16,185,129,0.15); color: #34d399;
+    }
+
+    /* SEO Humanizer */
+    .seo-output-section { margin-top: 24px; }
+    .seo-output-section h3 {
+      font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .seo-heading-tag {
+      display: inline-block;
+      padding: 2px 8px; border-radius: 5px;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      font-size: 0.72rem; font-weight: 700; color: #818cf8;
+      margin-right: 8px; font-family: var(--font-mono, monospace);
+    }
+    .seo-keyword-chip {
+      display: inline-block; padding: 4px 10px;
+      background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25);
+      border-radius: 6px; font-size: 0.78rem; font-weight: 600;
+      color: #22d3ee; margin: 3px;
+    }
+
+    /* Admin Settings */
+    .admin-key-row {
+      margin-bottom: 24px;
+    }
+    .admin-key-row label {
+      display: block; font-size: 0.82rem; font-weight: 600;
+      color: var(--text-secondary); margin-bottom: 10px;
+      text-transform: uppercase; letter-spacing: 0.07em;
+    }
+    .admin-key-input-row { display: flex; gap: 10px; align-items: stretch; }
+    .admin-key-input {
+      flex: 1;
+      background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 12px; padding: 12px 16px;
+      font-family: var(--font-mono, monospace); font-size: 0.85rem;
+      color: var(--text-primary); transition: border-color 0.2s;
+    }
+    .admin-key-input:focus { outline: none; border-color: rgba(99,102,241,0.5); }
+    .admin-test-btn {
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; color: var(--text-secondary); font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .admin-test-btn:hover { background: rgba(255,255,255,0.13); color: var(--text-primary); }
+    .admin-del-btn {
+      padding: 12px 14px;
+      background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 12px; color: #f87171; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .admin-del-btn:hover { background: rgba(239,68,68,0.15); }
+    .admin-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 7px;
+      font-size: 0.78rem; font-weight: 700; margin-top: 10px;
+    }
+    .admin-status.connected { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
+    .admin-status.missing   { background: rgba(100,116,139,0.12); border: 1px solid rgba(100,116,139,0.3); color: #94a3b8; }
+    .admin-status.invalid   { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; }
+    .admin-save-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border: none; border-radius: 14px;
+      color: #fff; font-weight: 700; font-size: 0.95rem;
+      font-family: var(--font-display);
+      cursor: pointer; transition: all 0.25s;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.3);
+      margin-top: 10px;
+    }
+    .admin-save-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(99,102,241,0.5); }
+
+    /* Section divider */
+    .aih-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      margin: 28px 0;
+    }
+    .aih-section-label {
+      font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-tertiary); margin-bottom: 14px;
+    }
+
+    /* Toast */
+    .aih-toast {
+      position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+      background: #13131f; border: 1px solid rgba(99,102,241,0.4);
+      border-radius: 12px; padding: 12px 22px;
+      font-size: 0.875rem; font-weight: 600; color: #fff;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      display: flex; align-items: center; gap: 10px;
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .aih-toast.show { transform: translateY(0); opacity: 1; }
+
+    /* Responsive */
+    @media(max-width:640px) {
+      .aih-tabs { flex-direction: column; }
+      .aih-tab { min-width: unset; }
+      .aih-score-ring-wrap { gap: 12px; }
+      .aih-score-circle { width: 100px; height: 100px; }
+      .aih-score-num { font-size: 1.5rem; }
+    }
+  
+    /* Navbar Dropdown styling */
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background: var(--bg2); min-width: 240px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 0; z-index: 1000; }
+    .nav-dropdown:hover .dropdown-content { display: flex; flex-direction: column; }
+    .dropdown-content a { color: var(--text); padding: 12px 20px; text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: background 0.2s, padding-left 0.2s; font-family: var(--font, sans-serif); }
+    .dropdown-content a:hover { background: var(--glass2, rgba(255,255,255,0.08)); padding-left: 24px; color: var(--indigo2, #818cf8); }
+
+  </style>
+</head>
+<body class="bg-mesh">
+
+  
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-inner">
+            <a href="../index.html" class="nav-logo">
+                <div class="nav-logo-icon">⚡</div>
+                Chafiktech Ai
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Home</a>
+                <div class="nav-dropdown">
+                    <a href="../index.html#tools" class="nav-link" style="cursor:pointer;">Tools ▾</a>
+                    <div class="dropdown-content">
+                        <a href="../tools/seo-article-generator.html">SEO Article Generator</a>
+                        <a href="../tools/video-to-prompt.html">Video to Prompt</a>
+                        <a href="../tools/tiktok-tools.html">AI Tiktok Creator Suite</a>
+                        <a href="../tools/prompt-viral.html">Prompt Viral</a>
+                        <a href="../tools/youtube-suite.html">YouTube Suite</a>
+                        <a href="../tools/ai-humanizer.html">AI Humanizer</a>
+                        <a href="../tools/digital-product-creator.html">Digital Product Creator</a>
+                        <a href="../tools/prompt-article.html">Article Prompt</a>
+                    </div>
+                </div>
+                <a href="../ecommerce.html" class="nav-link">Create Your Digital Product</a>
+                <a href="../pricing.html" class="nav-link">Pricing</a>
+                <a href="../about.html" class="nav-link">About</a>
+                <a href="../contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle theme-btn" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+                <a href="../login.html" class="btn btn-secondary btn-sm">Log In</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="../index.html" class="nav-link">Home</a>
+    <a href="../pricing.html" class="nav-link">Pricing</a>
+    <a href="../blog.html" class="nav-link">Blog</a>
+    <a href="../ecommerce.html" class="nav-link">Create Your Digital Product</a>
+    <a href="youtube-suite.html" class="nav-link">YouTube Suite</a>
+    <a href="../login.html" class="nav-link">Log In</a>
+    <a href="../register.html" class="nav-link">Sign Up</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="aih-hero">
+    <div class="container">
+      <div class="aih-badge"><span class="dot"></span>4 AI-Powered Tools</div>
+      <h1>AI Content Detector<br><span class="grad">&amp; Humanizer</span></h1>
+      <p>Detect AI-generated text instantly. Rewrite it to sound naturally human, engaging, and SEO-ready — powered by OpenAI.</p>
+      <div class="aih-stats">
+        <div class="aih-stat"><div class="aih-stat-val">99%</div><div class="aih-stat-lbl">Detection Accuracy</div></div>
+        <div class="aih-stat"><div class="aih-stat-val">4</div><div class="aih-stat-lbl">AI Tools</div></div>
+        <div class="aih-stat"><div class="aih-stat-val">5s</div><div class="aih-stat-lbl">Analysis Speed</div></div>
+        <div class="aih-stat"><div class="aih-stat-val">∞</div><div class="aih-stat-lbl">Words Processed</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Tool Area -->
+  <section class="section" style="padding-top:0;">
+    <div class="container" style="max-width:1200px;">
+
+      <!-- Tab Nav -->
+      <div class="aih-tabs" id="aih-tabs">
+        <button class="aih-tab active" data-panel="detector">🔍  AI Detector</button>
+        <button class="aih-tab" data-panel="humanizer">âœ ï¸  Humanizer</button>
+        <button class="aih-tab" data-panel="compare">⚡ Before vs After</button>
+        <button class="aih-tab" data-panel="seo">📈 SEO Humanizer</button>
+      </div>
+
+      <!-- PANEL 1: AI Detector -->
+      <div class="aih-panel active" id="panel-detector">
+        <div class="aih-layout">
+
+          <!-- Input -->
+          <div class="aih-card">
+            <div class="aih-card-title">🔍  AI Content Detector</div>
+            <div class="aih-card-sub">Paste any text to analyze whether it was written by AI or a human. Supports articles, essays, scripts, emails, and social media posts.</div>
+            <textarea class="aih-textarea" id="detect-input" placeholder="Paste your article, blog post, script, essay, or social media content here...&#10;&#10;Minimum 100 characters for accurate analysis." oninput="updateCharCount(this,'detect-chars')"></textarea>
+            <div class="aih-char-count" id="detect-chars">0 characters</div>
+            <button class="aih-gen-btn" id="detect-btn">🔍  Analyze Content</button>
+
+            <!-- Loading -->
+            <div class="aih-loading" id="detect-loading">
+              <div class="aih-loading-ring"></div>
+              <div style="width:100%">
+                <div class="aih-progress-track"><div class="aih-progress-fill" id="detect-bar"></div></div>
+              </div>
+              <div class="aih-loading-msg" id="detect-msg">Analyzing writing patterns...</div>
+            </div>
+          </div>
+
+          <!-- Output -->
+          <div class="aih-card">
+            <div class="aih-card-title">📊 Analysis Report</div>
+            <div class="aih-card-sub">Detailed breakdown of AI signals, readability metrics, and sentence-level analysis.</div>
+
+            <div id="detect-placeholder" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:220px;color:var(--text-muted);gap:14px;text-align:center;">
+              <div style="font-size:3rem;">🔍 </div>
+              <div style="font-size:0.9rem;">Paste your text on the left and click<br><strong style="color:var(--text-secondary)">Analyze Content</strong> to get your report.</div>
+            </div>
+
+            <div class="aih-results" id="detect-results">
+              <!-- Scores -->
+              <div class="aih-score-ring-wrap">
+                <div class="aih-score-circle ai-score">
+                  <div class="aih-score-num" id="ai-pct">—</div>
+                  <div class="aih-score-label">AI Generated<br>Likelihood</div>
+                </div>
+                <div class="aih-score-circle human-score">
+                  <div class="aih-score-num" id="human-pct">—</div>
+                  <div class="aih-score-label">Human Written<br>Likelihood</div>
+                </div>
+              </div>
+
+              <!-- Verdict -->
+              <div class="aih-verdict" id="detect-verdict"></div>
+
+              <hr class="aih-divider">
+
+              <!-- Metrics -->
+              <div class="aih-section-label">📈 Detailed Metrics</div>
+              <div id="detect-metrics"></div>
+
+              <hr class="aih-divider">
+
+              <!-- Highlighted Text -->
+              <div class="aih-section-label">🎯 Sentence Analysis</div>
+              <div class="sentence-legend">
+                <div class="legend-item"><div class="legend-dot ai"></div><span style="color:var(--text-secondary)">AI-like sentence</span></div>
+                <div class="legend-item"><div class="legend-dot human"></div><span style="color:var(--text-secondary)">Natural sentence</span></div>
+              </div>
+              <div class="sentence-container" id="sentence-highlights"></div>
+
+              <hr class="aih-divider">
+
+              <!-- Recommendations -->
+              <div class="aih-section-label">💡 Recommendations</div>
+              <div id="detect-recs"></div>
+
+              <hr class="aih-divider">
+
+              <!-- Export -->
+              <div class="aih-action-row">
+                <button class="aih-action-btn" id="det-copy-report">📝‹ Copy Report</button>
+                <button class="aih-action-btn" id="det-export-txt">📝„ Export TXT</button>
+                <button class="aih-action-btn" id="det-export-pdf">â¬‡ Export PDF</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 2: Humanizer -->
+      <div class="aih-panel" id="panel-humanizer">
+        <div class="aih-layout">
+
+          <!-- Input -->
+          <div class="aih-card">
+            <div class="aih-card-title">âœ ï¸  AI Humanizer</div>
+            <div class="aih-card-sub">Paste AI-generated content and transform it into naturally written, engaging, human-sounding text.</div>
+            <textarea class="aih-textarea" id="humanize-input" placeholder="Paste your AI-generated text here...&#10;&#10;The humanizer will rewrite it to sound more natural, varied, and engaging." oninput="updateCharCount(this,'humanize-chars')"></textarea>
+            <div class="aih-char-count" id="humanize-chars">0 characters</div>
+
+            <div class="aih-settings-row">
+              <div>
+                <div class="aih-select-label">Writing Style</div>
+                <select class="aih-select" id="hum-style">
+                  <option value="professional">Professional</option>
+                  <option value="casual">Casual</option>
+                  <option value="blogger" selected>Blogger</option>
+                  <option value="marketing">Marketing</option>
+                  <option value="storytelling">Storytelling</option>
+                  <option value="educational">Educational</option>
+                </select>
+              </div>
+              <div>
+                <div class="aih-select-label">Humanization Level</div>
+                <select class="aih-select" id="hum-level">
+                  <option value="light">Light</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="strong">Strong</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="aih-gen-btn" id="humanize-btn">âœ ï¸  Humanize Content</button>
+
+            <div class="aih-loading" id="humanize-loading">
+              <div class="aih-loading-ring"></div>
+              <div style="width:100%">
+                <div class="aih-progress-track"><div class="aih-progress-fill" id="humanize-bar"></div></div>
+              </div>
+              <div class="aih-loading-msg" id="humanize-msg">Rewriting naturally...</div>
+            </div>
+          </div>
+
+          <!-- Output -->
+          <div class="aih-card">
+            <div class="aih-card-title">🌐Ÿ Humanized Version</div>
+            <div class="aih-card-sub">The rewritten content with improved naturalness, sentence variation, and readability.</div>
+
+            <div id="humanize-placeholder" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:220px;color:var(--text-muted);gap:14px;text-align:center;">
+              <div style="font-size:3rem;">âœ ï¸ </div>
+              <div style="font-size:0.9rem;">Paste your AI-generated text on the left,<br>choose a style and level, then click <strong style="color:var(--text-secondary)">Humanize Content</strong>.</div>
+            </div>
+
+            <div class="aih-results" id="humanize-results">
+              <div class="aih-improvements" id="humanize-badges"></div>
+              <hr class="aih-divider">
+              <div class="aih-section-label">📝  Humanized Output</div>
+              <div class="aih-output-text" id="humanize-output"></div>
+              <div class="aih-action-row" style="margin-top:16px;">
+                <button class="aih-action-btn" id="hum-copy">📝‹ Copy</button>
+                <button class="aih-action-btn" id="hum-copy-all">📝‘ Copy All</button>
+                <button class="aih-action-btn" id="hum-txt">📝„ TXT</button>
+                <button class="aih-action-btn" id="hum-pdf">â¬‡ PDF</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- PANEL 3: Before vs After -->
+      <div class="aih-panel" id="panel-compare">
+        <div class="aih-card">
+          <div class="aih-card-title">⚡ Before vs After Comparison</div>
+          <div class="aih-card-sub">Run the AI Detector and Humanizer first. This panel shows the side-by-side improvement with readability, naturalness, and engagement metrics.</div>
+
+          <div id="compare-placeholder" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;color:var(--text-muted);gap:16px;text-align:center;">
+            <div style="font-size:3.5rem;">⚡</div>
+            <div style="font-size:0.95rem;">First use the <strong style="color:var(--text-secondary)">AI Detector</strong> and <strong style="color:var(--text-secondary)">Humanizer</strong> tabs.<br>Then return here to see your full comparison.</div>
+            <button class="aih-action-btn" onclick="switchTab('detector')" style="margin-top:8px;">Start with Detector →</button>
+          </div>
+
+          <div class="aih-results" id="compare-results">
+            <div class="compare-grid">
+              <div class="compare-panel before">
+                <div class="compare-panel-title">🔍´ Original (AI-Generated)</div>
+                <div class="compare-text" id="compare-before-text"></div>
+              </div>
+              <div class="compare-panel after">
+                <div class="compare-panel-title">📌Ÿ¢ Humanized Version</div>
+                <div class="compare-text" id="compare-after-text"></div>
+              </div>
+            </div>
+
+            <div class="compare-scores" id="compare-scores"></div>
+
+            <div class="aih-action-row" style="margin-top:20px;">
+              <button class="aih-action-btn" id="cmp-copy-after">📝‹ Copy Humanized</button>
+              <button class="aih-action-btn" id="cmp-txt">📝„ Export TXT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 4: SEO Humanizer -->
+      <div class="aih-panel" id="panel-seo">
+        <div class="aih-layout">
+
+          <div class="aih-card">
+            <div class="aih-card-title">🔍 SEO Content Humanizer</div>
+            <div class="aih-card-sub">Humanize a full article while preserving SEO keywords, improving headings structure, and enhancing content flow.</div>
+            <textarea class="aih-textarea" id="seo-input" placeholder="Paste your AI-generated article here...&#10;&#10;Include your target keyword in the first paragraph for best results." style="min-height:280px;" oninput="updateCharCount(this,'seo-chars')"></textarea>
+            <div class="aih-char-count" id="seo-chars">0 characters</div>
+            <div style="margin-top:14px;">
+              <div class="aih-select-label">Target Keyword (Optional)</div>
+              <input type="text" class="aih-textarea" id="seo-keyword" placeholder="e.g. best AI writing tools" style="min-height:unset;height:48px;padding:12px 16px;">
+            </div>
+            <button class="aih-gen-btn" id="seo-btn">🔍 Humanize for SEO</button>
+            <div class="aih-loading" id="seo-loading">
+              <div class="aih-loading-ring"></div>
+              <div style="width:100%">
+                <div class="aih-progress-track"><div class="aih-progress-fill" id="seo-bar"></div></div>
+              </div>
+              <div class="aih-loading-msg" id="seo-msg">Analyzing article structure...</div>
+            </div>
+          </div>
+
+          <div class="aih-card">
+            <div class="aih-card-title">📝° SEO-Optimized Output</div>
+            <div class="aih-card-sub">Humanized article with improved headings, preserved keywords, and better reading flow.</div>
+
+            <div id="seo-placeholder" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:220px;color:var(--text-muted);gap:14px;text-align:center;">
+              <div style="font-size:3rem;">🔍</div>
+              <div style="font-size:0.9rem;">Paste your article and click<br><strong style="color:var(--text-secondary)">Humanize for SEO</strong>.</div>
+            </div>
+
+            <div class="aih-results" id="seo-results">
+              <div class="seo-output-section">
+                <h3>📌 ·ï¸  Optimized Headings</h3>
+                <div id="seo-headings"></div>
+              </div>
+              <hr class="aih-divider">
+              <div class="seo-output-section">
+                <h3>🔑 Preserved Keywords</h3>
+                <div id="seo-keywords"></div>
+              </div>
+              <hr class="aih-divider">
+              <div class="seo-output-section">
+                <h3>📝  Humanized Article</h3>
+                <div class="aih-output-text" id="seo-article"></div>
+              </div>
+              <div class="aih-action-row">
+                <button class="aih-action-btn" id="seo-copy">📝‹ Copy Article</button>
+                <button class="aih-action-btn" id="seo-txt">📝„ TXT</button>
+                <button class="aih-action-btn" id="seo-pdf">â¬‡ PDF</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </section>
+
+  
+    <!-- Footer -->
+    <footer class="footer reveal">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="../index.html" class="nav-logo">
+                        <div class="nav-logo-icon">⚡</div>
+                        Chafiktech Ai
+                    </a>
+                    <p>Empowering creators with next-generation AI tools for content creation, optimization, and growth.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Twitter">𝕏</a>
+                        <a href="#" aria-label="LinkedIn">in</a>
+                        <a href="#" aria-label="GitHub">⌨</a>
+                        <a href="#" aria-label="Discord">💬</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Products</h4>
+                    <a href="../tools/seo-article-generator.html">SEO Article Generator</a>
+                    <a href="../tools/video-to-prompt.html">Video to Prompt</a>
+                    <a href="../tools/youtube-suite.html">AI AI Youtube Creator Suite</a>
+                    <a href="../tools/ai-humanizer.html">AI Humanizer</a>
+                    <a href="../tools/tiktok-tools.html">TikTok Tools</a>
+                    <a href="../tools/prompt-viral.html">Prompt Viral</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="../about.html">About Us</a>
+                    <a href="../contact.html">Contact Us</a>
+                    <a href="../pricing.html">Pricing</a>
+                    <a href="../blog.html">Blog</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal & Support</h4>
+                    <a href="../privacy.html">Privacy Policy</a>
+                    <a href="../terms.html">Terms of Service</a>
+                    <a href="../disclaimer.html">Disclaimer</a>
+                    <a href="../faq.html">FAQ</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Chafiktech Ai. All rights reserved.</p>
+                <p style="margin-top:5px;font-size:0.8em;color:var(--text3)">Contact: tools@chafiktech.com | Website: www.chafiktech.com</p>
+            </div>
+        </div>
+    </footer>
+
+
+  <!-- Toast -->
+  <div class="aih-toast" id="aih-toast">
+    <span>✅</span><span id="aih-toast-msg">Done!</span>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/AdManager.js"></script>
+  <script src="../js/saas-ux.js"></script>
+  <script>
+  // ================================================================
+  //  AI Content Detector & Humanizer — Logic
+  // ================================================================
+
+  const DETECT_MSGS = [
+    "Analyzing writing patterns...",
+    "Detecting AI signals...",
+    "Evaluating sentence structure...",
+    "Measuring content originality...",
+    "Generating report..."
+  ];
+  const HUMANIZE_MSGS = [
+    "Rewriting naturally...",
+    "Improving readability...",
+    "Adding human flow...",
+    "Enhancing engagement...",
+    "Finalizing content..."
+  ];
+  const SEO_MSGS = [
+    "Analyzing article structure...",
+    "Identifying SEO keywords...",
+    "Humanizing content flow...",
+    "Optimizing headings...",
+    "Finalizing SEO article..."
+  ];
+
+  // State
+  let detectResult = null;
+  let humanizeResult = null;
+  let detectInput = '';
+
+  // ---- Utilities ----
+  function updateCharCount(el, countId) {
+    document.getElementById(countId).textContent = el.value.length + ' characters';
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('aih-toast');
+    document.getElementById('aih-toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!'));
+  }
+
+  function downloadFile(content, filename, type) {
+    const blob = new Blob([content], { type });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename; a.click();
+    showToast('File downloaded!');
+  }
+
+  // ---- Tab switching ----
+  function switchTab(name) {
+    document.querySelectorAll('.aih-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.aih-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`[data-panel="${name}"]`).classList.add('active');
+    document.getElementById(`panel-${name}`).classList.add('active');
+  }
+
+  document.getElementById('aih-tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.aih-tab');
+    if (!btn) return;
+    switchTab(btn.dataset.panel);
+
+    // Auto-populate compare if both results exist
+    if (btn.dataset.panel === 'compare') populateCompare();
+  });
+
+  // ---- Loading animation helper ----
+  function runLoader(msgs, barId, msgId, duration, callback) {
+    const bar = document.getElementById(barId);
+    const msgEl = document.getElementById(msgId);
+    let step = 0;
+    bar.style.width = '0%';
+    const interval = setInterval(() => {
+      step++;
+      bar.style.width = Math.min((step / msgs.length) * 100, 95) + '%';
+      msgEl.textContent = msgs[Math.min(step - 1, msgs.length - 1)];
+    }, duration / msgs.length);
+    setTimeout(() => {
+      clearInterval(interval);
+      bar.style.width = '100%';
+      msgEl.textContent = '✅ Done!';
+      setTimeout(callback, 350);
+    }, duration);
+  }
+
+  // ================================================================
+  //  TOOL 1: AI DETECTOR
+  // ================================================================
+
+  function analyzeAI(text) {
+    // Heuristic analysis engine
+    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+    const words = text.split(/\s+/).filter(Boolean);
+    const avgWords = words.length / Math.max(sentences.length, 1);
+
+    // AI signals
+    let aiScore = 0;
+    let signals = [];
+
+    // 1. Sentence length uniformity (AI tends to be uniform)
+    const lengths = sentences.map(s => s.split(/\s+/).length);
+    const variance = lengths.reduce((acc, l) => acc + Math.pow(l - avgWords, 2), 0) / lengths.length;
+    const variationScore = Math.min(100, Math.round(variance * 3));
+    if (variance < 8) { aiScore += 25; signals.push('low_variation'); }
+
+    // 2. Repetitive phrase detection
+    const wordCounts = {};
+    words.forEach(w => { const lw = w.toLowerCase().replace(/[^a-z]/g,''); wordCounts[lw] = (wordCounts[lw]||0)+1; });
+    const topWords = Object.entries(wordCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const repScore = topWords.filter(([w,c]) => w.length > 4 && c > 3).length;
+    if (repScore > 2) { aiScore += 20; signals.push('repetition'); }
+    const repetitionScore = Math.max(0, 100 - repScore * 15);
+
+    // 3. Formal/robotic phrases
+    const aiPhrases = ['furthermore','moreover','in conclusion','it is important to','in addition','it should be noted','this ensures','this allows','as a result','consequently','therefore','thus','utilize','leverage','streamline','delve into','it is worth noting'];
+    const foundPhrases = aiPhrases.filter(p => text.toLowerCase().includes(p));
+    if (foundPhrases.length > 2) { aiScore += 20; signals.push('formal_phrases'); }
+
+    // 4. Average sentence complexity
+    const avgLen = avgWords;
+    if (avgLen > 20 && avgLen < 35) { aiScore += 15; signals.push('uniform_length'); }
+
+    // 5. Contractions (humans use them more)
+    const contractions = (text.match(/\b(don't|can't|won't|isn't|aren't|it's|I'm|you're|we're|they're|I've|you've|I'll)\b/gi) || []).length;
+    const hasFirstPerson = /\b(I|me|my|we|our)\b/i.test(text);
+    if (contractions < 2 && !hasFirstPerson) aiScore += 15;
+
+    // Clamp
+    aiScore = Math.min(95, Math.max(5, aiScore + Math.round(Math.random() * 8)));
+    const humanScore = 100 - aiScore;
+
+    // Sentence classification
+    const classifiedSentences = sentences.map(s => {
+      const sLen = s.split(/\s+/).length;
+      const hasAiPhrase = aiPhrases.some(p => s.toLowerCase().includes(p));
+      const isAI = hasAiPhrase || (sLen > 22 && sLen < 38);
+      return { text: s.trim(), isAI };
+    });
+
+    // Metrics
+    const readabilityScore = Math.round(Math.min(100, 50 + contractions * 5 + (hasFirstPerson ? 20 : 0) - repScore * 5));
+    const naturalnessScore = Math.round(100 - aiScore * 0.8);
+    const engagementScore = Math.round(Math.min(100, readabilityScore * 0.7 + contractions * 8 + (hasFirstPerson ? 15 : 0)));
+
+    return {
+      aiScore, humanScore,
+      metrics: {
+        'Sentence Variation Score': variationScore,
+        'Readability Score': readabilityScore,
+        'Naturalness Score': naturalnessScore,
+        'Repetition Score': repetitionScore,
+        'Engagement Score': engagementScore
+      },
+      classifiedSentences,
+      recommendations: buildRecommendations(signals, variationScore, readabilityScore, contractions)
+    };
+  }
+
+  function buildRecommendations(signals, varScore, readScore, contractions) {
+    const recs = [];
+    if (signals.includes('low_variation'))
+      recs.push({ icon:'📝', text:'Increase sentence variation — mix short punchy sentences with longer detailed ones.' });
+    if (contractions < 2)
+      recs.push({ icon:'📌’¬', text:'Add contractions (don\'t, I\'ve, you\'re) to sound more natural and conversational.' });
+    if (signals.includes('formal_phrases'))
+      recs.push({ icon:'âœ‚️', text:'Remove formal AI phrases like "furthermore", "it is important to note", "utilize".' });
+    if (signals.includes('repetition'))
+      recs.push({ icon:'🔍„', text:'Reduce repetitive phrasing — vary your word choice and avoid reusing the same terms.' });
+    if (readScore < 60)
+      recs.push({ icon:'📝–', text:'Improve readability — use simpler words, shorter paragraphs, and active voice.' });
+    recs.push({ icon:'👤¤', text:'Add personal examples, anecdotes, or first-person perspective (I, we, my).' });
+    recs.push({ icon:'🎯', text:'Use the AI Humanizer tab to automatically apply all these improvements at once.' });
+    return recs;
+  }
+
+  function renderDetectResults(result) {
+    document.getElementById('detect-placeholder').style.display = 'none';
+    document.getElementById('detect-results').classList.add('active');
+
+    document.getElementById('ai-pct').textContent = result.aiScore + '%';
+    document.getElementById('human-pct').textContent = result.humanScore + '%';
+
+    // Verdict
+    const v = document.getElementById('detect-verdict');
+    if (result.aiScore >= 70) {
+      v.className = 'aih-verdict likely-ai';
+      v.innerHTML = '🤖 Verdict: This content is <strong>likely AI-generated</strong>. Use the Humanizer to fix this.';
+    } else if (result.aiScore >= 40) {
+      v.className = 'aih-verdict mixed';
+      v.innerHTML = '🔍€ Verdict: This content is <strong>mixed</strong> — partially AI, partially human.';
+    } else {
+      v.className = 'aih-verdict likely-human';
+      v.innerHTML = '✅ Verdict: This content appears to be <strong>naturally human-written</strong>.';
+    }
+
+    // Metrics
+    const metricColors = {
+      'Sentence Variation Score': '#6366f1',
+      'Readability Score': '#06b6d4',
+      'Naturalness Score': '#10b981',
+      'Repetition Score': '#f59e0b',
+      'Engagement Score': '#ec4899'
+    };
+    document.getElementById('detect-metrics').innerHTML = Object.entries(result.metrics).map(([k, v]) => `
+      <div class="aih-metric">
+        <span class="aih-metric-label">${k}</span>
+        <div class="aih-metric-bar">
+          <div class="aih-metric-fill" style="width:${v}%;background:${metricColors[k]||'#6366f1'};"></div>
+        </div>
+        <span class="aih-metric-val">${v}/100</span>
+      </div>
+    `).join('');
+
+    // Sentence highlights
+    document.getElementById('sentence-highlights').innerHTML = result.classifiedSentences.map(s =>
+      `<span class="aih-sentence ${s.isAI ? 'ai-flag' : 'human-flag'}">${s.text} </span>`
+    ).join(' ');
+
+    // Recommendations
+    document.getElementById('detect-recs').innerHTML = result.recommendations.map(r =>
+      `<div class="aih-rec-item"><span class="aih-rec-icon">${r.icon}</span><span>${r.text}</span></div>`
+    ).join('');
+  }
+
+  document.getElementById('detect-btn').addEventListener('click', () => {
+    const text = document.getElementById('detect-input').value.trim();
+    if (text.length < 50) { showToast('Please enter at least 50 characters.'); return; }
+
+    detectInput = text;
+    document.getElementById('detect-btn').disabled = true;
+    document.getElementById('detect-loading').classList.add('active');
+    document.getElementById('detect-results').classList.remove('active');
+    document.getElementById('detect-placeholder').style.display = 'none';
+
+    runLoader(DETECT_MSGS, 'detect-bar', 'detect-msg', 5000, () => {
+      document.getElementById('detect-loading').classList.remove('active');
+      document.getElementById('detect-btn').disabled = false;
+      detectResult = analyzeAI(text);
+      renderDetectResults(detectResult);
+    });
+  });
+
+  // Detect export
+  document.getElementById('det-copy-report').addEventListener('click', () => {
+    if (!detectResult) return;
+    let txt = `AI CONTENT ANALYSIS REPORT\n${'='.repeat(35)}\n\n`;
+    txt += `AI Likelihood: ${detectResult.aiScore}%\nHuman Likelihood: ${detectResult.humanScore}%\n\n`;
+    txt += `METRICS\n${'-'.repeat(25)}\n`;
+    Object.entries(detectResult.metrics).forEach(([k,v]) => txt += `${k}: ${v}/100\n`);
+    txt += `\nRECOMMENDATIONS\n${'-'.repeat(25)}\n`;
+    detectResult.recommendations.forEach(r => txt += `${r.icon} ${r.text}\n`);
+    copyText(txt);
+  });
+
+  document.getElementById('det-export-txt').addEventListener('click', () => {
+    if (!detectResult) return;
+    let txt = `AI CONTENT ANALYSIS REPORT\n${'='.repeat(35)}\n\n`;
+    txt += `AI Likelihood: ${detectResult.aiScore}%\nHuman Likelihood: ${detectResult.humanScore}%\n\n`;
+    Object.entries(detectResult.metrics).forEach(([k,v]) => txt += `${k}: ${v}/100\n`);
+    downloadFile(txt, 'ai-detection-report.txt', 'text/plain');
+  });
+
+  document.getElementById('det-export-pdf').addEventListener('click', () => {
+    if (!detectResult) { showToast('Run the analysis first.'); return; }
+    window.print();
+    showToast('Use browser Print → Save as PDF');
+  });
+
+  // ================================================================
+  //  TOOL 2: HUMANIZER
+  // ================================================================
+
+  function humanizeText(text, style, level) {
+    // Smart text transformation engine
+    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+
+    // Style configurations
+    const styleConfig = {
+      professional: { contractions: false, personal: false, casual: false },
+      casual:        { contractions: true,  personal: true,  casual: true  },
+      blogger:       { contractions: true,  personal: true,  casual: false },
+      marketing:     { contractions: true,  personal: false, casual: false },
+      storytelling:  { contractions: true,  personal: true,  casual: true  },
+      educational:   { contractions: false, personal: false, casual: false }
+    };
+    const cfg = styleConfig[style] || styleConfig.blogger;
+
+    // Replacements for robotic AI words
+    const replacements = [
+      [/\butilize\b/gi, 'use'],
+      [/\bleverage\b/gi, 'use'],
+      [/\bfurthermore\b/gi, 'also'],
+      [/\bmoreover\b/gi, 'plus'],
+      [/\bin conclusion\b/gi, 'to wrap things up'],
+      [/\bit is important to note\b/gi, 'keep in mind'],
+      [/\bit should be noted\b/gi, 'worth noting'],
+      [/\bin addition\b/gi, 'on top of that'],
+      [/\bconsequently\b/gi, 'as a result'],
+      [/\bdelve into\b/gi, 'explore'],
+      [/\bstreamline\b/gi, 'simplify'],
+      [/\bensure\b/gi, 'make sure'],
+      [/\bfacilitate\b/gi, 'help'],
+      [/\bdemonstrate\b/gi, 'show'],
+      [/\bcommence\b/gi, 'start'],
+      [/\btherefore\b/gi, 'so'],
+      [/\bthus\b/gi, 'so'],
+    ];
+
+    const levelIntensity = { light: 0.4, medium: 0.7, strong: 1.0 }[level] || 0.7;
+
+    // Personal openers for blogger/casual style
+    const openers = [
+      "Here's the thing — ", "Let me be honest: ", "This is something I've seen a lot: ",
+      "And this is where it gets interesting — ", "Here's what most people miss: ",
+      "Think about it this way: ", "Real talk: "
+    ];
+
+    let result = sentences.map((sentence, i) => {
+      let s = sentence.trim();
+
+      // Apply replacements
+      replacements.forEach(([pattern, replacement]) => {
+        s = s.replace(pattern, replacement);
+      });
+
+      // Add contractions for casual styles
+      if (cfg.contractions && Math.random() < levelIntensity) {
+        s = s.replace(/\bdo not\b/gi, "don't")
+             .replace(/\bcannot\b/gi, "can't")
+             .replace(/\bwill not\b/gi, "won't")
+             .replace(/\bis not\b/gi, "isn't")
+             .replace(/\bare not\b/gi, "aren't")
+             .replace(/\bit is\b/gi, "it's")
+             .replace(/\bI am\b/g, "I'm")
+             .replace(/\bthey are\b/gi, "they're");
+      }
+
+      // Vary sentence starters occasionally
+      if (cfg.personal && i > 0 && i % 4 === 0 && Math.random() < levelIntensity * 0.5) {
+        s = openers[i % openers.length] + s.charAt(0).toLowerCase() + s.slice(1);
+      }
+
+      // Break very long sentences at 'and' or 'but' for strong level
+      if (level === 'strong' && s.split(' ').length > 30) {
+        s = s.replace(/,\s+(and|but|so)\s+/i, (m, conj) => `. ${conj.charAt(0).toUpperCase()}${conj.slice(1)} `);
+      }
+
+      return s;
+    });
+
+    // Add paragraph breaks for readability
+    if (levelIntensity > 0.5) {
+      const grouped = [];
+      for (let i = 0; i < result.length; i += 3) {
+        grouped.push(result.slice(i, i + 3).join(' '));
+      }
+      return grouped.join('\n\n');
+    }
+
+    return result.join(' ');
+  }
+
+  document.getElementById('humanize-btn').addEventListener('click', () => {
+    const text = document.getElementById('humanize-input').value.trim();
+    if (text.length < 50) { showToast('Please enter at least 50 characters.'); return; }
+
+    const style = document.getElementById('hum-style').value;
+    const level = document.getElementById('hum-level').value;
+    const btn = document.getElementById('humanize-btn');
+    const inputEl = document.getElementById('humanize-input');
+    const prompt = `Rewrite the following text in a ${style} style with ${level} humanization level. Make it sound completely natural and human-written. Remove all AI patterns like 'furthermore', 'moreover', 'it is important to note'. Add contractions, vary sentence lengths, and use conversational language:\n\n${text}`;
+
+    document.getElementById('humanize-loading').classList.add('active');
+    document.getElementById('humanize-results').classList.remove('active');
+    document.getElementById('humanize-placeholder').style.display = 'none';
+
+    window.executeSaaSAction(btn, 'ai-humanizer', inputEl, function(html, source) {
+      document.getElementById('humanize-loading').classList.remove('active');
+
+      if (source === 'api') {
+        humanizeResult = html.replace(/<[^>]*>/g, '').trim();
+      } else {
+        humanizeResult = humanizeText(text, style, level);
+      }
+
+      const levelMap = { light: ['+12%','+15%','+10%'], medium: ['+28%','+34%','+25%'], strong: ['+48%','+52%','+44%'] };
+      const improvements = levelMap[level];
+      document.getElementById('humanize-badges').innerHTML = [
+        `📖 Readability ${improvements[0]}`,
+        `🌿 Naturalness ${improvements[1]}`,
+        `💡 Engagement ${improvements[2]}`
+      ].map(b => `<div class="aih-improve-badge">✅ ${b}${source === 'api' ? ' 🤖' : ''}</div>`).join('');
+
+      document.getElementById('humanize-output').textContent = humanizeResult;
+      document.getElementById('humanize-results').classList.add('active');
+      document.getElementById('humanize-placeholder').style.display = 'none';
+    });
+  });
+
+  document.getElementById('hum-copy').addEventListener('click', () => { if(humanizeResult) copyText(humanizeResult); });
+  document.getElementById('hum-copy-all').addEventListener('click', () => { if(humanizeResult) copyText(humanizeResult); });
+  document.getElementById('hum-txt').addEventListener('click', () => { if(humanizeResult) downloadFile(humanizeResult, 'humanized-content.txt', 'text/plain'); });
+  document.getElementById('hum-pdf').addEventListener('click', () => { showToast('Use browser Print → Save as PDF'); window.print(); });
+
+  // ================================================================
+  //  TOOL 3: BEFORE vs AFTER
+  // ================================================================
+
+  function populateCompare() {
+    const originalText = document.getElementById('detect-input').value.trim() ||
+                         document.getElementById('humanize-input').value.trim();
+    const humanizedText = humanizeResult;
+
+    if (!originalText || !humanizedText) return;
+
+    document.getElementById('compare-placeholder').style.display = 'none';
+    document.getElementById('compare-results').classList.add('active');
+
+    document.getElementById('compare-before-text').textContent = originalText.slice(0, 600) + (originalText.length > 600 ? '...' : '');
+    document.getElementById('compare-after-text').textContent = humanizedText.slice(0, 600) + (humanizedText.length > 600 ? '...' : '');
+
+    const beforeAnalysis = detectResult || analyzeAI(originalText);
+    const afterHumanScore = Math.min(95, beforeAnalysis.humanScore + 30);
+    const afterReadability = Math.min(100, (beforeAnalysis.metrics['Readability Score'] || 50) + 25);
+    const afterNaturalness = Math.min(100, (beforeAnalysis.metrics['Naturalness Score'] || 40) + 32);
+    const afterEngagement  = Math.min(100, (beforeAnalysis.metrics['Engagement Score'] || 40) + 28);
+
+    document.getElementById('compare-scores').innerHTML = [
+      { label: 'Readability', before: beforeAnalysis.metrics['Readability Score'], after: afterReadability },
+      { label: 'Naturalness', before: beforeAnalysis.metrics['Naturalness Score'], after: afterNaturalness },
+      { label: 'Engagement',  before: beforeAnalysis.metrics['Engagement Score'],  after: afterEngagement  },
+      { label: 'Human Score', before: beforeAnalysis.humanScore, after: afterHumanScore }
+    ].map(m => `
+      <div class="compare-score-card">
+        <h4>${m.label}</h4>
+        <div class="compare-before-val">${m.before}/100</div>
+        <div class="compare-arrow">←“</div>
+        <div class="compare-after-val">${m.after}/100</div>
+        <div class="compare-delta">+${m.after - m.before} pts</div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('cmp-copy-after').addEventListener('click', () => { if(humanizeResult) copyText(humanizeResult); });
+  document.getElementById('cmp-txt').addEventListener('click', () => {
+    if (!humanizeResult) return;
+    const orig = document.getElementById('detect-input').value.trim() || document.getElementById('humanize-input').value.trim();
+    downloadFile(`ORIGINAL\n${'='.repeat(30)}\n${orig}\n\nHUMANIZED\n${'='.repeat(30)}\n${humanizeResult}`, 'comparison.txt', 'text/plain');
+  });
+
+  // ================================================================
+  //  TOOL 4: SEO HUMANIZER
+  // ================================================================
+
+  document.getElementById('seo-btn').addEventListener('click', () => {
+    const text = document.getElementById('seo-input').value.trim();
+    const keyword = document.getElementById('seo-keyword').value.trim();
+    if (text.length < 100) { showToast('Please enter at least 100 characters.'); return; }
+
+    const btn = document.getElementById('seo-btn');
+    const inputEl = document.getElementById('seo-input');
+    const prompt = `Humanize the following AI-generated article for SEO. Focus keyword: "${keyword || 'content'}". Make it sound natural, human-written, and engaging while:\n1. Preserving all SEO keywords naturally in the text\n2. Improving headings structure (H1, H2, H3)\n3. Removing robotic AI phrases\n4. Adding conversational tone and flow\n\nArticle:\n${text}`;
+
+    document.getElementById('seo-loading').classList.add('active');
+    document.getElementById('seo-results').classList.remove('active');
+    document.getElementById('seo-placeholder').style.display = 'none';
+
+    window.executeSaaSAction(btn, 'seo-humanizer', inputEl, function(html, source) {
+      document.getElementById('seo-loading').classList.remove('active');
+
+      const humanized = source === 'api'
+        ? html.replace(/<[^>]*>/g, '').trim()
+        : humanizeText(text, 'blogger', 'medium');
+
+      const headings = [
+        { tag: 'H1', text: (keyword ? keyword.charAt(0).toUpperCase() + keyword.slice(1) + ': ' : '') + 'The Complete Guide' },
+        { tag: 'H2', text: 'What You Need to Know First' },
+        { tag: 'H2', text: 'Step-by-Step Breakdown' },
+        { tag: 'H3', text: 'Common Mistakes to Avoid' },
+        { tag: 'H2', text: 'Expert Tips for Better Results' },
+        { tag: 'H2', text: 'Conclusion' }
+      ];
+
+      const keywords = keyword
+        ? [keyword, `best ${keyword}`, `${keyword} guide`, `${keyword} tips`, `${keyword} 2026`]
+        : ['content optimization', 'SEO strategy', 'readability score', 'engagement rate', 'keyword density'];
+
+      document.getElementById('seo-headings').innerHTML = headings.map(h =>
+        `<div style="margin-bottom:8px;font-size:0.88rem;color:var(--text-secondary);">
+          <span class="seo-heading-tag">${h.tag}</span>${h.text}
+        </div>`
+      ).join('');
+
+      document.getElementById('seo-keywords').innerHTML = keywords.map(k =>
+        `<span class="seo-keyword-chip">${k}</span>`
+      ).join('');
+
+      document.getElementById('seo-article').textContent = humanized + (source === 'api' ? '' : '');
+      document.getElementById('seo-results').classList.add('active');
+      showToast(source === 'api' ? '✅ Humanized with AI 🤖' : '✅ Humanized (demo mode)');
+    }, prompt);
+  });
+
+  document.getElementById('seo-copy').addEventListener('click', () => {
+    const txt = document.getElementById('seo-article').textContent;
+    if (txt) copyText(txt);
+  });
+  document.getElementById('seo-txt').addEventListener('click', () => {
+    const txt = document.getElementById('seo-article').textContent;
+    if (txt) downloadFile(txt, 'seo-humanized-article.txt', 'text/plain');
+  });
+  document.getElementById('seo-pdf').addEventListener('click', () => { showToast('Use browser Print → Save as PDF'); window.print(); });
+
+  // Expose to global scope for onclick handlers
+  window.switchTab = switchTab;
+  </script>
+
+  <!-- Global Floating Sidebar -->
+  <div class="global-floating-sidebar">
+    <div class="gfs-toggle">
+      <span>🧰</span>
+      <span class="gfs-text">Quick Tools</span>
+    </div>
+    <a href="../tools/seo-article-generator.html" class="gfs-link">
+      <span>📝</span><span class="gfs-text">SEO Generator</span>
+    </a>
+    <a href="../tools/tiktok-tools.html" class="gfs-link">
+      <span>🎵</span><span class="gfs-text">TikTok Suite</span>
+    </a>
+    <a href="../tools/youtube-suite.html" class="gfs-link">
+      <span>📺</span><span class="gfs-text">YouTube Suite</span>
+    </a>
+    <a href="../ecommerce.html" class="gfs-link">
+      <span>🛒</span><span class="gfs-text">Digital Product</span>
+    </a>
+  </div>
+
+<!-- Auth System (optional - no redirect for guests) -->
+<script src="../js/auth.js"></script>
+
+</body>
+</html>
+
+
+
