@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenRouter API Settings - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .header a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--border);
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .status-badge.offline {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-box {
+            background-color: rgba(15, 23, 42, 0.5);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        .notification {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .notification.success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            display: block;
+        }
+        
+        .notification.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-server"></i> API Settings</h1>
+            <a href="/admin.html"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+
+        <div id="notification" class="notification"></div>
+
+        <div class="card">
+            <h2><i class="fa-solid fa-key"></i> OpenRouter Gateway Configuration</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">
+                All AI tools are routed through this single OpenRouter gateway. The key is encrypted automatically before saving to the database.
+            </p>
+
+            <div class="form-group">
+                <label for="apiKey">OpenRouter API Key</label>
+                <input type="password" id="apiKey" placeholder="sk-or-v1-........................................">
+                <small id="keyHint" style="color: var(--text-muted); display: block; margin-top: 0.5rem;">No key configured yet.</small>
+            </div>
+
+            <div class="actions">
+                <button class="btn" onclick="saveKey()">
+                    <i class="fa-solid fa-save"></i> Save Encrypted Key
+                </button>
+                <button class="btn btn-outline" onclick="testConnection()">
+                    <i class="fa-solid fa-plug"></i> Test Connection
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fa-solid fa-chart-line"></i> Usage & Status</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div style="color: var(--text-muted); font-size: 0.875rem;">Gateway Status</div>
+                    <div class="stat-value" id="statusBox">
+                        <span class="status-badge offline"><i class="fa-solid fa-circle-xmark"></i> Offline</span>
+                    </div>
+                </div>
+                
+                <div class="stat-box">
+                    <div style="color: var(--text-muted); font-size: 0.875rem;">Current Routing Models</div>
+                    <div class="stat-value" style="font-size: 1.1rem; line-height: 1.5;">
+                        GPT-4o<br>
+                        Claude 3 Haiku<br>
+                        Gemini 2.5 Flash
+                    </div>
+                </div>
+
+                <div class="stat-box">
+                    <div style="color: var(--text-muted); font-size: 0.875rem;">Total API Requests (DB)</div>
+                    <div class="stat-value" id="usageCount">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check Admin Auth
+        const token = localStorage.getItem('adminToken');
+        if (!token) {
+            window.location.href = '/admin-login.html';
+        }
+
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+
+        function showNotification(message, type) {
+            const el = document.getElementById('notification');
+            el.className = `notification ${type}`;
+            el.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check' : 'triangle-exclamation'}"></i> ${message}`;
+            setTimeout(() => { el.className = 'notification'; }, 5000);
+        }
+
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/admin/settings/openrouter', { headers });
+                if (res.status === 401) {
+                    localStorage.removeItem('adminToken');
+                    window.location.href = '/admin-login.html';
+                }
+                const data = await res.json();
+                
+                if (data.success && data.isConfigured) {
+                    document.getElementById('keyHint').innerText = `Current Key: ${data.maskedKey}`;
+                    document.getElementById('usageCount').innerText = data.usageCount || 0;
+                    
+                    if (data.status === 'active') {
+                        document.getElementById('statusBox').innerHTML = `<span class="status-badge"><i class="fa-solid fa-circle-check"></i> Connected</span>`;
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function saveKey() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            if (!apiKey) {
+                showNotification('Please enter a valid API key', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/admin/settings/openrouter', {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({ apiKey })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showNotification('API Key encrypted and saved securely.', 'success');
+                    document.getElementById('apiKey').value = '';
+                    loadSettings();
+                } else {
+                    showNotification(data.message || 'Failed to save', 'error');
+                }
+            } catch (err) {
+                showNotification('Network error occurred.', 'error');
+            }
+        }
+
+        async function testConnection() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            
+            // If they entered a new key, test that. Otherwise we test existing by triggering a status refresh? 
+            // The backend endpoint requires apiKey in the body to test immediately.
+            if (!apiKey) {
+                showNotification('Please enter the API key in the input field to test it.', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/admin/settings/openrouter/test', {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({ apiKey })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showNotification('Connection successful! OpenRouter is responding.', 'success');
+                } else {
+                    showNotification('Connection failed: ' + (data.message || 'Invalid key'), 'error');
+                }
+            } catch (err) {
+                showNotification('Network error occurred during test.', 'error');
+            }
+        }
+
+        // Init
+        loadSettings();
+    </script>
+</body>
+</html>

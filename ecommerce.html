@@ -1,0 +1,885 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Create Your Digital Product Tools | Chafiktech Ai</title>
+  <meta name="description" content="Powerful AI tools to grow your online business faster using automation and artificial intelligence.">
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Global CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Specific Futuristic SaaS Styles -->
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #000000;
+      color: #ffffff;
+    }
+    
+    /* Background effects */
+    .bg-futuristic {
+      background-image: 
+        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+    
+    .grid-lines {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    /* Hero Section */
+    .hero-Create Your Digital Product {
+      position: relative;
+      padding: 160px 0 100px;
+      text-align: center;
+      overflow: hidden;
+    }
+    
+    .hero-glow {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      width: 70vw;
+      height: 70vw;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.1) 30%, transparent 70%);
+      filter: blur(80px);
+      z-index: -1;
+      animation: pulse 8s ease-in-out infinite alternate;
+    }
+    
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
+      100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    }
+    
+    .hero-title {
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      background: linear-gradient(to right, #ffffff, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .hero-subtitle {
+      font-size: clamp(1.1rem, 2vw, 1.25rem);
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+    
+    .floating-icon {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.5;
+      animation: float 6s ease-in-out infinite;
+      z-index: -1;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    /* Premium Buttons */
+    .btn-glow {
+      position: relative;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: white;
+      padding: 14px 32px;
+      border-radius: 99px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+      z-index: 1;
+      overflow: hidden;
+    }
+    
+    .btn-glow::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, #8b5cf6, #d946ef);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .btn-glow:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+    }
+    
+    .btn-glow:hover::before {
+      opacity: 1;
+    }
+    
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      padding: 14px 32px;
+      border-radius: 99px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-glass:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    /* Stats Section */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin: 60px auto 0;
+      max-width: 1000px;
+    }
+    
+    .stat-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s ease, border-color 0.3s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+    
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    
+    .stat-label {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Tools Grid */
+    .premium-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+      padding: 80px 0;
+    }
+    
+    .tool-card-premium {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.4));
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    /* Hover Glow Border Effect */
+    .tool-card-premium::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 20px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.8), rgba(168,85,247,0.8));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    
+    .tool-card-premium:hover {
+      transform: translateY(-6px);
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7));
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.15);
+    }
+    
+    .tool-card-premium:hover::before {
+      opacity: 1;
+    }
+    
+    .tc-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 24px;
+      transition: transform 0.3s ease;
+    }
+    
+    .tool-card-premium:hover .tc-icon {
+      transform: scale(1.1);
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+    
+    .tc-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #f8fafc;
+    }
+    
+    .tc-desc {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+    
+    .tc-btn {
+      background: transparent;
+      color: #818cf8;
+      border: none;
+      padding: 0;
+      font-weight: 500;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: gap 0.3s ease;
+      align-self: flex-start;
+    }
+    
+    .tool-card-premium:hover .tc-btn {
+      gap: 12px;
+      color: #a5b4fc;
+    }
+
+    /* Features Section */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      padding: 60px 0;
+    }
+    
+    @media(max-width: 768px) {
+      .features-grid { grid-template-columns: 1fr; }
+    }
+    
+    .feature-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      background: rgba(255, 255, 255, 0.04);
+      transform: translateY(-5px);
+    }
+    
+    .feature-icon {
+      font-size: 40px;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Testimonials Carousel (CSS Only trick for pure HTML/CSS) */
+    .testimonial-carousel {
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      padding: 40px 0;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none; /* Firefox */
+    }
+    .testimonial-carousel::-webkit-scrollbar { display: none; }
+    
+    .testimonial-item {
+      min-width: 350px;
+      scroll-snap-align: center;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+    }
+    
+    .t-quote {
+      font-size: 1rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+    
+    .t-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .t-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #334155;
+    }
+    
+    .t-info h4 { font-size: 0.95rem; margin: 0; color: #fff; }
+    .t-info p { font-size: 0.8rem; margin: 0; color: #64748b; }
+
+    /* Custom Footer specific to this page */
+    .saas-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+    .saas-footer::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.5), transparent);
+    }
+    
+    /* Utilities */
+    .section-title-center {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .section-subtitle-center {
+      text-align: center;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto 60px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body class="bg-futuristic">
+  <div class="grid-lines"></div>
+
+  <!-- Navbar (Reusing existing layout but forced dark) -->
+  <nav class="navbar scrolled" style="background: rgba(0,0,0,0.8); border-bottom: 1px solid rgba(255,255,255,0.05);">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="index.html" class="nav-logo" style="color: white;">
+        <div class="nav-logo-icon">⚡</div>
+        Chafiktech Ai
+      </a>
+      <div class="nav-links" style="display: flex; gap: 32px;">
+        <a href="index.html" class="nav-link" style="color: #94a3b8;">Home</a>
+        <a href="pricing.html" class="nav-link" style="color: #94a3b8;">Pricing</a>
+        <a href="blog.html" class="nav-link" style="color: #94a3b8;">Blog</a>
+        <a href="ecommerce.html" class="nav-link" style="color: #fff;">Create Your Digital Product</a>
+      </div>
+      <div class="nav-actions" style="display: flex; gap: 16px;">
+        <a href="login.html" class="btn-glass">Log In</a>
+        <a href="register.html" class="btn-glow">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-Create Your Digital Product">
+    <div class="hero-glow"></div>
+    <div class="floating-icon" style="top: 20%; left: 15%;">🚀</div>
+    <div class="floating-icon" style="top: 60%; left: 10%; font-size: 3rem;">📦</div>
+    <div class="floating-icon" style="top: 30%; right: 15%; font-size: 2.5rem;">💳</div>
+    <div class="floating-icon" style="top: 70%; right: 20%;">✨</div>
+    
+    <div class="container reveal">
+      <div style="display: inline-block; padding: 6px 16px; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.3); border-radius: 99px; color: #a5b4fc; font-size: 0.85rem; font-weight: 600; margin-bottom: 24px; letter-spacing: 0.05em;">V2.0 NOW LIVE</div>
+      <h1 class="hero-title">AI Create Your Digital Product Tools</h1>
+      <p class="hero-subtitle">Powerful AI tools to grow your online business faster using automation and artificial intelligence. Scale your store from zero to millions.</p>
+      
+      <div style="display: flex; gap: 16px; justify-content: center;">
+        <a href="register.html" class="btn-glow">Start Free</a>
+        <a href="#tools" class="btn-glass">Explore Tools</a>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="container reveal reveal-delay-2">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">50+</div>
+          <div class="stat-label">AI Tools</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">10K+</div>
+          <div class="stat-label">Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">1M+</div>
+          <div class="stat-label">Generations</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">99%</div>
+          <div class="stat-label">Satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tools Grid Section -->
+  <section id="tools" class="section">
+    <div class="container">
+      <h2 class="section-title-center reveal">Everything you need to scale</h2>
+      <p class="section-subtitle-center reveal">A complete suite of AI-powered tools designed specifically for Create Your Digital Product entrepreneurs and agencies.</p>
+      
+      <div class="premium-grid">
+        <!-- Tool 1 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/product-description-generator.html'">
+          <div class="tc-icon">📝</div>
+          <h3 class="tc-title">Product Description Generator</h3>
+          <p class="tc-desc">Instantly generate high-converting, SEO-optimized product descriptions that sell.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+        
+        <!-- Tool 2 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/product-title-generator.html'">
+          <div class="tc-icon">🏷️</div>
+          <h3 class="tc-title">Product Title Generator</h3>
+          <p class="tc-desc">Create catchy, keyword-rich product titles that capture attention and drive clicks.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 3 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/shopify-seo-generator.html'">
+          <div class="tc-icon">🔍</div>
+          <h3 class="tc-title">Shopify SEO Generator</h3>
+          <p class="tc-desc">Automate your meta titles and descriptions for maximum organic traffic.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 4 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/ad-copy-generator.html'">
+          <div class="tc-icon">📣</div>
+          <h3 class="tc-title">Ad Copy Generator</h3>
+          <p class="tc-desc">Write winning Facebook, Google, and TikTok ad copy that lowers your CPA.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 5 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/digital-product-email-writer.html'">
+          <div class="tc-icon">📧</div>
+          <h3 class="tc-title">Create Your Digital Product Email Writer</h3>
+          <p class="tc-desc">Draft abandoned cart, welcome series, and promotional emails in seconds.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 6 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/product-image-enhancer.html'">
+          <div class="tc-icon">🖼️</div>
+          <h3 class="tc-title">Product Image Enhancer</h3>
+          <p class="tc-desc">Upscale, remove backgrounds, and enhance product images using AI.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 7 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/review-response-generator.html'">
+          <div class="tc-icon">⭐</div>
+          <h3 class="tc-title">Review Response Generator</h3>
+          <p class="tc-desc">Automate professional and empathetic responses to customer reviews.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 8 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/product-idea-finder.html'">
+          <div class="tc-icon">💡</div>
+          <h3 class="tc-title">Product Idea Finder</h3>
+          <p class="tc-desc">Discover untapped niches and trending product ideas based on live market data.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 9 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/dropshipping-research.html'">
+          <div class="tc-icon">📦</div>
+          <h3 class="tc-title">Dropshipping Research</h3>
+          <p class="tc-desc">Analyze supplier data, margins, and competition for potential winning products.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 10 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/amazon-listing-generator.html'">
+          <div class="tc-icon">🛒</div>
+          <h3 class="tc-title">Amazon Listing Generator</h3>
+          <p class="tc-desc">Generate A9-algorithm optimized bullet points and backend search terms.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 11 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/etsy-listing-generator.html'">
+          <div class="tc-icon">🎨</div>
+          <h3 class="tc-title">Etsy Listing Generator</h3>
+          <p class="tc-desc">Craft personalized, keyword-optimized listings perfect for the Etsy marketplace.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 12 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/digital-product-name-generator.html'">
+          <div class="tc-icon">🏪</div>
+          <h3 class="tc-title">Create Your Digital Product Name Generator</h3>
+          <p class="tc-desc">Brainstorm catchy, brandable store names and instantly check domain availability.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 13 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/pricing-optimizer.html'">
+          <div class="tc-icon">💰</div>
+          <h3 class="tc-title">Pricing Optimizer</h3>
+          <p class="tc-desc">Use AI to analyze competitors and suggest the most profitable pricing strategy.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 14 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/sales-copy-generator.html'">
+          <div class="tc-icon">✍️</div>
+          <h3 class="tc-title">Sales Copy Generator</h3>
+          <p class="tc-desc">Generate long-form persuasive sales copy using proven psychological frameworks.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+
+        <!-- Tool 15 -->
+        <div class="tool-card-premium reveal" style="cursor: pointer;" onclick="window.location.href='tools/landing-page-generator.html'">
+          <div class="tc-icon">🚀</div>
+          <h3 class="tc-title">Landing Page Generator</h3>
+          <p class="tc-desc">Generate complete HTML/CSS landing page structures optimized for conversions.</p>
+          <button class="tc-btn">Open Tool &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section">
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">🧠</div>
+          <h3 style="margin-bottom: 12px;">AI Powered</h3>
+          <p style="color: #94a3b8; font-size: 0.95rem;">Powered by the latest GPT-4 and custom Create Your Digital Product models for unmatched accuracy.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">⚡</div>
+          <h3 style="margin-bottom: 12px;">Instant Results</h3>
+          <p style="color: #94a3b8; font-size: 0.95rem;">Stop waiting for copywriters. Get production-ready assets generated in milliseconds.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">🎯</div>
+          <h3 style="margin-bottom: 12px;">SEO Optimized</h3>
+          <p style="color: #94a3b8; font-size: 0.95rem;">Every output is structured and optimized to rank higher on search engines and marketplaces.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section (SaaS Style) -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title-center reveal">Transparent Pricing</h2>
+      <p class="section-subtitle-center reveal">Start building for free, upgrade when you need more power.</p>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; max-width: 1000px; margin: 0 auto;">
+        
+        <!-- Free -->
+        <div class="premium-card reveal">
+          <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Free</h3>
+          <div style="font-size: 3rem; font-weight: 700; margin-bottom: 24px;">$0<span style="font-size: 1rem; color: #94a3b8; font-weight: 400;">/mo</span></div>
+          <ul style="list-style: none; padding: 0; margin-bottom: 32px; display: flex; flex-direction: column; gap: 12px;">
+            <li style="display: flex; gap: 12px; color: #cbd5e1;"><span style="color: #6366f1;">✓</span> 10 Generations/mo</li>
+            <li style="display: flex; gap: 12px; color: #cbd5e1;"><span style="color: #6366f1;">✓</span> Basic Tools</li>
+            <li style="display: flex; gap: 12px; color: #cbd5e1;"><span style="color: #6366f1;">✓</span> Community Support</li>
+          </ul>
+          <button class="btn-glass" style="width: 100%;">Get Started</button>
+        </div>
+
+        <!-- Pro -->
+        <div class="premium-card reveal" style="background: rgba(99, 102, 241, 0.05); transform: scale(1.05); z-index: 1;">
+          <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #6366f1, #a855f7); padding: 4px 16px; border-radius: 0 0 12px 12px; font-size: 0.8rem; font-weight: 700;">MOST POPULAR</div>
+          <h3 style="font-size: 1.5rem; margin-bottom: 8px; margin-top: 16px;">Pro</h3>
+          <div style="font-size: 3rem; font-weight: 700; margin-bottom: 24px;">$29<span style="font-size: 1rem; color: #94a3b8; font-weight: 400;">/mo</span></div>
+          <ul style="list-style: none; padding: 0; margin-bottom: 32px; display: flex; flex-direction: column; gap: 12px;">
+            <li style="display: flex; gap: 12px; color: #cbd5e1;"><span style="color: #6366f1;">✓</span> Unlimited Generations</li>
+            <li style="display: flex; gap: 12px; color: #cbd5e1;"><span style="color: #6366f1;">✓</span> All Premium Tools</li>
+            <li style="display: flex; gap: 12px; color: #cbd5e1;"><span style="color: #6366f1;">✓</span> Priority Support</li>
+            <li style="display: flex; gap: 12px; color: #cbd5e1;"><span style="color: #6366f1;">✓</span> API Access</li>
+          </ul>
+          <button class="btn-glow" style="width: 100%;">Upgrade to Pro</button>
+        </div>
+
+        <!-- Business -->
+        <div class="premium-card reveal">
+          <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Business</h3>
+          <div style="font-size: 3rem; font-weight: 700; margin-bottom: 24px;">$99<span style="font-size: 1rem; color: #94a3b8; font-weight: 400;">/mo</span></div>
+          <ul style="list-style: none; padding: 0; margin-bottom: 32px; display: flex; flex-direction: column; gap: 12px;">
+            <li style="display: flex; gap: 12px; color: #cbd5e1;"><span style="color: #6366f1;">✓</span> Everything in Pro</li>
+            <li style="display: flex; gap: 12px; color: #cbd5e1;"><span style="color: #6366f1;">✓</span> 5 Team Members</li>
+            <li style="display: flex; gap: 12px; color: #cbd5e1;"><span style="color: #6366f1;">✓</span> Custom AI Models</li>
+            <li style="display: flex; gap: 12px; color: #cbd5e1;"><span style="color: #6366f1;">✓</span> Dedicated Success Manager</li>
+          </ul>
+          <button class="btn-glass" style="width: 100%;">Contact Sales</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Carousel -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title-center reveal">Trusted by top brands</h2>
+      
+      <div class="testimonial-carousel reveal">
+        <div class="testimonial-item">
+          <p class="t-quote">"The Product Description Generator alone saved our agency hundreds of hours this month. Highly recommended for any Shopify store owner."</p>
+          <div class="t-author">
+            <div class="t-avatar" style="background: url('https://i.pravatar.cc/100?img=32') center/cover;"></div>
+            <div class="t-info">
+              <h4>Sarah Jenkins</h4>
+              <p>Founder, Lumina Cosmetics</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-item">
+          <p class="t-quote">"Chafiktech Ai replaced three different tools we were using. The Ad Copy generator writes better Facebook ads than our senior media buyer."</p>
+          <div class="t-author">
+            <div class="t-avatar" style="background: url('https://i.pravatar.cc/100?img=11') center/cover;"></div>
+            <div class="t-info">
+              <h4>Mark Thompson</h4>
+              <p>CMO, TechGear</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-item">
+          <p class="t-quote">"We used the SEO generator on our 500+ SKU catalog and saw a 40% increase in organic traffic within just two weeks."</p>
+          <div class="t-author">
+            <div class="t-avatar" style="background: url('https://i.pravatar.cc/100?img=47') center/cover;"></div>
+            <div class="t-info">
+              <h4>Elena Rostova</h4>
+              <p>Head of Growth, FitLife</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-item">
+          <p class="t-quote">"An absolute game changer for dropshipping. The product research tool helps us validate winners instantly before spending on ads."</p>
+          <div class="t-author">
+            <div class="t-avatar" style="background: url('https://i.pravatar.cc/100?img=53') center/cover;"></div>
+            <div class="t-info">
+              <h4>David Chen</h4>
+              <p>Create Your Digital Product Entrepreneur</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modern Accordion FAQ -->
+  <section class="section" style="padding-bottom: 120px;">
+    <div class="container">
+      <h2 class="section-title-center reveal">Frequently Asked Questions</h2>
+      
+      <div style="max-width: 800px; margin: 40px auto 0; display: flex; flex-direction: column; gap: 16px;" class="reveal">
+        <!-- FAQ Item 1 -->
+        <div class="premium-card" style="padding: 24px; cursor: pointer;" onclick="this.classList.toggle('active-faq')">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 600;">
+            Do I need coding experience?
+            <span style="color: #818cf8;">+</span>
+          </div>
+          <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease; color: #94a3b8; font-size: 0.95rem;">
+            <p style="padding-top: 16px; margin: 0;">No coding experience is required. Our tools are designed with an intuitive, user-friendly interface. Just type your input and let the AI do the heavy lifting.</p>
+          </div>
+        </div>
+        
+        <!-- FAQ Item 2 -->
+        <div class="premium-card" style="padding: 24px; cursor: pointer;" onclick="this.classList.toggle('active-faq')">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 600;">
+            Which platforms do your tools support?
+            <span style="color: #818cf8;">+</span>
+          </div>
+          <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease; color: #94a3b8; font-size: 0.95rem;">
+            <p style="padding-top: 16px; margin: 0;">Our tools output text and data that can be used on any platform, with specific optimizations available for Shopify, Amazon, Etsy, WooCommerce, and standard HTML landing pages.</p>
+          </div>
+        </div>
+        
+        <!-- FAQ Item 3 -->
+        <div class="premium-card" style="padding: 24px; cursor: pointer;" onclick="this.classList.toggle('active-faq')">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 600;">
+            Can I cancel my subscription anytime?
+            <span style="color: #818cf8;">+</span>
+          </div>
+          <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease; color: #94a3b8; font-size: 0.95rem;">
+            <p style="padding-top: 16px; margin: 0;">Yes, you can upgrade, downgrade, or cancel your subscription at any time right from your billing dashboard. No hidden fees or lock-in contracts.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+    <!-- Footer -->
+    <footer class="footer reveal">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="nav-logo">
+                        <div class="nav-logo-icon">⚡</div>
+                        Chafiktech Ai
+                    </a>
+                    <p>Empowering creators with next-generation AI tools for content creation, optimization, and growth.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Twitter">𝕏</a>
+                        <a href="#" aria-label="LinkedIn">in</a>
+                        <a href="#" aria-label="GitHub">⌨</a>
+                        <a href="#" aria-label="Discord">💬</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Products</h4>
+                    <a href="tools/seo-article-generator.html">SEO Article Generator</a>
+                    <a href="tools/video-to-prompt.html">Video to Prompt</a>
+                    <a href="tools/youtube-suite.html">AI AI Youtube Creator Suite</a>
+                    <a href="tools/ai-humanizer.html">AI Humanizer</a>
+                    <a href="tools/tiktok-tools.html">TikTok Tools</a>
+                    <a href="tools/prompt-viral.html">Prompt Viral</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="contact.html">Contact Us</a>
+                    <a href="pricing.html">Pricing</a>
+                    <a href="blog.html">Blog</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal & Support</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="disclaimer.html">Disclaimer</a>
+                    <a href="faq.html">FAQ</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Chafiktech Ai. All rights reserved.</p>
+                <p style="margin-top:5px;font-size:0.8em;color:var(--text3)">Contact: tools@chafiktech.com | Website: www.chafiktech.com</p>
+            </div>
+        </div>
+    </footer>
+
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script>
+    // FAQ Accordion logic
+    document.querySelectorAll('.premium-card').forEach(card => {
+      if(card.hasAttribute('onclick')) {
+        card.addEventListener('click', function() {
+          const content = this.querySelector('.faq-content');
+          const symbol = this.querySelector('span');
+          if(this.classList.contains('active-faq-open')) {
+            this.classList.remove('active-faq-open');
+            content.style.maxHeight = '0';
+            symbol.textContent = '+';
+          } else {
+            this.classList.add('active-faq-open');
+            content.style.maxHeight = content.scrollHeight + 'px';
+            symbol.textContent = '-';
+          }
+        });
+        // Remove the inline onclick to prevent double firing
+        card.removeAttribute('onclick');
+      }
+    });
+
+    // Simple scroll reveal (Re-implementing minimal framer-motion like reveal for this page)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = 1;
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+      if (el.classList.contains('reveal-delay-1')) el.style.transitionDelay = '0.1s';
+      if (el.classList.contains('reveal-delay-2')) el.style.transitionDelay = '0.2s';
+      observer.observe(el);
+    });
+  </script>
+
+  <!-- Global Floating Sidebar -->
+  <div class="global-floating-sidebar">
+    <div class="gfs-toggle">
+      <span>🧰</span>
+      <span class="gfs-text">Quick Tools</span>
+    </div>
+    <a href="tools/seo-article-generator.html" class="gfs-link">
+      <span>📝</span><span class="gfs-text">SEO Generator</span>
+    </a>
+    <a href="tools/tiktok-tools.html" class="gfs-link">
+      <span>🎵</span><span class="gfs-text">TikTok Suite</span>
+    </a>
+    <a href="tools/youtube-suite.html" class="gfs-link">
+      <span>📺</span><span class="gfs-text">YouTube Suite</span>
+    </a>
+    <a href="ecommerce.html" class="gfs-link">
+      <span>🛒</span><span class="gfs-text">Digital Product</span>
+    </a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chafiktech Ai Admin Dashboard</title>
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Global CSS (reuses variables where possible) -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    :root {
+      --admin-bg: #030712;
+      --admin-sidebar: #111827;
+      --admin-card: rgba(31, 41, 55, 0.5);
+      --admin-border: rgba(255, 255, 255, 0.08);
+      --admin-text: #f9fafb;
+      --admin-muted: #9ca3af;
+      --admin-primary: #6366f1;
+      --admin-primary-hover: #818cf8;
+      --admin-danger: #ef4444;
+      --admin-success: #10b981;
+      --admin-warning: #f59e0b;
+    }
+
+    body {
+      background-color: var(--admin-bg);
+      color: var(--admin-text);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Layout */
+    .admin-layout {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: var(--admin-sidebar);
+      border-right: 1px solid var(--admin-border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--admin-border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+    }
+
+    .sidebar-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--admin-primary), #a855f7);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .sidebar-nav {
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: var(--admin-muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+    }
+
+    .nav-item.active {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--admin-primary-hover);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    /* Background Glow Effect */
+    .main-content::before {
+      content: '';
+      position: fixed;
+      top: 0; right: 0;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+      filter: blur(60px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .topbar {
+      height: 70px;
+      border-bottom: 1px solid var(--admin-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--admin-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .content-area {
+      padding: 32px;
+    }
+
+    /* Tab Sections */
+    .admin-section {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+    
+    .admin-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* UI Components */
+    .admin-card {
+      background: var(--admin-card);
+      border: 1px solid var(--admin-border);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      margin-bottom: 24px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: linear-gradient(145deg, rgba(31, 41, 55, 0.7), rgba(17, 24, 39, 0.7));
+      border: 1px solid var(--admin-border);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, var(--admin-primary), transparent);
+    }
+
+    .stat-value {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      color: var(--admin-muted);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Data Tables */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .admin-table th {
+      padding: 16px;
+      border-bottom: 1px solid var(--admin-border);
+      color: var(--admin-muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .admin-table td {
+      padding: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      color: var(--admin-text);
+      font-size: 0.95rem;
+    }
+    
+    .admin-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Badges */
+    .badge {
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-primary { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+
+    /* Action Buttons */
+    .action-group {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .btn-action {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--admin-border);
+      color: var(--admin-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+    .btn-action.edit:hover { color: var(--admin-primary-hover); border-color: var(--admin-primary); }
+    .btn-action.delete:hover { color: var(--admin-danger); border-color: var(--admin-danger); background: rgba(239, 68, 68, 0.1); }
+    .btn-action.publish:hover { color: var(--admin-success); border-color: var(--admin-success); background: rgba(16, 185, 129, 0.1); }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #d1d5db;
+      font-size: 0.95rem;
+    }
+    
+    .form-input {
+      width: 100%;
+      background: #111827;
+      border: 1px solid var(--admin-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: white;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--admin-primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+    
+    .form-textarea {
+      min-height: 200px;
+      resize: vertical;
+    }
+
+    .upload-zone {
+      border: 2px dashed var(--admin-border);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      background: rgba(17, 24, 39, 0.5);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .upload-zone:hover {
+      border-color: var(--admin-primary);
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    .btn-main {
+      background: var(--admin-primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-main:hover {
+      background: var(--admin-primary-hover);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: white;
+      border: 1px solid var(--admin-border);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a href="../index.html" class="sidebar-header">
+        <div class="sidebar-logo">⚡</div>
+        Chafiktech Ai Admin
+      </a>
+      
+      <nav class="sidebar-nav">
+        <div class="nav-item active" data-target="dashboard">
+          <span>📊</span> Dashboard
+        </div>
+        <div class="nav-item" data-target="manage-content">
+          <span>📝</span> Content & Articles
+        </div>
+        <div class="nav-item" data-target="publish-form">
+          <span>âœï¸</span> Publish New
+        </div>
+        <div class="nav-item" data-target="manage-prompts">
+          <span>🚀</span> Prompt Viral
+        </div>
+        <div class="nav-item" data-target="users-dir">
+          <span>👤¥</span> Users Directory
+        </div>
+        <div class="nav-item" data-target="pricing-mgmt">
+          <span>📌’³</span> Pricing Management
+        </div>
+        <div class="nav-item" data-target="api-settings">
+          <span>🔑</span> API Settings
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-title" id="topbarTitle">Dashboard Overview</div>
+        <div class="topbar-actions">
+          <span style="color: var(--admin-muted); font-size: 0.9rem;">Admin Mode</span>
+          <div class="admin-avatar">AD</div>
+        </div>
+      </header>
+
+      <div class="content-area">
+        
+        <!-- SECTION 1: DASHBOARD -->
+        <section id="dashboard" class="admin-section active">
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="stat-total-tools">--</div>
+              <div class="stat-label">Total Tools</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-active-tools">--</div>
+              <div class="stat-label">Active Tools</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-mock-tools">--</div>
+              <div class="stat-label">Tools Using Mock Data</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-missing-keys">--</div>
+              <div class="stat-label">Missing API Keys</div>
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 24px; margin-bottom: 32px;">
+            <div style="background: var(--admin-card); padding: 16px 24px; border-radius: 12px; border: 1px solid var(--admin-border); flex: 1; display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 600;">API Status</span>
+              <span id="stat-api-status" class="badge">--</span>
+            </div>
+            <div style="background: var(--admin-card); padding: 16px 24px; border-radius: 12px; border: 1px solid var(--admin-border); flex: 1; display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 600;">System Health</span>
+              <span id="stat-system-health" class="badge">--</span>
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <h3 style="margin-top: 0; margin-bottom: 24px;">Recent Activity</h3>
+            <div class="table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Alex Johnson</td>
+                    <td>Upgraded to Pro Plan</td>
+                    <td>2 mins ago</td>
+                  </tr>
+                  <tr>
+                    <td>Sarah Smith</td>
+                    <td>Generated TikTok Script</td>
+                    <td>15 mins ago</td>
+                  </tr>
+                  <tr>
+                    <td>Mike T.</td>
+                    <td>Registered new account</td>
+                    <td>1 hour ago</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: MANAGE ARTICLES -->
+        <section id="manage-content" class="admin-section">
+          <div class="admin-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+              <h3 style="margin: 0;">Manage Blog Articles</h3>
+              <button class="btn-main" onclick="switchTab('publish-form')">+ New Article</button>
+            </div>
+            
+            <div class="table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>How AI is Revolutionizing Video Content</td>
+                    <td><span class="badge badge-success">Published</span></td>
+                    <td>Oct 24, 2026</td>
+                    <td>
+                      <div class="action-group">
+                        <button class="btn-action edit">âœï¸ Edit</button>
+                        <button class="btn-action delete">📌—‘️ Delete</button>
+                        <button class="btn-action">🔍’ Unpublish</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Building a Profitable YouTube Channel</td>
+                    <td><span class="badge badge-success">Published</span></td>
+                    <td>Oct 20, 2026</td>
+                    <td>
+                      <div class="action-group">
+                        <button class="btn-action edit">âœï¸ Edit</button>
+                        <button class="btn-action delete">📌—‘️ Delete</button>
+                        <button class="btn-action">🔍’ Unpublish</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Understanding GPT-5 for Creators</td>
+                    <td><span class="badge badge-warning">Draft</span></td>
+                    <td>--</td>
+                    <td>
+                      <div class="action-group">
+                        <button class="btn-action edit">âœï¸ Edit</button>
+                        <button class="btn-action delete">📌—‘️ Delete</button>
+                        <button class="btn-action publish">✅ Publish</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: PUBLISHING FORM -->
+        <section id="publish-form" class="admin-section">
+          <div class="admin-card">
+            <h3 style="margin-top: 0; margin-bottom: 24px;">Publish New Content</h3>
+            
+            <div class="form-group">
+              <label class="form-label">Post Type</label>
+              <select class="form-input">
+                <option value="blog">Blog Article</option>
+                <option value="prompt">Prompt Viral Post</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Title</label>
+              <input type="text" class="form-input" placeholder="Enter an engaging title...">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Slug</label>
+              <input type="text" class="form-input" placeholder="e.g., /my-new-post">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Content / Description</label>
+              <textarea class="form-input form-textarea" placeholder="Write your content here... (HTML supported)"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Cover Image</label>
+              <div class="upload-zone">
+                <div style="font-size: 2rem; margin-bottom: 12px;">🖼️</div>
+                <div style="font-weight: 500; margin-bottom: 4px;">Click or drag image to upload</div>
+                <div style="color: var(--admin-muted); font-size: 0.85rem;">PNG, JPG, WEBP up to 5MB</div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn-main">✅ Publish Now</button>
+              <button class="btn-secondary">📌’¾ Save as Draft</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: MANAGE PROMPTS -->
+        <section id="manage-prompts" class="admin-section">
+          <div class="admin-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+              <h3 style="margin: 0;">Manage Viral Prompts</h3>
+              <button class="btn-main" onclick="switchTab('publish-form')">+ New Prompt</button>
+            </div>
+            
+            <div class="table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Prompt Title</th>
+                    <th>Platform</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Viral TikTok Script Formula</td>
+                    <td>TikTok</td>
+                    <td><span class="badge badge-success">Published</span></td>
+                    <td>
+                      <div class="action-group">
+                        <button class="btn-action edit">âœï¸ Edit</button>
+                        <button class="btn-action delete">📌—‘️ Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Midjourney Photorealism Hack</td>
+                    <td>Midjourney</td>
+                    <td><span class="badge badge-success">Published</span></td>
+                    <td>
+                      <div class="action-group">
+                        <button class="btn-action edit">âœï¸ Edit</button>
+                        <button class="btn-action delete">📌—‘️ Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 5: USERS DIRECTORY -->
+        <section id="users-dir" class="admin-section">
+          <div class="admin-card">
+            <h3 style="margin-top: 0; margin-bottom: 24px;">Registered Users</h3>
+            
+            <div class="table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Plan</th>
+                    <th>Join Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Alex Johnson</td>
+                    <td>alex.j@example.com</td>
+                    <td><span class="badge badge-primary">Pro</span></td>
+                    <td>Oct 15, 2026</td>
+                    <td><span class="badge badge-success">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>Maria Garcia</td>
+                    <td>maria.g@example.com</td>
+                    <td><span class="badge" style="background:#374151;">Free</span></td>
+                    <td>Oct 18, 2026</td>
+                    <td><span class="badge badge-success">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>David Chen</td>
+                    <td>d.chen@business.com</td>
+                    <td><span class="badge badge-warning">Business</span></td>
+                    <td>Oct 10, 2026</td>
+                    <td><span class="badge badge-success">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>James Wilson</td>
+                    <td>james.w@example.com</td>
+                    <td><span class="badge" style="background:#374151;">Free</span></td>
+                    <td>Sep 05, 2026</td>
+                    <td><span class="badge badge-danger" style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3)">Banned</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 6: PRICING MANAGEMENT -->
+        <section id="pricing-mgmt" class="admin-section">
+          <div class="admin-card">
+            <h3 style="margin-top: 0; margin-bottom: 24px;">Pricing Plans Management</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+              
+              <!-- Free Plan -->
+              <div style="background: rgba(17, 24, 39, 0.5); padding: 24px; border-radius: 12px; border: 1px solid var(--admin-border);">
+                <h4 style="margin-top: 0; font-size: 1.25rem;">Free Plan</h4>
+                <div class="form-group">
+                  <label class="form-label">Price ($/mo)</label>
+                  <input type="text" class="form-input" value="0">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Generations Limit</label>
+                  <input type="text" class="form-input" value="10">
+                </div>
+                <button class="btn-main" style="width: 100%;">Update Free Plan</button>
+              </div>
+
+              <!-- Pro Plan -->
+              <div style="background: rgba(99, 102, 241, 0.05); padding: 24px; border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.3);">
+                <h4 style="margin-top: 0; font-size: 1.25rem; color: #818cf8;">Pro Plan</h4>
+                <div class="form-group">
+                  <label class="form-label">Price ($/mo)</label>
+                  <input type="text" class="form-input" value="29">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Generations Limit</label>
+                  <input type="text" class="form-input" value="Unlimited">
+                </div>
+                <button class="btn-main" style="width: 100%;">Update Pro Plan</button>
+              </div>
+
+              <!-- Business Plan -->
+              <div style="background: rgba(17, 24, 39, 0.5); padding: 24px; border-radius: 12px; border: 1px solid var(--admin-border);">
+                <h4 style="margin-top: 0; font-size: 1.25rem;">Business Plan</h4>
+                <div class="form-group">
+                  <label class="form-label">Price ($/mo)</label>
+                  <input type="text" class="form-input" value="99">
+                        <button class="btn-main" style="width: 100%;">Update Business Plan</button>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 7: API SETTINGS -->
+        <section id="api-settings" class="admin-section">
+          <div class="admin-card">
+            <h3 style="margin-top: 0; margin-bottom: 24px;">API Integration Settings</h3>
+            
+            <div style="background: rgba(17, 24, 39, 0.5); padding: 24px; border-radius: 12px; border: 1px solid var(--admin-border); margin-bottom: 24px;">
+              <h4 style="margin-top: 0; font-size: 1.25rem; display: flex; align-items: center; gap: 8px;">
+                <span style="color: #10b981;">⚡</span> API Keys Manager
+              </h4>
+              <p style="color: var(--admin-muted); margin-bottom: 24px; font-size: 0.95rem; line-height: 1.5;">
+                Manage your API keys for generating AI content. Keys are securely stored in the backend environment variables. If a key is missing, the system will use Mock Data.
+              </p>
+              
+              <div class="form-group">
+                <label class="form-label" style="display: flex; justify-content: space-between;">
+                  Gemini API Key
+                  <span id="gemini_status" class="badge badge-warning">Checking...</span>
+                </label>
+                <input type="password" id="gemini_api_key" class="form-input" placeholder="AIzaSy...">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label" style="display: flex; justify-content: space-between;">
+                  OpenAI API Key
+                  <span id="openai_status" class="badge badge-warning">Checking...</span>
+                </label>
+                <input type="password" id="openai_api_key" class="form-input" placeholder="sk-...">
+              </div>
+              
+              <div style="display: flex; align-items: center;">
+                <button class="btn-main" onclick="saveApiKeys()">Save API Keys</button>
+                <span id="api_save_status" style="margin-left: 16px; color: var(--admin-success); display: none; font-weight: 500;">✅ Saved Successfully!</span>
+              </div>
+            </div>
+
+            <!-- System Logs Section -->
+            <div style="background: rgba(17, 24, 39, 0.5); padding: 24px; border-radius: 12px; border: 1px solid var(--admin-border);">
+              <h4 style="margin-top: 0; font-size: 1.25rem; display: flex; align-items: center; gap: 8px; justify-content: space-between;">
+                <span>📋 System Logs</span>
+                <button class="btn-secondary" onclick="loadLogs()" style="font-size: 0.8rem; padding: 6px 12px;">Refresh</button>
+              </h4>
+              <div class="table-container" style="max-height: 300px; overflow-y: auto;">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Level</th>
+                      <th>Message</th>
+                    </tr>
+                  </thead>
+                  <tbody id="logs_table_body">
+                    <tr><td colspan="3" style="text-align: center;">Loading logs...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // --- Authentication Check ---
+    const adminToken = localStorage.getItem('admin_token');
+    if (!adminToken) {
+      window.location.href = 'admin-login.html';
+    }
+
+    function handleAuthError(res) {
+      if (res.status === 401) {
+        localStorage.removeItem('admin_token');
+        window.location.href = 'admin-login.html';
+        return true;
+      }
+      return false;
+    }
+
+    function getAuthHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminToken}`
+      };
+    }
+
+    // Navigation Logic
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('.admin-section');
+    const topbarTitle = document.getElementById('topbarTitle');
+
+    function switchTab(targetId) {
+      // Find corresponding nav item
+      let targetNav = null;
+      navItems.forEach(item => {
+        if (item.getAttribute('data-target') === targetId) {
+          targetNav = item;
+        }
+      });
+
+      if (!targetNav && targetId === 'publish-form') {
+         // Special case for buttons calling switchTab directly
+         navItems.forEach(item => {
+          if (item.getAttribute('data-target') === 'publish-form') targetNav = item;
+        });
+      }
+
+      if (targetNav) {
+        // Update active class on nav
+        navItems.forEach(n => n.classList.remove('active'));
+        targetNav.classList.add('active');
+        
+        // Update topbar title
+        topbarTitle.textContent = targetNav.innerText.replace(/[^\x00-\x7F]/g, "").trim() + " Overview";
+      }
+
+      // Hide all sections, show target
+      sections.forEach(sec => sec.classList.remove('active'));
+      const targetSec = document.getElementById(targetId);
+      if (targetSec) {
+        targetSec.classList.add('active');
+      }
+    }
+
+    // Attach click events
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        switchTab(item.getAttribute('data-target'));
+      });
+    });
+
+    // API Settings & Logs Logic
+    const API_BASE = window.location.origin;
+
+    async function loadApiStatus() {
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/keys`, {
+          headers: getAuthHeaders()
+        });
+        if(handleAuthError(res)) return;
+        if(res.ok) {
+          const data = await res.json();
+          updateStatusBadge('gemini_status', data.gemini.status);
+          updateStatusBadge('openai_status', data.openai.status);
+        }
+      } catch(e) {
+        console.error("Failed to load API status", e);
+      }
+    }
+
+    function updateStatusBadge(id, status) {
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.textContent = status;
+      el.className = 'badge'; // reset
+      if(status === 'Active') el.classList.add('badge-success');
+      else el.classList.add('badge-danger');
+      if(status === 'Missing') el.classList.add('badge-warning');
+    }
+
+    async function saveApiKeys() {
+      const gemini = document.getElementById('gemini_api_key').value;
+      const openai = document.getElementById('openai_api_key').value;
+      
+      const payload = {};
+      if (gemini) payload.gemini = gemini;
+      if (openai) payload.openai = openai;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/keys`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(payload)
+        });
+        if(handleAuthError(res)) return;
+        if(res.ok) {
+          const statusEl = document.getElementById('api_save_status');
+          statusEl.style.display = 'inline';
+          setTimeout(() => statusEl.style.display = 'none', 3000);
+          
+          document.getElementById('gemini_api_key').value = '';
+          document.getElementById('openai_api_key').value = '';
+          
+          loadApiStatus();
+          loadLogs();
+        }
+      } catch(e) {
+        alert("Failed to save keys. Make sure backend is running.");
+      }
+    }
+
+    async function loadLogs() {
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/logs`, {
+          headers: getAuthHeaders()
+        });
+        if(handleAuthError(res)) return;
+        if(res.ok) {
+          const logs = await res.json();
+          const tbody = document.getElementById('logs_table_body');
+          if(!logs || logs.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">No logs found.</td></tr>';
+            return;
+          }
+          
+          tbody.innerHTML = logs.map(log => {
+            const date = new Date(log.timestamp).toLocaleString();
+            let color = 'var(--admin-text)';
+            if(log.level === 'ERROR') color = 'var(--admin-danger)';
+            if(log.level === 'WARN') color = 'var(--admin-warning)';
+            if(log.level === 'INFO') color = 'var(--admin-success)';
+            
+            return `
+              <tr>
+                <td style="font-size: 0.8rem; color: var(--admin-muted);">${date}</td>
+                <td style="color: ${color}; font-weight: 600;">${log.level}</td>
+                <td>${log.message}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+      } catch(e) {
+        console.error("Failed to load logs", e);
+      }
+    }
+
+    async function loadSystemStatus() {
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/status`, {
+          headers: getAuthHeaders()
+        });
+        if(handleAuthError(res)) return;
+        if(res.ok) {
+          const data = await res.json();
+          document.getElementById('stat-total-tools').textContent = data.totalTools;
+          document.getElementById('stat-active-tools').textContent = data.activeTools;
+          document.getElementById('stat-mock-tools').textContent = data.mockTools;
+          document.getElementById('stat-missing-keys').textContent = data.missingKeys;
+          
+          const apiStatusEl = document.getElementById('stat-api-status');
+          apiStatusEl.textContent = data.apiStatus;
+          apiStatusEl.className = 'badge';
+          if(data.apiStatus === 'Online') apiStatusEl.classList.add('badge-success');
+          else apiStatusEl.classList.add('badge-warning');
+          
+          const healthEl = document.getElementById('stat-system-health');
+          healthEl.textContent = data.systemHealth;
+          healthEl.className = 'badge';
+          if(data.systemHealth === 'Optimal') healthEl.classList.add('badge-success');
+          else healthEl.classList.add('badge-warning');
+        }
+      } catch(e) {
+        console.error("Failed to load system status", e);
+      }
+    }
+
+    // Load data on mount
+    document.addEventListener('DOMContentLoaded', () => {
+      loadApiStatus();
+      loadLogs();
+      loadSystemStatus();
+    });
+  </script>
+
+  <!-- Global Floating Sidebar -->
+  <div class="global-floating-sidebar">
+    <div class="gfs-toggle">
+      <span>🧰</span>
+      <span class="gfs-text">Quick Tools</span>
+    </div>
+    <a href="tools/seo-article-generator.html" class="gfs-link">
+      <span>📝</span><span class="gfs-text">SEO Generator</span>
+    </a>
+    <a href="tools/tiktok-tools.html" class="gfs-link">
+      <span>🎵</span><span class="gfs-text">TikTok Suite</span>
+    </a>
+    <a href="tools/youtube-suite.html" class="gfs-link">
+      <span>📺</span><span class="gfs-text">YouTube Suite</span>
+    </a>
+    <a href="ecommerce.html" class="gfs-link">
+      <span>🛒</span><span class="gfs-text">Digital Product</span>
+    </a>
+  </div>
+</body>
+</html>
+

@@ -1,0 +1,460 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Chafiktech Ai</title>
+    <meta name="description" content="Simple, transparent pricing for all your AI content creation needs. Choose the perfect plan for you.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-mesh bg-grid">
+
+    
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-inner">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">⚡</div>
+                Chafiktech Ai
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <div class="nav-dropdown">
+                    <a href="index.html#tools" class="nav-link" style="cursor:pointer;">Tools ▾</a>
+                    <div class="dropdown-content">
+                        <a href="tools/seo-article-generator.html">SEO Article Generator</a>
+                        <a href="tools/video-to-prompt.html">Video to Prompt</a>
+                        <a href="tools/tiktok-tools.html">AI Tiktok Creator Suite</a>
+                        <a href="tools/prompt-viral.html">Prompt Viral</a>
+                        <a href="tools/youtube-suite.html">YouTube Suite</a>
+                        <a href="tools/ai-humanizer.html">AI Humanizer</a>
+                        <a href="tools/digital-product-creator.html">Digital Product Creator</a>
+                        <a href="tools/prompt-article.html">Article Prompt</a>
+                    </div>
+                </div>
+                <a href="ecommerce.html" class="nav-link">Create Your Digital Product</a>
+                <a href="pricing.html" class="nav-link">Pricing</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle theme-btn" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+                <a href="login.html" class="btn btn-secondary btn-sm">Log In</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Mobile Nav -->
+    <div class="mobile-nav" id="mobile-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="pricing.html" class="nav-link">Pricing</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="ecommerce.html" class="nav-link">Create Your Digital Product</a>
+        <a href="login.html" class="nav-link">Log In</a>
+        <a href="register.html" class="nav-link">Sign Up</a>
+    </div>
+
+    <!-- Page Header -->
+    <header class="page-header reveal">
+        <div class="container">
+            <h1>Simple, Transparent Pricing</h1>
+            <p>Unlock the full potential of AI content creation. Start for free, upgrade when you need to.</p>
+            
+            <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 40px; cursor: pointer;" class="pricing-toggle">
+                <span style="font-weight: 500; color: var(--text-primary);">Monthly</span>
+                <div style="width: 50px; height: 26px; background: var(--gradient-primary); border-radius: 20px; position: relative;">
+                    <div style="width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
+                </div>
+                <span style="font-weight: 500; color: var(--text-secondary);">Yearly <span style="color: var(--neon-green); font-size: 12px; margin-left: 5px;">Save 20%</span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Pricing Section -->
+    <section class="section pt-0">
+        <div class="container">
+            <div class="pricing-grid">
+                <!-- Free Plan -->
+                <div class="pricing-card reveal reveal-delay-1">
+                    <h3 class="pricing-name">Free</h3>
+                    <p class="pricing-desc">Perfect to test the waters and learn.</p>
+                    <div class="pricing-amount">
+                        <span class="pricing-currency">$</span>
+                        <span class="pricing-value" data-monthly="0" data-yearly="0">0</span>
+                        <span class="pricing-period">/month</span>
+                    </div>
+                    <div class="pricing-divider"></div>
+                    <div class="pricing-features">
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>5 generations per day</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Access to Video to Prompt</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Basic SEO analyzer</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Standard resolution output</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Community forum access</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            <span style="color: var(--text-muted)">Video to Prompt</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            <span style="color: var(--text-muted)">AI Tiktok Creator Suite</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            <span style="color: var(--text-muted)">Priority Support</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            <span style="color: var(--text-muted)">API Access</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            <span style="color: var(--text-muted)">Custom Branding</span>
+                        </div>
+                    </div>
+                    <a href="register.html" class="btn btn-secondary" style="width: 100%">Start for Free</a>
+                </div>
+                
+                <!-- Pro Plan -->
+                <div class="pricing-card featured reveal reveal-delay-2">
+                    <div class="pricing-popular">Most Popular</div>
+                    <h3 class="pricing-name">Pro</h3>
+                    <p class="pricing-desc">For serious creators & professionals.</p>
+                    <div class="pricing-amount">
+                        <span class="pricing-currency">$</span>
+                        <span class="pricing-value text-gradient" data-monthly="29" data-yearly="23">29</span>
+                        <span class="pricing-period">/month</span>
+                    </div>
+                    <div class="pricing-divider"></div>
+                    <div class="pricing-features">
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Unlimited generations</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Access to ALL tools</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Video to Prompt capability</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Advanced SEO & Analytics</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>High resolution output</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Priority email support</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Save custom templates</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>API Access (10k req/mo)</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Early access to new features</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            <span style="color: var(--text-muted)">Custom Branding</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            <span style="color: var(--text-muted)">Dedicated Account Manager</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            <span style="color: var(--text-muted)">Team Collaboration</span>
+                        </div>
+                    </div>
+                    <a href="register.html" class="btn btn-primary" style="width: 100%">Upgrade to Pro</a>
+                </div>
+                
+                <!-- Business Plan -->
+                <div class="pricing-card reveal reveal-delay-3">
+                    <h3 class="pricing-name">Business</h3>
+                    <p class="pricing-desc">For teams, agencies, and enterprises.</p>
+                    <div class="pricing-amount">
+                        <span class="pricing-currency">$</span>
+                        <span class="pricing-value" data-monthly="99" data-yearly="79">99</span>
+                        <span class="pricing-period">/month</span>
+                    </div>
+                    <div class="pricing-divider"></div>
+                    <div class="pricing-features">
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Everything in Pro Plan</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Unlimited API Access</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Team Collaboration (up to 10)</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Custom integrations</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Dedicated Account Manager</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>24/7 Phone Support</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>White-labeling options</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Custom AI Model Training</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>SSO / SAML Login</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>99.99% Uptime SLA</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Custom Invoicing</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Onboarding & Training</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Data Residency Options</span>
+                        </div>
+                        <div class="pricing-feature">
+                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                            <span>Security Compliance</span>
+                        </div>
+                    </div>
+                    <a href="contact.html" class="btn btn-outline" style="width: 100%">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing FAQ Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-badge">❓ Pricing FAQ</span>
+                <h2 class="section-title">Common Billing Questions</h2>
+                <p class="section-subtitle">Everything you need to know about our pricing and plans.</p>
+            </div>
+            
+            <div class="faq-list reveal">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Can I switch plans later?
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes, you can upgrade or downgrade your plan at any time. If you upgrade, the new pricing will be prorated for the remainder of your billing cycle. If you downgrade, the new rate will apply to your next billing cycle.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What payment methods do you accept?
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            We accept all major credit cards (Visa, Mastercard, American Express, Discover), PayPal, and Apple Pay. For Business plans, we also support ACH transfers and custom invoicing.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Is there a refund policy?
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            We offer a 7-day money-back guarantee for all new Pro subscriptions. If you're not satisfied with the tools, simply reach out to our support team within the first 7 days, and we'll issue a full refund.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Do you offer discounts for non-profits or students?
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes! We offer a 50% discount on the Pro plan for registered students, educators, and verified non-profit organizations. Please contact our support team with your credentials to claim the discount.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section" style="padding-bottom: 120px;">
+        <div class="container">
+            <div class="glass-card reveal" style="text-align: center; padding: 60px 40px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1)); border: 1px solid rgba(168, 85, 247, 0.2);">
+                <h2 style="font-family: var(--font-display); font-size: var(--text-4xl); margin-bottom: 20px;">Ready to supercharge your content?</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 40px; font-size: var(--text-lg);">Join 50,000+ creators who are already using Chafiktech Ai to grow their audience.</p>
+                <div style="display: flex; gap: 20px; justify-content: center;">
+                    <a href="register.html" class="btn btn-primary btn-lg">Start for Free</a>
+                    <a href="contact.html" class="btn btn-secondary btn-lg">Talk to Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <!-- Footer -->
+    <footer class="footer reveal">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="nav-logo">
+                        <div class="nav-logo-icon">⚡</div>
+                        Chafiktech Ai
+                    </a>
+                    <p>Empowering creators with next-generation AI tools for content creation, optimization, and growth.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Twitter">𝕏</a>
+                        <a href="#" aria-label="LinkedIn">in</a>
+                        <a href="#" aria-label="GitHub">⌨</a>
+                        <a href="#" aria-label="Discord">💬</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Products</h4>
+                    <a href="tools/seo-article-generator.html">SEO Article Generator</a>
+                    <a href="tools/video-to-prompt.html">Video to Prompt</a>
+                    <a href="tools/youtube-suite.html">AI AI Youtube Creator Suite</a>
+                    <a href="tools/ai-humanizer.html">AI Humanizer</a>
+                    <a href="tools/tiktok-tools.html">TikTok Tools</a>
+                    <a href="tools/prompt-viral.html">Prompt Viral</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="contact.html">Contact Us</a>
+                    <a href="pricing.html">Pricing</a>
+                    <a href="blog.html">Blog</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal & Support</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="disclaimer.html">Disclaimer</a>
+                    <a href="faq.html">FAQ</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Chafiktech Ai. All rights reserved.</p>
+                <p style="margin-top:5px;font-size:0.8em;color:var(--text3)">Contact: tools@chafiktech.com | Website: www.chafiktech.com</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.querySelector('.pricing-toggle');
+            if (!toggle) return;
+
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('yearly');
+                const isYearly = toggle.classList.contains('yearly');
+                
+                // Toggle switch animation
+                const knob = toggle.querySelector('div > div');
+                if (isYearly) {
+                    knob.style.transform = 'translateX(24px)';
+                } else {
+                    knob.style.transform = 'translateX(0)';
+                }
+                
+                document.querySelectorAll('.pricing-value').forEach(el => {
+                    const monthly = el.dataset.monthly;
+                    const yearly = el.dataset.yearly;
+                    if (monthly && yearly) {
+                        el.textContent = isYearly ? yearly : monthly;
+                    }
+                });
+
+                document.querySelectorAll('.pricing-period').forEach(el => {
+                    el.textContent = isYearly ? '/month, billed yearly' : '/month';
+                });
+            });
+        });
+    </script>
+
+  <!-- Global Floating Sidebar -->
+  <div class="global-floating-sidebar">
+    <div class="gfs-toggle">
+      <span>🧰</span>
+      <span class="gfs-text">Quick Tools</span>
+    </div>
+    <a href="tools/seo-article-generator.html" class="gfs-link">
+      <span>📝</span><span class="gfs-text">SEO Generator</span>
+    </a>
+    <a href="tools/tiktok-tools.html" class="gfs-link">
+      <span>🎵</span><span class="gfs-text">TikTok Suite</span>
+    </a>
+    <a href="tools/youtube-suite.html" class="gfs-link">
+      <span>📺</span><span class="gfs-text">YouTube Suite</span>
+    </a>
+    <a href="ecommerce.html" class="gfs-link">
+      <span>🛒</span><span class="gfs-text">Digital Product</span>
+    </a>
+  </div>
+</body>
+</html>
