@@ -1,0 +1,311 @@
+[
+  {
+    "timestamp": "2026-05-31T07:52:15.830Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for script",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-31T07:52:15.826Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: script",
+    "details": {
+      "input": "book",
+      "user": "najhichafik007@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-31T07:50:25.882Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for thumbnail",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-31T07:50:25.880Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: thumbnail",
+    "details": {
+      "input": "https://www.youtube.com/watch?v=skK4rsqS1fs",
+      "user": "najhichafik007@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-31T07:47:36.854Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for script",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-31T07:47:36.853Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: script",
+    "details": {
+      "input": "jook",
+      "user": "najhichafik007@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-31T07:47:16.965Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for script",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-31T07:47:16.964Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: script",
+    "details": {
+      "input": "hook",
+      "user": "najhichafik007@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-31T07:44:41.866Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for timing",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-31T07:44:41.865Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: timing",
+    "details": {
+      "input": "g",
+      "user": "najhichafik007@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-31T07:44:22.948Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for caphash",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-31T07:44:22.947Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: caphash",
+    "details": {
+      "input": "hoo",
+      "user": "najhichafik007@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-31T07:44:06.617Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for ideas",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-31T07:44:06.616Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: ideas",
+    "details": {
+      "input": "foot",
+      "user": "najhichafik007@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-31T07:43:53.983Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for ideas",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-31T07:43:53.982Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: ideas",
+    "details": {
+      "input": "foot",
+      "user": "najhichafik007@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-31T07:43:43.420Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for script",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-31T07:43:43.419Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: script",
+    "details": {
+      "input": "gg",
+      "user": "najhichafik007@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-31T07:43:24.697Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for video-to-prompt",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-31T07:43:24.695Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: video-to-prompt",
+    "details": {
+      "input": "",
+      "user": "najhichafik007@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-31T07:42:59.210Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for seo-article",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-31T07:42:59.208Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: seo-article",
+    "details": {
+      "input": "koo",
+      "user": "najhichafik007@gmail.com"
+    }
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.820Z",
+    "level": "WARN",
+    "message": "Rate limit exceeded for IP: ::1",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.819Z",
+    "level": "WARN",
+    "message": "Rate limit exceeded for IP: ::1",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.817Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.817Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.816Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.815Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.814Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.814Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.812Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.812Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.810Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.810Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.808Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.808Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.806Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.806Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.804Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.803Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.802Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.801Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.799Z",
+    "level": "WARN",
+    "message": "No API keys found. Falling back to mock data for test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.799Z",
+    "level": "INFO",
+    "message": "Generate request received for tool: test",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.789Z",
+    "level": "INFO",
+    "message": "Admin logged in successfully",
+    "details": {}
+  },
+  {
+    "timestamp": "2026-05-30T18:42:08.785Z",
+    "level": "WARN",
+    "message": "Failed admin login attempt",
+    "details": {}
+  }
+]
