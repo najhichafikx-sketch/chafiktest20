@@ -37,10 +37,9 @@ export default function Navbar() {
             <Link href="/" className="nav-link">Home</Link>
             <Link href="/#tools" className="nav-link">Tools</Link>
             <Link href="/blog" className="nav-link">Blog</Link>
-            <Link href="/ecommerce" className="nav-link">Create Your Digital Product</Link>
+            <Link href="/tools/youtube-creator" className="nav-link">YouTube Suite</Link>
             <Link href="/pricing" className="nav-link">Pricing</Link>
             <Link href="/about" className="nav-link">About</Link>
-            <Link href="/contact" className="nav-link">Contact</Link>
           </div>
           <div className="nav-actions">
             <button className="theme-toggle theme-btn" onClick={toggleTheme} aria-label="Toggle theme">
@@ -55,9 +54,10 @@ export default function Navbar() {
       </nav>
       <div className={`mobile-nav${mobileOpen ? ' active' : ''}`}>
         <Link href="/" className="nav-link" onClick={() => setMobileOpen(false)}>Home</Link>
+        <Link href="/#tools" className="nav-link" onClick={() => setMobileOpen(false)}>Tools</Link>
         <Link href="/pricing" className="nav-link" onClick={() => setMobileOpen(false)}>Pricing</Link>
         <Link href="/blog" className="nav-link" onClick={() => setMobileOpen(false)}>Blog</Link>
-        <Link href="/ecommerce" className="nav-link" onClick={() => setMobileOpen(false)}>Create Your Digital Product</Link>
+        <Link href="/tools/youtube-creator" className="nav-link" onClick={() => setMobileOpen(false)}>YouTube Suite</Link>
         <Link href="/login" className="nav-link" onClick={() => setMobileOpen(false)}>Log In</Link>
         <Link href="/register" className="nav-link" onClick={() => setMobileOpen(false)}>Sign Up</Link>
       </div>

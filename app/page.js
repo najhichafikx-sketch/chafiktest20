@@ -73,12 +73,30 @@ function ToolsSection() {
         <div className="tools-grid">
           <ToolCard href="/tools/seo-article-generator" icon="📝" name="SEO Article Generator" desc="Generate 100% original SEO articles, titles, keywords, and topic ideas optimized for Google & AdSense." badge="NEW" />
           <ToolCard href="/tools/image-to-prompt" icon="📸" name="Image to Prompt Generator" desc="Upload any image and instantly generate an ultra-detailed, professional prompt for Midjourney & DALL-E." badge="HOT" />
-          <ToolCard href="/tools/video-to-prompt" icon="🎥" name="Video To Prompt" desc="Transform any video into detailed, creative AI prompts for your next project." />
-          <ToolCard href="/tools/tiktok-tools" icon="🎵" name="AI Tiktok Creator Suite" desc="Generate viral scripts, find trending sounds, and optimize your hashtags." />
-          <ToolCard href="/tools/prompt-viral" icon="🚀" name="Prompt Viral" desc="Generate highly engaging prompts tailored for major AI image/text models." />
-          <ToolCard href="/ecommerce" icon="🛒" name="AI Create Your Digital Product Suite" desc="Product descriptions, ad copy, and review analyzers to boost sales." />
-          <ToolCard href="/tools/youtube-suite" icon="📺" name="AI Youtube Creator Suite" desc="12 AI tools for thumbnails, transcripts, SEO, viral ideas, channel analysis, and growth planning." />
+          <ToolCard href="/tools/video-to-prompt" icon="🎥" name="Video To Prompt" desc="Extract frames, analyze scenes, lighting, and camera angles. Generate 5 types of AI prompts from any video." />
+          <ToolCard href="/tools/prompt-viral" icon="🚀" name="Prompt Viral" desc="Generate highly engaging prompts tailored for major AI image/text models to create viral content." />
+          <ToolCard href="/tools/prompt-article" icon="📄" name="Article Prompt Generator" desc="Generate powerful AI writing prompts for blog posts, tutorials, listicles, and reviews." />
           <ToolCard href="/tools/ai-humanizer" icon="🤖" name="AI Content Detector & Humanizer" desc="Detect AI-generated text instantly and rewrite it to sound naturally human, engaging, and SEO-ready." />
+          <ToolCard href="/tools/ad-copy-generator" icon="📢" name="Ad Copy Generator" desc="Create high-converting ad copy for Facebook, Google, Instagram, LinkedIn, and TikTok." />
+          <ToolCard href="/tools/sales-copy-generator" icon="💰" name="Sales Copy Generator" desc="Generate persuasive sales copy using AIDA, PAS, and FAB frameworks proven to convert." />
+          <ToolCard href="/tools/product-description-generator" icon="🏷️" name="Product Description Generator" desc="Create compelling product descriptions optimized for conversions across all ecommerce platforms." />
+          <ToolCard href="/tools/product-title-generator" icon="📛" name="Product Title Generator" desc="Generate SEO-optimized, click-worthy product titles for Amazon, Etsy, eBay, and Shopify." />
+          <ToolCard href="/tools/product-idea-finder" icon="💡" name="Product Idea Finder" desc="Discover data-backed profitable product ideas with market analysis and competition insights." />
+          <ToolCard href="/tools/product-image-enhancer" icon="🖼️" name="Product Image Enhancer" desc="Enhance product images with background removal, color correction, upscaling, and AI improvements." />
+          <ToolCard href="/tools/amazon-listing-generator" icon="📦" name="Amazon Listing Generator" desc="Create optimized Amazon listings with SEO titles, bullet points, descriptions, and backend keywords." />
+          <ToolCard href="/tools/etsy-listing-generator" icon="🛍️" name="Etsy Listing Generator" desc="Generate Etsy-optimized listings with 13 tags, SEO titles, and compelling descriptions." />
+          <ToolCard href="/tools/shopify-seo-generator" icon="🛒" name="Shopify SEO Generator" desc="Optimize your Shopify store with meta titles, descriptions, and product text for Google rankings." />
+          <ToolCard href="/tools/landing-page-generator" icon="🖥️" name="Landing Page Generator" desc="Generate complete landing page copy using AIDA structure for SaaS, ecommerce, and lead gen." />
+          <ToolCard href="/tools/digital-product-creator" icon="💻" name="Digital Product Creator" desc="Create ebooks, courses, templates, and software with AI-guided product development." />
+          <ToolCard href="/tools/digital-product-name-generator" icon="🏷️" name="Digital Product Name Generator" desc="Generate catchy, brandable names for your digital products that stand out in the market." />
+          <ToolCard href="/tools/digital-product-email-writer" icon="📧" name="Digital Product Email Writer" desc="Create high-converting email copy for product launches, nurture sequences, and sales campaigns." />
+          <ToolCard href="/tools/dropshipping-research" icon="🔍" name="Dropshipping Research" desc="Find winning dropshipping products with supplier recommendations and profit margin analysis." />
+          <ToolCard href="/tools/pricing-optimizer" icon="📊" name="Pricing Optimizer" desc="Get AI-powered pricing recommendations based on cost analysis, market data, and psychology." />
+          <ToolCard href="/tools/review-response-generator" icon="⭐" name="Review Response Generator" desc="Generate professional, empathetic responses to customer reviews across all platforms." />
+          <ToolCard href="/tools/tiktok-tools" icon="🎵" name="AI Tiktok Creator Suite" desc="Generate viral scripts, find trending sounds, and optimize your hashtags for TikTok growth." />
+          <ToolCard href="/tools/youtube-creator" icon="📺" name="AI YouTube Creator Suite" desc="14 AI tools for viral ideas, scripts, titles, thumbnails, SEO, Shorts, and channel growth." badge="NEW" />
+          <ToolCard href="/tools/faceless-video-generator" icon="🎭" name="Faceless Video Generator" desc="Generate complete faceless video packages with scripts, voiceovers, and visual prompts." />
+          <ToolCard href="/tools/viral-shorts-generator" icon="📱" name="Viral Shorts Generator" desc="Create viral YouTube Shorts scripts optimized for 30, 45, and 60 second durations." />
         </div>
       </div>
     </section>
