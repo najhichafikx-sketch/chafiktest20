@@ -42,6 +42,20 @@ export default function PromptEditor() {
     }
   }, [router, params.id, isNew]);
 
+  function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setForm(f => ({ ...f, cover_image: ev.target.result }));
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeImage() {
+    setForm(f => ({ ...f, cover_image: '' }));
+  }
+
   function autoSlug(val) {
     setForm(f => ({
       ...f,
@@ -104,9 +118,15 @@ export default function PromptEditor() {
                   <input className="form-control form-control-sm" value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))} required placeholder="my-prompt-slug" />
                 </div>
                 <div className="mb-2">
-                  <label className="form-label small">Featured Image URL</label>
-                  <input className="form-control form-control-sm" value={form.cover_image} onChange={e => setForm(f => ({ ...f, cover_image: e.target.value }))} placeholder="https://example.com/image.jpg" />
-                  {form.cover_image && <img src={form.cover_image} alt="" className="img-fluid rounded mt-1" style={{ maxHeight: 80 }} onError={e => e.target.style.display = 'none'} />}
+                  <label className="form-label small">Featured Image</label>
+                  <input type="file" accept="image/*" className="form-control form-control-sm" onChange={handleImageUpload} />
+                  <small className="text-muted">Upload from your computer</small>
+                  {form.cover_image && (
+                    <div style={{ position: 'relative', display: 'inline-block', marginTop: 6 }}>
+                      <img src={form.cover_image} alt="" className="img-fluid rounded" style={{ maxHeight: 80 }} />
+                      <button type="button" className="btn btn-sm btn-outline-danger" style={{ position: 'absolute', top: 2, right: 2, padding: '0 4px', fontSize: 10, lineHeight: '16px' }} onClick={removeImage}>x</button>
+                    </div>
+                  )}
                 </div>
                 <div className="mb-2">
                   <label className="form-label small">Short Description</label>

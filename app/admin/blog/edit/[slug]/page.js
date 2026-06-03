@@ -87,6 +87,20 @@ export default function EditBlogPost() {
     };
   }, [editorReady]);
 
+  function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setForm(f => ({ ...f, featured_image: ev.target.result }));
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeImage() {
+    setForm(f => ({ ...f, featured_image: '' }));
+  }
+
   function autoSlug(val) {
     setForm(f => ({
       ...f,
@@ -194,16 +208,20 @@ export default function EditBlogPost() {
             <input className="form-control" value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="tag1, tag2, tag3" />
           </div>
           <div className="col-6">
-            <label className="form-label">Featured Image URL</label>
-            <input className="form-control" value={form.featured_image} onChange={e => setForm({...form, featured_image: e.target.value})} placeholder="https://example.com/image.jpg" />
+            <label className="form-label">Featured Image</label>
+            <input type="file" accept="image/*" className="form-control" onChange={handleImageUpload} />
+            <small className="text-muted">Upload from your computer</small>
           </div>
           <div className="col-6">
-            {form.featured_image && (
+            {form.featured_image ? (
               <div>
                 <label className="form-label">Preview</label>
-                <img src={form.featured_image} alt="" className="img-fluid rounded border" style={{ maxHeight: 120 }} onError={e => e.target.style.display = 'none'} />
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <img src={form.featured_image} alt="" className="img-fluid rounded border" style={{ maxHeight: 120 }} />
+                  <button type="button" className="btn btn-sm btn-outline-danger" style={{ position: 'absolute', top: 4, right: 4, padding: '2px 6px', fontSize: 12 }} onClick={removeImage}>x</button>
+                </div>
               </div>
-            )}
+            ) : <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: 13, border: '1px dashed var(--bg-glass-border)', borderRadius: 8, padding: 20 }}>No image uploaded</div>}
           </div>
           <div className="col-12">
             <label className="form-label">Excerpt</label>

@@ -3,6 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import {
+  LayoutDashboard, Wrench, Megaphone, DollarSign, BarChart3,
+  Settings, Key, Globe, SearchX, FileText, Newspaper,
+  MessageSquare, Users, LogOut
+} from 'lucide-react';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -40,90 +45,133 @@ export default function AdminPage() {
     router.push('/admin-login');
   }
 
-  if (!status) return <div className="section" style={{ paddingTop: '120px', textAlign: 'center' }}>Loading...</div>;
-
-  return (
-    <section className="section" style={{ paddingTop: '100px' }}>
-      <div className="container" style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-          <div>
-            <h1 className="section-title" style={{ marginBottom: 0 }}>Admin Dashboard</h1>
-            <p style={{ color: 'var(--text-secondary)' }}>System overview and management</p>
-          </div>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <Link href="/admin/tools" className="btn btn-secondary btn-sm">Tools</Link>
-            <Link href="/admin/ads" className="btn btn-secondary btn-sm">Ads</Link>
-            <Link href="/admin/revenue-dashboard" className="btn btn-secondary btn-sm">Revenue</Link>
-            <Link href="/admin/analytics" className="btn btn-secondary btn-sm">Analytics</Link>
-            <Link href="/admin/settings" className="btn btn-secondary btn-sm">Settings</Link>
-            <Link href="/admin/api-settings" className="btn btn-secondary btn-sm">API Keys</Link>
-            <button className="btn btn-outline btn-sm" onClick={handleLogout}>Logout</button>
-          </div>
-        </div>
-
-        <div className="dashboard-stats">
-          <StatCard icon="🔧" label="Total Tools" value={status.totalTools || 0} iconClass="purple" />
-          <StatCard icon="✅" label="Active Tools" value={status.activeTools || 0} iconClass="green" />
-          <StatCard icon="🔄" label="Mock Tools" value={status.mockTools || 0} iconClass={status.mockTools > 0 ? 'down' : 'green'} />
-          <StatCard icon="📡" label="API Status" value={status.apiStatus || 'Offline'} iconClass={status.apiStatus === 'Online' ? 'green' : 'down'} />
-        </div>
-
-        <div className="dashboard-card" style={{ marginTop: 24 }}>
-          <div className="dashboard-card-header">
-            <h3>System Status</h3>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-            <InfoRow label="System Health" value={status.systemHealth} />
-            <InfoRow label="Missing Keys" value={status.missingKeys} />
-            <InfoRow label="Uptime" value={`${Math.floor(status.uptime || 0)}s`} />
-          </div>
-        </div>
-
-        <div className="dashboard-card" style={{ marginTop: 24 }}>
-          <div className="dashboard-card-header">
-            <h3>Recent Activity Logs</h3>
-          </div>
-          {logs.length === 0 ? (
-            <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 24 }}>No logs yet</p>
-          ) : (
-            <div className="activity-list">
-              {logs.slice(0, 20).map((log, i) => (
-                <div key={i} className="activity-item">
-                  <div className="activity-icon">{log.level === 'ERROR' ? '❌' : log.level === 'WARN' ? '⚠️' : '✅'}</div>
-                  <div className="activity-details">
-                    <h4>{log.message}</h4>
-                    <p>{log.timestamp}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
+  if (!status) return (
+    <div style={{ paddingTop: '120px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+      <div className="spinner-border" role="status" />
+      <p className="mt-2">Loading dashboard...</p>
+    </div>
   );
-}
 
-function StatCard({ icon, label, value, iconClass }) {
+  const navCards = [
+    { icon: Wrench, label: 'Tools', desc: 'Manage AI tools and configurations', href: '/admin/tools', color: '#8b5cf6' },
+    { icon: Megaphone, label: 'Ads', desc: 'Ad units & Adsterra management', href: '/admin/ads', color: '#f59e0b' },
+    { icon: DollarSign, label: 'Revenue', desc: 'Revenue statistics and reports', href: '/admin/revenue-dashboard', color: '#10b981' },
+    { icon: BarChart3, label: 'Analytics', desc: 'Traffic and engagement metrics', href: '/admin/analytics', color: '#3b82f6' },
+    { icon: Settings, label: 'Settings', desc: 'General site configuration', href: '/admin/settings', color: '#6b7280' },
+    { icon: Key, label: 'API Keys', desc: 'Manage API credentials', href: '/admin/api-settings', color: '#ec4899' },
+    { icon: Globe, label: 'Platforms', desc: 'Connected platform management', href: '/admin/platforms-views', color: '#14b8a6' },
+    { icon: SearchX, label: 'Ad Diagnostics', desc: 'Diagnose ad display issues', href: '/admin/ad-diagnostics', color: '#f97316' },
+    { icon: FileText, label: 'Content', desc: 'Content management overview', href: '/admin/blog', color: '#a855f7' },
+    { icon: Newspaper, label: 'Blog Articles', desc: 'Write and manage blog posts', href: '/admin/blog', color: '#2563eb' },
+    { icon: MessageSquare, label: 'Prompt Articles', desc: 'Create and manage prompts', href: '/admin/prompts', color: '#06b6d4' },
+    { icon: Users, label: 'Users', desc: 'User account management', href: '/admin/users', color: '#84cc16' },
+  ];
+
   return (
-    <div className="stat-card">
-      <div className="stat-card-header">
-        <div className={`stat-card-icon ${iconClass}`}>{icon}</div>
-        <span className={`stat-card-badge ${String(value) === 'Offline' || Number(value) > 0 ? 'up' : 'down'}`}>
-          {String(value) === 'Online' ? '↑ Live' : String(value) === 'Offline' ? '↓ Offline' : ''}
-        </span>
+    <div style={{ padding: '32px 40px', maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+        <div>
+          <h1 style={{ fontSize: 28, fontWeight: 700, margin: 0 }}>Dashboard</h1>
+          <p style={{ color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>System overview and management</p>
+        </div>
+        <button className="btn btn-outline btn-sm" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <LogOut size={16} /> Logout
+        </button>
       </div>
-      <div className="stat-card-value">{value}</div>
-      <div className="stat-card-label">{label}</div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16, marginBottom: 32 }}>
+        <StatBox icon={Wrench} label="Total Tools" value={status.totalTools || 0} color="#8b5cf6" />
+        <StatBox icon={BarChart3} label="Active Tools" value={status.activeTools || 0} color="#10b981" />
+        <StatBox icon={Settings} label="Mock Tools" value={status.mockTools || 0} color={status.mockTools > 0 ? '#f59e0b' : '#10b981'} />
+        <StatBox icon={Globe} label="API Status" value={status.apiStatus || 'Offline'} color={status.apiStatus === 'Online' ? '#10b981' : '#ef4444'} />
+        <StatBox icon={LayoutDashboard} label="Uptime" value={`${Math.floor(status.uptime || 0)}s`} color="#3b82f6" />
+        <StatBox icon={SearchX} label="Missing Keys" value={status.missingKeys || 0} color={status.missingKeys > 0 ? '#ef4444' : '#10b981'} />
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
+        {navCards.map((card, i) => (
+          <Link key={i} href={card.href} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div style={{
+              background: 'var(--bg-glass)',
+              border: '1px solid var(--bg-glass-border)',
+              borderRadius: 12,
+              padding: 24,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              height: '100%'
+            }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
+            >
+              <div style={{
+                width: 48, height: 48, borderRadius: 12,
+                background: `${card.color}20`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: 16
+              }}>
+                <card.icon size={24} color={card.color} />
+              </div>
+              <h3 style={{ fontSize: 16, fontWeight: 600, margin: '0 0 4px 0' }}>{card.label}</h3>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0 }}>{card.desc}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      <div style={{
+        background: 'var(--bg-glass)',
+        border: '1px solid var(--bg-glass-border)',
+        borderRadius: 12,
+        marginTop: 24,
+        padding: 24
+      }}>
+        <h3 style={{ fontSize: 16, fontWeight: 600, margin: '0 0 16px 0' }}>Recent Activity Logs</h3>
+        {logs.length === 0 ? (
+          <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 24 }}>No logs yet</p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {logs.slice(0, 20).map((log, i) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                padding: '8px 12px',
+                background: 'rgba(255,255,255,0.03)',
+                borderRadius: 8
+              }}>
+                <span style={{ fontSize: 18 }}>
+                  {log.level === 'ERROR' ? '❌' : log.level === 'WARN' ? '⚠️' : '✅'}
+                </span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 500 }}>{log.message}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{log.timestamp}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
-function InfoRow({ label, value }) {
+function StatBox({ icon: Icon, label, value, color }) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--bg-glass-border)' }}>
-      <span style={{ color: 'var(--text-secondary)' }}>{label}</span>
-      <span style={{ fontWeight: 600 }}>{value}</span>
+    <div style={{
+      background: 'var(--bg-glass)',
+      border: '1px solid var(--bg-glass-border)',
+      borderRadius: 12,
+      padding: 20,
+      textAlign: 'center'
+    }}>
+      <div style={{
+        width: 40, height: 40, borderRadius: 10,
+        background: `${color}20`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        margin: '0 auto 8px'
+      }}>
+        <Icon size={20} color={color} />
+      </div>
+      <div style={{ fontSize: 24, fontWeight: 700, color: '#fff' }}>{value}</div>
+      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{label}</div>
     </div>
   );
 }

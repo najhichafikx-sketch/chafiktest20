@@ -3,6 +3,29 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import {
+  LayoutDashboard, Wrench, Megaphone, DollarSign, BarChart3,
+  Settings, Key, Globe, SearchX, Newspaper, MessageSquare,
+  Users, LogOut
+} from 'lucide-react';
+
+const links = [
+  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/tools', label: 'Tools', icon: Wrench },
+  { href: '/admin/ads', label: 'Ads', icon: Megaphone },
+  { href: '/admin/revenue-dashboard', label: 'Revenue', icon: DollarSign },
+  { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/admin/settings', label: 'Settings', icon: Settings },
+  { href: '/admin/api-settings', label: 'API Keys', icon: Key },
+  { href: '/admin/platforms-views', label: 'Platforms', icon: Globe },
+  { href: '/admin/ad-diagnostics', label: 'Ad Diag', icon: SearchX },
+  { type: 'divider' },
+  { type: 'label', label: 'Content' },
+  { href: '/admin/blog', label: 'Blog Articles', icon: Newspaper },
+  { href: '/admin/prompts', label: 'Prompt Articles', icon: MessageSquare },
+  { type: 'divider' },
+  { href: '/admin/users', label: 'Users', icon: Users },
+];
 
 export default function AdminLayout({ children }) {
   const router = useRouter();
@@ -23,7 +46,7 @@ export default function AdminLayout({ children }) {
       <aside style={{
         background: 'var(--bg-glass)',
         borderRight: '1px solid var(--bg-glass-border)',
-        padding: '24px 16px',
+        padding: '24px 12px',
         display: 'flex',
         flexDirection: 'column',
         position: 'sticky',
@@ -31,48 +54,58 @@ export default function AdminLayout({ children }) {
         height: '100vh',
         overflowY: 'auto'
       }}>
-        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 24, paddingLeft: 8 }}>Admin Panel</h2>
+        <Link href="/admin" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 24, paddingLeft: 8 }}>Chafiktech</h2>
+        </Link>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
-          <SidebarLink href="/admin">Dashboard</SidebarLink>
-          <SidebarLink href="/admin/tools">Tools</SidebarLink>
-          <SidebarLink href="/admin/ads">Ads</SidebarLink>
-          <SidebarLink href="/admin/revenue-dashboard">Revenue</SidebarLink>
-          <SidebarLink href="/admin/analytics">Analytics</SidebarLink>
-          <SidebarLink href="/admin/settings">Settings</SidebarLink>
-          <SidebarLink href="/admin/api-settings">API Keys</SidebarLink>
-          <SidebarLink href="/admin/platforms-views">Platforms</SidebarLink>
-          <SidebarLink href="/admin/ad-diagnostics">Ad Diag</SidebarLink>
-          <hr style={{ borderColor: 'var(--bg-glass-border)', margin: '12px 0' }} />
-          <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-secondary)', padding: '4px 8px', marginBottom: 4 }}>Content</div>
-          <SidebarLink href="/admin/blog">Blog Articles</SidebarLink>
-          <SidebarLink href="/admin/prompts">Prompt Articles</SidebarLink>
-          <hr style={{ borderColor: 'var(--bg-glass-border)', margin: '12px 0' }} />
-          <SidebarLink href="/admin/users">Users</SidebarLink>
+          {links.map((item, i) => {
+            if (item.type === 'divider') {
+              return <hr key={i} style={{ borderColor: 'var(--bg-glass-border)', margin: '8px 0' }} />;
+            }
+            if (item.type === 'label') {
+              return (
+                <div key={i} style={{
+                  fontSize: 11, fontWeight: 600, textTransform: 'uppercase',
+                  color: 'var(--text-secondary)', padding: '4px 8px', marginBottom: 2
+                }}>
+                  {item.label}
+                </div>
+              );
+            }
+            const Icon = item.icon;
+            return (
+              <Link
+                key={i}
+                href={item.href}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '10px 12px', borderRadius: 8,
+                  color: 'var(--text-secondary)', textDecoration: 'none',
+                  fontSize: 14, fontWeight: 500,
+                  transition: 'all 0.15s'
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = '#fff'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+              >
+                <Icon size={18} />
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
-        <div style={{ paddingTop: 16, borderTop: '1px solid var(--bg-glass-border)' }}>
-          <button className="btn btn-outline btn-sm" style={{ width: '100%' }} onClick={() => { localStorage.removeItem('admin_token'); router.push('/admin-login'); }}>Logout</button>
+        <div style={{ paddingTop: 16, borderTop: '1px solid var(--bg-glass-border)', marginTop: 'auto' }}>
+          <button
+            className="btn btn-outline btn-sm"
+            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}
+            onClick={() => { localStorage.removeItem('admin_token'); router.push('/admin-login'); }}
+          >
+            <LogOut size={16} /> Logout
+          </button>
         </div>
       </aside>
-      <main style={{ padding: '32px', maxWidth: 1100 }}>
+      <main style={{ padding: 0 }}>
         {children}
       </main>
     </div>
-  );
-}
-
-function SidebarLink({ href, children }) {
-  return (
-    <Link
-      href={href}
-      className="btn btn-secondary btn-sm"
-      style={{
-        justifyContent: 'flex-start',
-        textAlign: 'left',
-        padding: '8px 12px',
-        fontSize: 14
-      }}
-    >
-      {children}
-    </Link>
   );
 }
