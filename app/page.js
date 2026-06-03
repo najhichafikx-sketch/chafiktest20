@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { MessageSquare } from 'lucide-react';
 
 export default function HomePage() {
   useEffect(() => {
@@ -41,7 +40,6 @@ function HeroSection() {
         </p>
         <div className="hero-actions">
           <Link href="/register" className="btn btn-primary btn-lg">Get Started Free</Link>
-          <Link href="/prompts" className="btn btn-accent btn-lg"><MessageSquare size={20} /> Prompt Viral</Link>
           <a href="#tools" className="btn btn-secondary btn-lg">Watch Demo</a>
         </div>
         <div className="hero-stats">
@@ -82,6 +80,7 @@ function ToolsSection() {
         <CategorySection title="AI Prompt Tools" desc="Transform images and videos into detailed AI prompts for any generator.">
           <ToolCard href="/tools/image-to-prompt" icon="📸" name="Image to Prompt Generator" desc="Upload any image and instantly generate ultra-detailed professional prompts for Midjourney, DALL-E, and Stable Diffusion." />
           <ToolCard href="/tools/video-to-prompt" icon="🎥" name="Video to Prompt Generator" desc="Upload any video and transform it into detailed AI prompts for ChatGPT, Midjourney, Veo, Kling, and other AI tools." />
+          <ToolCard href="/prompts" icon="🚀" name="Prompt Viral" desc="Browse our curated library of viral AI prompts for marketing, SEO, creative writing, and more." />
         </CategorySection>
 
         <CategorySection title="Creator Suites" desc="Complete toolkits for YouTube, TikTok, and digital product creators.">

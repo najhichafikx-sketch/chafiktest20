@@ -112,8 +112,6 @@ button { cursor:pointer; }
 .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(99,102,241,0.4); }
 .btn-secondary { background:var(--bg-glass); border:1px solid var(--bg-glass-border); color:var(--text-primary); backdrop-filter:blur(10px); }
 .btn-secondary:hover { background:var(--bg-glass-hover); border-color:rgba(255,255,255,0.15); transform:translateY(-2px); }
-.btn-accent { background:linear-gradient(135deg,#06b6d4,#8b5cf6); color:white; box-shadow:0 4px 15px rgba(6,182,212,0.3); }
-.btn-accent:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(6,182,212,0.4); }
 .btn-outline { border:1px solid rgba(99,102,241,0.4); color:var(--neon-purple); }
 .btn-outline:hover { background:rgba(99,102,241,0.1); border-color:var(--neon-purple); transform:translateY(-2px); }
 .btn-lg { padding:16px 36px; font-size:var(--text-base); border-radius:var(--radius-lg); }
