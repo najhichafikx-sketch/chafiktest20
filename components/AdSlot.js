@@ -21,26 +21,20 @@ export default function AdSlot({ location }) {
   }, [location]);
 
   useEffect(() => {
-    if (!html || !ref.current) return;
+    if (!html) return;
 
-    const container = ref.current;
-    const scriptTags = html.match(/<script[\s\S]*?<\/script>/gi) || [];
-    const htmlPart = html.replace(/<script[\s\S]*?<\/script>/gi, '').trim();
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = html;
 
-    container.innerHTML = htmlPart;
-
-    scriptTags.forEach(tag => {
-      const srcMatch = tag.match(/src\s*=\s*"([^"]+)"/);
+    wrapper.querySelectorAll('script').forEach(s => {
       const script = document.createElement('script');
-      script.setAttribute('data-cfasync', 'false');
-      if (srcMatch) {
-        script.src = srcMatch[1];
+      if (s.src) {
+        script.src = s.src;
         script.async = true;
       } else {
-        const raw = tag.replace(/<\/?script[^>]*>/gi, '');
-        script.textContent = raw;
+        script.textContent = s.textContent;
       }
-      document.body.appendChild(script);
+      document.head.appendChild(script);
     });
   }, [html]);
 
