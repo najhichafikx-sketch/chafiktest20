@@ -32,6 +32,10 @@ export default function AdminLayout({ children }) {
             <Link href="/admin/settings" className="btn btn-secondary btn-sm">Settings</Link>
             <Link href="/admin/api-settings" className="btn btn-secondary btn-sm">API Keys</Link>
             <Link href="/admin/platforms-views" className="btn btn-secondary btn-sm">Platforms</Link>
+            <Link href="/admin/ad-diagnostics" className="btn btn-secondary btn-sm">Ad Diag</Link>
+            <Link href="/admin/prompts" className="btn btn-secondary btn-sm">Prompts</Link>
+            <Link href="/admin/users" className="btn btn-secondary btn-sm">Users</Link>
+            <Link href="/admin/revenue-dashboard" className="btn btn-secondary btn-sm">Revenue</Link>
           </div>
         </div>
         {children}

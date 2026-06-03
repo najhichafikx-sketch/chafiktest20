@@ -15,18 +15,16 @@ const AD_VARIANTS = {
   mid_result: [{ size: '300x250' }, { size: '468x60' }]
 };
 
-const PLACEHOLDER_HEIGHTS = {
-  header: 90, footer: 90, sidebar: 250, content_top: 120, content_bottom: 120, popup: 250,
-  in_tool: 90, loading_state: 60, mid_result: 100
-};
-
 function getVariant(location) {
   const variants = AD_VARIANTS[location];
   if (!variants) return null;
+
   const stored = localStorage.getItem(`ad_variant_${location}`);
   if (stored) return variants[parseInt(stored)];
+
   const idx = Math.floor(Math.random() * variants.length);
   localStorage.setItem(`ad_variant_${location}`, String(idx));
+
   return variants[idx];
 }
 
@@ -34,8 +32,15 @@ async function track(sessionId, eventType, data) {
   try {
     await fetch('/api/analytics/track', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-session-id': sessionId },
-      body: JSON.stringify({ event_type: eventType, page_url: window.location.pathname, metadata: data })
+      headers: {
+        'Content-Type': 'application/json',
+        'x-session-id': sessionId
+      },
+      body: JSON.stringify({
+        event_type: eventType,
+        page_url: window.location.pathname,
+        metadata: data
+      })
     });
   } catch {}
 }
@@ -44,14 +49,15 @@ export default function AdManager({ location, toolId }) {
   const [adData, setAdData] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [variant, setVariant] = useState(null);
-  const [visible, setVisible] = useState(false);
+
   const containerRef = useRef(null);
-  const observerRef = useRef(null);
   const sessionId = useRef('');
   const tracked = useRef(false);
 
   useEffect(() => {
-    sessionId.current = localStorage.getItem('session_id') || crypto.randomUUID();
+    sessionId.current =
+      localStorage.getItem('session_id') || crypto.randomUUID();
+
     localStorage.setItem('session_id', sessionId.current);
     setVariant(getVariant(location));
   }, [location]);
@@ -60,53 +66,84 @@ export default function AdManager({ location, toolId }) {
     fetch('/api/ads')
       .then(r => r.json())
       .then(data => {
-        if (data.success) {
-          const ad = data.ads[location] || null;
-          setAdData(ad);
-        }
+        if (data.success) setAdData(data.ads[location] || null);
         setLoaded(true);
       })
       .catch(() => setLoaded(true));
   }, [location]);
 
+  const injectAd = (html, container) => {
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = html;
+
+    // render HTML
+    Array.from(wrapper.childNodes).forEach(node => {
+      if (node.nodeName !== 'SCRIPT') {
+        container.appendChild(node.cloneNode(true));
+      }
+    });
+
+    // execute scripts properly
+    wrapper.querySelectorAll('script').forEach(oldScript => {
+      const newScript = document.createElement('script');
+
+      if (oldScript.src) {
+        newScript.src = oldScript.src;
+        newScript.async = true;
+      } else {
+        newScript.textContent = oldScript.textContent;
+      }
+
+      document.body.appendChild(newScript);
+    });
+  };
+
   useEffect(() => {
     if (!adData?.enabled || !adData?.code || !containerRef.current) return;
-    if (tracked.current) return;
 
     const el = containerRef.current;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        el.innerHTML = adData.code;
-        setVisible(true);
-        tracked.current = true;
 
-        const meta = { slot: location, toolId, variant: variant?.size || 'default', url: window.location.pathname };
-        track(sessionId.current, 'ad_impression', meta);
-        trackAdImpression({ slot: location, toolId, variant: variant?.size || 'default' });
+    const runAd = () => {
+      if (tracked.current) return;
 
-        if (obs) obs.disconnect();
-      }
-    }, { rootMargin: '100px' });
+      injectAd(adData.code, el);
+      tracked.current = true;
 
-    obs.observe(el);
-    observerRef.current = obs;
+      const meta = {
+        slot: location,
+        toolId,
+        variant: variant?.size || 'default',
+        url: window.location.pathname
+      };
 
-    return () => { if (observerRef.current) observerRef.current.disconnect(); };
-  }, [adData, variant, location, toolId]);
+      track(sessionId.current, 'ad_impression', meta);
+      trackAdImpression(meta);
+    };
+
+    // 🔥 guaranteed execution
+    runAd();
+    setTimeout(runAd, 1500);
+    setTimeout(runAd, 3000);
+  }, [adData, location, toolId, variant]);
 
   const handleClick = useCallback(() => {
-    const meta = { slot: location, toolId, variant: variant?.size || 'default', url: window.location.pathname };
+    const meta = {
+      slot: location,
+      toolId,
+      variant: variant?.size || 'default',
+      url: window.location.pathname
+    };
+
     track(sessionId.current, 'ad_click', meta);
-    trackAdClick({ slot: location, toolId, variant: variant?.size || 'default' });
+    trackAdClick(meta);
   }, [location, toolId, variant]);
 
   if (!loaded) {
-    return (
-      <div
-        className={`ad-slot ad-slot-${location}`}
-        style={{ minHeight: PLACEHOLDER_HEIGHTS[location] || 90 }}
-      />
-    );
+    return <div style={{ minHeight: 90 }} />;
   }
 
   if (!adData?.enabled || !adData?.code) return null;
@@ -114,13 +151,11 @@ export default function AdManager({ location, toolId }) {
   return (
     <div
       ref={containerRef}
-      className={`ad-slot ad-slot-${location}`}
       onClick={handleClick}
       style={{
         minHeight: 1,
         overflow: 'hidden',
         textAlign: 'center',
-        maxWidth: '100%',
         cursor: 'pointer'
       }}
     />

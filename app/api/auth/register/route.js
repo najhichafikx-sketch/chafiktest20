@@ -1,6 +1,6 @@
 import { signToken } from '@/lib/auth';
 import { createUser, findUser } from '@/lib/users';
-import { writeLog } from '@/lib/db';
+import { writeLog, createUserRecord } from '@/lib/db';
 import { trackEvent } from '@/lib/analytics';
 import { validateEmail, validatePassword, sanitizeInput } from '@/lib/sanitize';
 import { rateLimitMiddleware } from '@/lib/rate-limit';
@@ -45,6 +45,8 @@ export async function POST(request) {
     if (!user) {
       return Response.json({ success: false, message: 'Registration failed' }, { status: 500 });
     }
+
+    await createUserRecord({ email, name: body.name || '' });
 
     const token = signToken({ id: user.id, email: user.email }, '24h');
     await writeLog('INFO', 'User registered', { email });
