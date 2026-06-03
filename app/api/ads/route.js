@@ -1,4 +1,4 @@
-import { getAdSettings } from '@/lib/db';
+import { getAdSettings } from '@/lib/adSettings';
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);

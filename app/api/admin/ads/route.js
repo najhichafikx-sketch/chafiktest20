@@ -1,15 +1,11 @@
 import { verifyAdmin } from '@/lib/auth';
-import { getAdSettings, saveAdSetting, writeLog } from '@/lib/db';
+import { getAdSettings, saveAdSetting } from '@/lib/adSettings';
+import { writeLog } from '@/lib/db';
 import { rateLimitMiddleware } from '@/lib/rate-limit';
 
 const limiter = rateLimitMiddleware({ max: 30 });
 
 const DEFAULT_AD_LOCATIONS = ['header', 'sidebar', 'content_top', 'content_bottom', 'footer', 'in_tool', 'loading_state', 'mid_result'];
-
-const FALLBACK_ADS = {};
-DEFAULT_AD_LOCATIONS.forEach(loc => {
-  FALLBACK_ADS[loc] = { location: loc, enabled: true, code: '' };
-});
 
 export async function GET(request) {
   if (!verifyAdmin(request)) {
