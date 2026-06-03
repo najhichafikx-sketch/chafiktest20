@@ -23,19 +23,16 @@ export default function AdSlot({ location }) {
   useEffect(() => {
     if (!html) return;
 
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = html;
+    const match = html.match(/atOptions\s*=\s*({[^;]+})/) || html.match(/window\.atOptions\s*=\s*({[^;]+})/);
+    if (match) {
+      try {
+        window.atOptions = JSON.parse(match[1].replace(/'/g, '"'));
+      } catch {}
+    }
 
-    wrapper.querySelectorAll('script').forEach(s => {
-      const script = document.createElement('script');
-      if (s.src) {
-        script.src = s.src;
-        script.async = true;
-      } else {
-        script.textContent = s.textContent;
-      }
-      document.head.appendChild(script);
-    });
+    const script = document.createElement('script');
+    script.src = '/api/proxy-ad';
+    document.head.appendChild(script);
   }, [html]);
 
   if (done && !html) return null;
