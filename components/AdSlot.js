@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function AdSlot({ location }) {
-  const [html, setHtml] = useState(null);
+  const ref = useRef(null);
   const [done, setDone] = useState(false);
+  const [html, setHtml] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -19,15 +20,39 @@ export default function AdSlot({ location }) {
     return () => { cancelled = true; };
   }, [location]);
 
+  useEffect(() => {
+    if (!html || !ref.current) return;
+
+    const container = ref.current;
+    const scriptTags = html.match(/<script[\s\S]*?<\/script>/gi) || [];
+    const htmlPart = html.replace(/<script[\s\S]*?<\/script>/gi, '').trim();
+
+    container.innerHTML = htmlPart;
+
+    scriptTags.forEach(tag => {
+      const srcMatch = tag.match(/src\s*=\s*"([^"]+)"/);
+      const script = document.createElement('script');
+      script.setAttribute('data-cfasync', 'false');
+      if (srcMatch) {
+        script.src = srcMatch[1];
+        script.async = true;
+      } else {
+        const raw = tag.replace(/<\/?script[^>]*>/gi, '');
+        script.textContent = raw;
+      }
+      document.body.appendChild(script);
+    });
+  }, [html]);
+
   if (done && !html) return null;
   if (!html) return null;
 
   return (
     <div
+      ref={ref}
       className="ad-slot"
       data-location={location}
-      style={{ width: '100%', textAlign: 'center', overflow: 'hidden', margin: '16px 0' }}
-      dangerouslySetInnerHTML={{ __html: html }}
+      style={{ width: '100%', textAlign: 'center', overflow: 'hidden', margin: '16px 0', minHeight: 1 }}
     />
   );
 }
