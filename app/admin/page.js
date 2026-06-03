@@ -79,7 +79,7 @@ export default function AdminPage() {
         </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16, marginBottom: 32 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 16, marginBottom: 32 }}>
         <StatBox icon={Wrench} label="Total Tools" value={status.totalTools || 0} color="#8b5cf6" />
         <StatBox icon={BarChart3} label="Active Tools" value={status.activeTools || 0} color="#10b981" />
         <StatBox icon={Settings} label="Mock Tools" value={status.mockTools || 0} color={status.mockTools > 0 ? '#f59e0b' : '#10b981'} />
@@ -88,7 +88,7 @@ export default function AdminPage() {
         <StatBox icon={SearchX} label="Missing Keys" value={status.missingKeys || 0} color={status.missingKeys > 0 ? '#ef4444' : '#10b981'} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 20 }}>
         {navCards.map((card, i) => (
           <Link key={i} href={card.href} style={{ textDecoration: 'none', color: 'inherit' }}>
             <div style={{
