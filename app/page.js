@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import { MessageSquare } from 'lucide-react';
 
 export default function HomePage() {
   useEffect(() => {
@@ -40,6 +41,7 @@ function HeroSection() {
         </p>
         <div className="hero-actions">
           <Link href="/register" className="btn btn-primary btn-lg">Get Started Free</Link>
+          <Link href="/prompts" className="btn btn-accent btn-lg"><MessageSquare size={20} /> Prompt Viral</Link>
           <a href="#tools" className="btn btn-secondary btn-lg">Watch Demo</a>
         </div>
         <div className="hero-stats">
