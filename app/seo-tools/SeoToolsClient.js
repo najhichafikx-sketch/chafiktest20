@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 const TOOLS = [
   { id:'ranking', name:'Website Ranking Checker', icon:'📊', desc:'Check estimated ranking potential for any keyword on any website',
@@ -60,49 +60,70 @@ const TOOLS = [
     btnLabel:'Build URL' }
 ];
 
+const sharedInput = {
+  width:'100%', padding:'10px 14px', borderRadius:8,
+  border:'1px solid var(--glass-border)', background:'var(--glass-bg)',
+  color:'var(--text-primary)', fontSize:'0.9rem', outline:'none', boxSizing:'border-box'
+};
+
 export default function SeoToolsClient() {
   const [open, setOpen] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
-  const [err, setErr] = useState(null);
+  const [loading, setLoading] = useState({});
+  const [results, setResults] = useState({});
+  const [errors, setErrors] = useState({});
   const [vals, setVals] = useState({});
+  const refs = useRef({});
 
   const tool = open ? TOOLS.find(t => t.id === open) : null;
 
-  const select = (id) => {
-    if (open === id) { setOpen(null); return; }
-    const t = TOOLS.find(x => x.id === id);
-    setOpen(id);
-    setResult(null);
-    setErr(null);
-    const d = {};
-    t.fields.forEach(f => { d[f.key] = ''; });
-    setVals(d);
+  const toggle = (id) => {
+    setOpen(prev => prev === id ? null : id);
+    if (open !== id) {
+      const t = TOOLS.find(x => x.id === id);
+      const d = {};
+      t.fields.forEach(f => { d[f.key] = ''; });
+      setVals(prev => ({...prev, [id]: d}));
+    }
   };
 
-  const gen = async () => {
-    if (!tool) return;
-    setLoading(true); setErr(null); setResult(null);
+  const gen = async (id) => {
+    const t = TOOLS.find(x => x.id === id);
+    if (!t) return;
+    setLoading(prev => ({...prev, [id]: true}));
+    setErrors(prev => ({...prev, [id]: null}));
+    setResults(prev => ({...prev, [id]: null}));
     try {
       const r = await fetch('/api/seo-proxy', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({toolId:tool.id, inputs:vals})
+        body:JSON.stringify({toolId:id, inputs:vals[id]||{}})
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.error||'Request failed');
-      setResult(d.result);
-    } catch(e) { setErr(e.message); }
-    finally { setLoading(false); }
+      setResults(prev => ({...prev, [id]: d.result}));
+    } catch(e) {
+      setErrors(prev => ({...prev, [id]: e.message}));
+    } finally {
+      setLoading(prev => ({...prev, [id]: false}));
+    }
   };
 
-  const copy = () => { if (result) navigator.clipboard.writeText(result); };
+  const copy = (text) => { if (text) navigator.clipboard.writeText(text); };
 
-  const inputStyle = {
-    width:'100%', padding:'10px 14px', borderRadius:8,
-    border:'1px solid var(--glass-border)', background:'var(--glass-bg)',
-    color:'var(--text-primary)', fontSize:'0.9rem', outline:'none', boxSizing:'border-box'
+  const setVal = (toolId, key, val) => {
+    setVals(prev => ({...prev, [toolId]: {...(prev[toolId]||{}), [key]: val}}));
   };
+
+  const cardStyle = (isOpen) => ({
+    background:'var(--bg-glass)',
+    backdropFilter:'blur(20px)',
+    borderRadius:'var(--radius-xl)',
+    border: isOpen ? '2px solid var(--neon-cyan)' : '1px solid var(--bg-glass-border)',
+    padding:'28px 24px',
+    transition:'all 0.3s ease',
+    cursor:'pointer',
+    textAlign:'center'
+  });
 
   return (
     <section className="section">
@@ -113,98 +134,75 @@ export default function SeoToolsClient() {
           <p className="section-subtitle">11 powerful AI-driven SEO tools powered by OpenRouter AI.</p>
         </div>
 
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:24, maxWidth:1200, margin:'0 auto' }}>
-          {TOOLS.map(t => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => select(t.id)}
-              style={{
-                cursor:'pointer', background:'var(--bg-glass)', backdropFilter:'blur(20px)',
-                border: open === t.id ? '2px solid var(--neon-cyan)' : '1px solid var(--bg-glass-border)',
-                borderRadius:'var(--radius-xl)', padding:'28px 20px', textAlign:'center',
-                transition:'all 0.3s', display:'flex', flexDirection:'column', alignItems:'center',
-                fontFamily:'inherit', color:'inherit', width:'100%'
-              }}
-              onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 30px -8px rgba(99,102,241,0.2)'; }}
-              onMouseOut={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
-            >
-              <div style={{ fontSize:'2.2rem', marginBottom:12, background:t.color, width:64, height:64, borderRadius:16, display:'flex', alignItems:'center', justifyContent:'center' }}>
-                {t.icon}
-              </div>
-              <h3 style={{ fontSize:'1rem', fontWeight:700, marginBottom:8, color:'var(--text-primary)' }}>{t.name}</h3>
-              <p style={{ fontSize:'0.85rem', color:'var(--text-secondary)', lineHeight:1.6, margin:0 }}>{t.desc}</p>
-            </button>
-          ))}
-        </div>
-
-        {tool && (
-          <div key={open} style={{ marginTop:40 }} className="saas-result-fade">
-            <div className="glass-card" style={{ padding:32 }}>
-              <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:24 }}>
-                <div style={{ fontSize:'2rem', background:tool.color, width:48, height:48, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:12 }}>
-                  {tool.icon}
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(300px, 1fr))', gap:24, maxWidth:1200, margin:'0 auto', alignItems:'start' }}>
+          {TOOLS.map(t => {
+            const isOpen = open === t.id;
+            return (
+              <div key={t.id} style={cardStyle(isOpen)}>
+                <div onClick={() => toggle(t.id)} onMouseOver={e => {if(!isOpen){e.currentTarget.parentElement.style.transform='translateY(-4px)';e.currentTarget.parentElement.style.boxShadow='0 12px 30px -8px rgba(99,102,241,0.2)'}}} onMouseOut={e => {e.currentTarget.parentElement.style.transform='';e.currentTarget.parentElement.style.boxShadow=''}}>
+                  <div style={{ fontSize:'2.2rem', marginBottom:12, background:t.color, width:64, height:64, borderRadius:16, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 12px' }}>
+                    {t.icon}
+                  </div>
+                  <h3 style={{ fontSize:'1rem', fontWeight:700, marginBottom:8, color:'var(--text-primary)' }}>{t.name}</h3>
+                  <p style={{ fontSize:'0.85rem', color:'var(--text-secondary)', lineHeight:1.6, margin:0 }}>{t.desc}</p>
                 </div>
-                <div>
-                  <h2 style={{ margin:0, fontSize:'1.3rem' }}>{tool.name}</h2>
-                  <p style={{ margin:'4px 0 0', color:'var(--text-secondary)', fontSize:'0.85rem' }}>{tool.desc}</p>
-                </div>
-              </div>
 
-              <div style={{ marginBottom:24 }}>
-                <h4 style={{ fontSize:'0.95rem', marginBottom:12 }}>How to use:</h4>
-                <ol style={{ margin:0, paddingLeft:20, color:'var(--text-secondary)', fontSize:'0.85rem', lineHeight:2 }}>
-                  {tool.howTo.map((s,i) => <li key={i}>{s}</li>)}
-                </ol>
-              </div>
+                {isOpen && (
+                  <div style={{ marginTop:20, borderTop:'1px solid var(--glass-border)', paddingTop:20, textAlign:'left' }}>
+                    <ol style={{ margin:'0 0 20px', paddingLeft:20, color:'var(--text-secondary)', fontSize:'0.85rem', lineHeight:2 }}>
+                      {t.howTo.map((s,i) => <li key={i}>{s}</li>)}
+                    </ol>
 
-              <div style={{ display:'flex', flexDirection:'column', gap:12, marginBottom:20 }}>
-                {tool.fields.map(f => (
-                  <div key={f.key}>
-                    <label style={{ fontSize:'0.85rem', color:'var(--text-secondary)', marginBottom:6, display:'block' }}>{f.label}</label>
-                    {f.type === 'select' ? (
-                      <select value={vals[f.key]||''} onChange={e => setVals(p => ({...p, [f.key]: e.target.value}))} style={inputStyle}>
-                        <option value="">Select...</option>
-                        {f.options.map(o => <option key={o} value={o}>{o}</option>)}
-                      </select>
-                    ) : f.type === 'textarea' ? (
-                      <textarea value={vals[f.key]||''} onChange={e => setVals(p => ({...p, [f.key]: e.target.value}))} placeholder={f.placeholder} rows={5} style={{...inputStyle, resize:'vertical', minHeight:100, fontFamily:'inherit'}} />
-                    ) : (
-                      <input type={f.type} value={vals[f.key]||''} onChange={e => setVals(p => ({...p, [f.key]: e.target.value}))} placeholder={f.placeholder} style={inputStyle} />
+                    <div style={{ display:'flex', flexDirection:'column', gap:12, marginBottom:16 }}>
+                      {t.fields.map(f => (
+                        <div key={f.key}>
+                          <label style={{ fontSize:'0.85rem', color:'var(--text-secondary)', marginBottom:6, display:'block' }}>{f.label}</label>
+                          {f.type === 'select' ? (
+                            <select value={(vals[t.id]||{})[f.key]||''} onChange={e => setVal(t.id, f.key, e.target.value)} style={sharedInput}>
+                              <option value="">Select...</option>
+                              {f.options.map(o => <option key={o} value={o}>{o}</option>)}
+                            </select>
+                          ) : f.type === 'textarea' ? (
+                            <textarea value={(vals[t.id]||{})[f.key]||''} onChange={e => setVal(t.id, f.key, e.target.value)} placeholder={f.placeholder} rows={4} style={{...sharedInput, resize:'vertical', minHeight:80, fontFamily:'inherit'}} />
+                          ) : (
+                            <input type={f.type} value={(vals[t.id]||{})[f.key]||''} onChange={e => setVal(t.id, f.key, e.target.value)} placeholder={f.placeholder} style={sharedInput} />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    <button onClick={() => gen(t.id)} disabled={loading[t.id]} className="btn btn-primary" style={{ width:'100%', padding:'12px 24px', fontSize:'1rem', opacity:loading[t.id]?0.7:1 }}>
+                      {loading[t.id] ? 'Analyzing...' : t.btnLabel}
+                    </button>
+
+                    {loading[t.id] && (
+                      <div style={{ textAlign:'center', padding:20 }}>
+                        <div className="saas-spinner" style={{ margin:'0 auto 12px', width:32, height:32, borderWidth:3 }} />
+                        <p style={{ color:'var(--text-secondary)', fontSize:'0.85rem', margin:0 }}>Analyzing with AI...</p>
+                      </div>
+                    )}
+
+                    {errors[t.id] && (
+                      <div style={{ marginTop:16, padding:12, background:'rgba(239,68,68,0.1)', borderRadius:8, borderLeft:'4px solid #ef4444' }}>
+                        <p style={{ color:'#ef4444', margin:0, fontSize:'0.85rem' }}>⚠ {errors[t.id]}</p>
+                      </div>
+                    )}
+
+                    {results[t.id] && (
+                      <div style={{ marginTop:16 }}>
+                        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
+                          <h4 style={{ margin:0, fontSize:'0.9rem' }}>Result</h4>
+                          <button onClick={() => copy(results[t.id])} style={{ padding:'6px 14px', borderRadius:6, border:'1px solid var(--glass-border)', background:'transparent', color:'var(--text-secondary)', cursor:'pointer', fontSize:'0.8rem' }}>📋 Copy</button>
+                        </div>
+                        <div style={{ padding:16, background:'var(--glass-bg)', borderRadius:8, whiteSpace:'pre-wrap', wordBreak:'break-word', fontSize:'0.85rem', lineHeight:1.7, color:'var(--text-secondary)', maxHeight:400, overflowY:'auto' }}>{results[t.id]}</div>
+                      </div>
                     )}
                   </div>
-                ))}
+                )}
               </div>
-
-              <button onClick={gen} disabled={loading} className="btn btn-primary" style={{ width:'100%', padding:'12px 24px', fontSize:'1rem', opacity:loading?0.7:1 }}>
-                {loading ? 'Analyzing...' : tool.btnLabel}
-              </button>
-
-              {loading && (
-                <div style={{ textAlign:'center', padding:40 }}>
-                  <div className="saas-spinner" style={{ margin:'0 auto 16px', width:40, height:40, borderWidth:3 }} />
-                  <p style={{ color:'var(--text-secondary)', fontSize:'0.9rem' }}>Analyzing with AI...</p>
-                </div>
-              )}
-
-              {err && (
-                <div className="glass-card" style={{ marginTop:20, padding:16, borderLeft:'4px solid #ef4444' }}>
-                  <p style={{ color:'#ef4444', margin:0, fontSize:'0.9rem' }}>⚠ {err}</p>
-                </div>
-              )}
-
-              {result && (
-                <div className="results-section" style={{ marginTop:24 }}>
-                  <div className="results-header" style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
-                    <h3 style={{ margin:0 }}>Result</h3>
-                    <button onClick={copy} className="btn btn-sm btn-outline">📋 Copy</button>
-                  </div>
-                  <div className="glass-card" style={{ padding:24, whiteSpace:'pre-wrap', wordBreak:'break-word', fontSize:'0.9rem', lineHeight:1.7, color:'var(--text-secondary)', maxHeight:600, overflowY:'auto' }}>{result}</div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
     </section>
   );
