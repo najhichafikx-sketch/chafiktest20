@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
 import MonetagProvider from '@/components/MonetagProvider';
+import MonetagServiceWorker from '@/components/MonetagServiceWorker';
 import { WebsiteSchema, OrganizationSchema, SoftwareAppSchema, JsonLd } from '@/lib/seo';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -65,6 +66,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="bg-mesh bg-grid">
         <AnalyticsTracker />
+        <MonetagServiceWorker />
         <Navbar />
         <MonetagProvider>{children}</MonetagProvider>
         <Footer />
