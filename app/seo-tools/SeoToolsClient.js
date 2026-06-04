@@ -212,18 +212,21 @@ function LoadingSpinner() {
 }
 
 export default function SeoToolsClient() {
-  const [activeTool, setActiveTool] = useState(null);
+  const [activeToolId, setActiveToolId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [formValues, setFormValues] = useState({});
 
-  const handleCardClick = (tool) => {
-    if (activeTool?.id === tool.id) {
-      setActiveTool(null);
+  const activeTool = activeToolId ? TOOLS.find(t => t.id === activeToolId) : null;
+
+  const handleCardClick = (id) => {
+    if (activeToolId === id) {
+      setActiveToolId(null);
       return;
     }
-    setActiveTool(tool);
+    const tool = TOOLS.find(t => t.id === id);
+    setActiveToolId(id);
     setResult(null);
     setError(null);
     const defaults = {};
@@ -236,6 +239,7 @@ export default function SeoToolsClient() {
   };
 
   const handleGenerate = async () => {
+    if (!activeTool) return;
     setLoading(true);
     setError(null);
     setResult(null);
@@ -259,114 +263,6 @@ export default function SeoToolsClient() {
     if (result) navigator.clipboard.writeText(result);
   };
 
-  const renderPanel = () => {
-    if (!activeTool) return null;
-    const tool = activeTool;
-
-    return (
-      <div style={{ marginTop: 40 }} className="saas-result-fade">
-        <div className="glass-card" style={{ padding: 32 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-            <div className="tool-icon" style={{ fontSize: '2rem', background: tool.color, width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 12 }}>
-              {tool.icon}
-            </div>
-            <div>
-              <h2 style={{ margin: 0, fontSize: '1.3rem' }}>{tool.name}</h2>
-              <p style={{ margin: '4px 0 0', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{tool.desc}</p>
-            </div>
-          </div>
-
-          <div style={{ marginBottom: 24 }}>
-            <h4 style={{ fontSize: '0.95rem', marginBottom: 12, color: 'var(--text-primary)' }}>How to use:</h4>
-            <ol style={{ margin: 0, paddingLeft: 20, color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 2 }}>
-              {tool.howTo.map((step, i) => (
-                <li key={i}>{step}</li>
-              ))}
-            </ol>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
-            {tool.fields.map(field => {
-              const commonStyle = {
-                width: '100%',
-                padding: '10px 14px',
-                borderRadius: 8,
-                border: '1px solid var(--glass-border)',
-                background: 'var(--glass-bg)',
-                color: 'var(--text-primary)',
-                fontSize: '0.9rem',
-                outline: 'none',
-                boxSizing: 'border-box'
-              };
-              if (field.type === 'select') {
-                return (
-                  <div key={field.key}>
-                    <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 6, display: 'block' }}>{field.label}</label>
-                    <select
-                      value={formValues[field.key] || ''}
-                      onChange={e => handleFieldChange(field.key, e.target.value)}
-                      style={commonStyle}
-                    >
-                      <option value="">Select card type...</option>
-                      {field.options.map(opt => (
-                        <option key={opt} value={opt}>{opt}</option>
-                      ))}
-                    </select>
-                  </div>
-                );
-              }
-              if (field.type === 'textarea') {
-                return (
-                  <div key={field.key}>
-                    <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 6, display: 'block' }}>{field.label}</label>
-                    <textarea
-                      value={formValues[field.key] || ''}
-                      onChange={e => handleFieldChange(field.key, e.target.value)}
-                      placeholder={field.placeholder}
-                      rows={5}
-                      style={{ ...commonStyle, resize: 'vertical', minHeight: 100, fontFamily: 'inherit' }}
-                    />
-                  </div>
-                );
-              }
-              return (
-                <div key={field.key}>
-                  <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 6, display: 'block' }}>{field.label}</label>
-                  <input
-                    type={field.type}
-                    value={formValues[field.key] || ''}
-                    onChange={e => handleFieldChange(field.key, e.target.value)}
-                    placeholder={field.placeholder}
-                    style={commonStyle}
-                  />
-                </div>
-              );
-            })}
-          </div>
-
-          <button
-            onClick={handleGenerate}
-            disabled={loading}
-            className="btn btn-primary"
-            style={{ width: '100%', padding: '12px 24px', fontSize: '1rem', opacity: loading ? 0.7 : 1 }}
-          >
-            {loading ? 'Analyzing...' : activeTool.btnLabel}
-          </button>
-
-          {loading && <LoadingSpinner />}
-
-          {error && (
-            <div className="glass-card" style={{ marginTop: 20, padding: 16, borderLeft: '4px solid #ef4444' }}>
-              <p style={{ color: '#ef4444', margin: 0, fontSize: '0.9rem' }}>⚠ {error}</p>
-            </div>
-          )}
-
-          {result && <ResultDisplay result={result} onCopy={copyResult} />}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <section className="section">
       <div className="container">
@@ -381,14 +277,14 @@ export default function SeoToolsClient() {
             <div
               key={tool.id}
               className="tool-card"
-              onClick={() => handleCardClick(tool)}
+              onClick={() => handleCardClick(tool.id)}
               style={{
                 cursor: 'pointer',
                 position: 'relative',
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
-                border: activeTool?.id === tool.id ? '2px solid var(--neon-cyan)' : undefined
+                border: activeToolId === tool.id ? '2px solid var(--neon-cyan)' : ''
               }}
             >
               <div style={{ flex: 1 }}>
@@ -400,7 +296,98 @@ export default function SeoToolsClient() {
           ))}
         </div>
 
-        {renderPanel()}
+        {activeTool && (
+          <div key={activeToolId} style={{ marginTop: 40 }} className="saas-result-fade">
+            <div className="glass-card" style={{ padding: 32 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+                <div style={{ fontSize: '2rem', background: activeTool.color, width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 12 }}>
+                  {activeTool.icon}
+                </div>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: '1.3rem' }}>{activeTool.name}</h2>
+                  <p style={{ margin: '4px 0 0', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{activeTool.desc}</p>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 24 }}>
+                <h4 style={{ fontSize: '0.95rem', marginBottom: 12, color: 'var(--text-primary)' }}>How to use:</h4>
+                <ol style={{ margin: 0, paddingLeft: 20, color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 2 }}>
+                  {activeTool.howTo.map((step, i) => (
+                    <li key={i}>{step}</li>
+                  ))}
+                </ol>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
+                {activeTool.fields.map(field => {
+                  const shared = {
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: 8,
+                    border: '1px solid var(--glass-border)',
+                    background: 'var(--glass-bg)',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.9rem',
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  };
+                  if (field.type === 'select') {
+                    return (
+                      <div key={field.key}>
+                        <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 6, display: 'block' }}>{field.label}</label>
+                        <select value={formValues[field.key] || ''} onChange={e => handleFieldChange(field.key, e.target.value)} style={shared}>
+                          <option value="">Select card type...</option>
+                          {field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                      </div>
+                    );
+                  }
+                  if (field.type === 'textarea') {
+                    return (
+                      <div key={field.key}>
+                        <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 6, display: 'block' }}>{field.label}</label>
+                        <textarea value={formValues[field.key] || ''} onChange={e => handleFieldChange(field.key, e.target.value)} placeholder={field.placeholder} rows={5} style={{ ...shared, resize: 'vertical', minHeight: 100, fontFamily: 'inherit' }} />
+                      </div>
+                    );
+                  }
+                  return (
+                    <div key={field.key}>
+                      <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 6, display: 'block' }}>{field.label}</label>
+                      <input type={field.type} value={formValues[field.key] || ''} onChange={e => handleFieldChange(field.key, e.target.value)} placeholder={field.placeholder} style={shared} />
+                    </div>
+                  );
+                })}
+              </div>
+
+              <button onClick={handleGenerate} disabled={loading} className="btn btn-primary" style={{ width: '100%', padding: '12px 24px', fontSize: '1rem', opacity: loading ? 0.7 : 1 }}>
+                {loading ? 'Analyzing...' : activeTool.btnLabel}
+              </button>
+
+              {loading && (
+                <div style={{ textAlign: 'center', padding: 40 }}>
+                  <div className="saas-spinner" style={{ margin: '0 auto 16px', width: 40, height: 40, borderWidth: 3 }} />
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Analyzing with AI...</p>
+                </div>
+              )}
+
+              {error && (
+                <div className="glass-card" style={{ marginTop: 20, padding: 16, borderLeft: '4px solid #ef4444' }}>
+                  <p style={{ color: '#ef4444', margin: 0, fontSize: '0.9rem' }}>⚠ {error}</p>
+                </div>
+              )}
+
+              {result && (
+                <div className="results-section" style={{ marginTop: 24 }}>
+                  <div className="results-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                    <h3 style={{ margin: 0 }}>Result</h3>
+                    <button onClick={copyResult} className="btn btn-sm btn-outline" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>📋 Copy</button>
+                  </div>
+                  <div className="glass-card" style={{ padding: 24, whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '0.9rem', lineHeight: 1.7, color: 'var(--text-secondary)', maxHeight: 600, overflowY: 'auto' }}>{result}</div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
