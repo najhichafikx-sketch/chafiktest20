@@ -31,12 +31,12 @@ const HTML_REDIRECTS = {
 
 const CSP = [
   "default-src 'self'",
-   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tiny.cloud https://5gvci.com",
+   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tiny.cloud https://5gvci.com https://www.highperformanceformat.com https://www.profitabledisplaynetwork.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "img-src 'self' data: blob: https: http:",
   "font-src 'self' https://fonts.gstatic.com",
   "frame-src https: http:",
-   "connect-src 'self' http: https:",
+   "connect-src 'self' http: https: https://www.highperformanceformat.com https://www.profitabledisplaynetwork.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'"
