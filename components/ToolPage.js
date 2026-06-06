@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import { TOOL_ARTICLES, RELATED_TOOLS, USAGE_GUIDES, FAQS, TOOL_NAMES } from '@/lib/tool-content';
-import ToolBanner from '@/components/ads/ToolBanner';
-import { canFirePopunder, firePopunderMonetag, markPopunderFired, setUploading } from '@/lib/ads';
 
 function trackToolUsage(toolId) {
   const sid = localStorage.getItem('session_id') || crypto.randomUUID();
@@ -39,10 +37,6 @@ export default function ToolPage({ icon, title, description, placeholder, toolId
       return;
     }
     if (!input.trim()) return;
-    if (canFirePopunder()) {
-      firePopunderMonetag();
-      markPopunderFired();
-    }
     setLoading(true);
     setResult('');
 
@@ -73,7 +67,6 @@ export default function ToolPage({ icon, title, description, placeholder, toolId
 
   async function handleUpload() {
     setLoading(true);
-    setUploading(true);
     setResult('');
 
     try {
@@ -106,7 +99,6 @@ export default function ToolPage({ icon, title, description, placeholder, toolId
       setResult(`<div style="color:#ef4444;text-align:center;padding:24px;">Network error: ${err.message}</div>`);
     } finally {
       setLoading(false);
-      setUploading(false);
     }
   }
 
@@ -118,8 +110,6 @@ export default function ToolPage({ icon, title, description, placeholder, toolId
           <h1 className="tool-page-title">{title}</h1>
           <p className="tool-page-desc">{description}</p>
         </div>
-
-        <ToolBanner slotId={`tool-${toolId || 'default'}`} />
 
         <div className="tool-layout" style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
           <div className="tool-workspace" style={{ flex: 1, minWidth: 0 }}>

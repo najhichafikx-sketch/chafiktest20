@@ -4,13 +4,8 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
-import MonetagProvider from '@/components/MonetagProvider';
 import MonetagServiceWorker from '@/components/MonetagServiceWorker';
-import AdsterraBanner from '@/components/AdsterraBanner';
-import MonetagBanner from '@/components/MonetagBanner';
-import HeaderBanner from '@/components/ads/HeaderBanner';
-import SidebarAds from '@/components/ads/SidebarAds';
-import InPagePushDelayed from '@/components/ads/InPagePushDelayed';
+import BannerSlot from '@/components/ads/BannerSlot';
 import { WebsiteSchema, OrganizationSchema, SoftwareAppSchema, JsonLd } from '@/lib/seo';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -73,17 +68,12 @@ export default function RootLayout({ children }) {
         <AnalyticsTracker />
         <MonetagServiceWorker />
         <Navbar />
-        <SidebarAds />
-        <HeaderBanner excludePaths={['/']} />
-        <InPagePushDelayed />
-        <MonetagBanner slotId="global-top-300x250" />
-        <AdsterraBanner slotId="global-top" />
-        <MonetagProvider>
+
+        <main>
           {children}
-          <div style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '24px 0' }}>
-            <AdsterraBanner slotId="global-bottom" />
-          </div>
-        </MonetagProvider>
+          <BannerSlot slotId="site-bottom" />
+        </main>
+
         <Footer />
 
         <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
@@ -92,8 +82,7 @@ export default function RootLayout({ children }) {
         </Script>
 
         <Script src="https://5gvci.com/pfe/current/tag.min.js?z=11103150" data-cfasync="false" strategy="beforeInteractive" />
-        <Script id="monetag-onclick" strategy="beforeInteractive">{`(function(s){s.dataset.zone='11103201',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}</Script>
-        <Script id="monetag-inpage-push" strategy="afterInteractive">{`(function(s){s.dataset.zone='11103207',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}</Script>
+        <Script src="https://quge5.com/88/tag.min.js" data-zone="246361" async data-cfasync="false" strategy="beforeInteractive" />
       </body>
     </html>
   );

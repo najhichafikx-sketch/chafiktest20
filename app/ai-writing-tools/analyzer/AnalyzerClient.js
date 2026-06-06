@@ -1,6 +1,5 @@
 'use client';
 import { useState, useRef } from 'react';
-import ToolBanner from '@/components/ads/ToolBanner';
 
 const ACCENT_GREEN = '#10b981';
 
@@ -138,8 +137,6 @@ export default function AnalyzerClient() {
         <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 24 }}>
           Paste any article and get a full SEO audit with a score out of 100.
         </p>
-
-        <ToolBanner slotId="ai-analyzer" />
 
         {/* Input */}
         <div style={{ background: 'var(--bg-glass)', borderRadius: 12, padding: 24, marginBottom: 16, border: '1px solid var(--bg-glass-border)' }}>
