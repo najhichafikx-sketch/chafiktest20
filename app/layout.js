@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
 import MonetagServiceWorker from '@/components/MonetagServiceWorker';
 import BannerSlot from '@/components/ads/BannerSlot';
+import SideBanner from '@/components/ads/SideBanner';
 import { WebsiteSchema, OrganizationSchema, SoftwareAppSchema, JsonLd } from '@/lib/seo';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -69,6 +70,7 @@ export default function RootLayout({ children }) {
         <MonetagServiceWorker />
         <Navbar />
         <BannerSlot slotId="site-top" />
+        <SideBanner side="left" />
 
         <main>
           {children}

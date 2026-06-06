@@ -198,38 +198,46 @@ export default function BannerSlot({ slotId = 'site-top' }) {
   return (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        width: '100%',
-        padding: '14px 0',
+        paddingTop: '84px',
+        paddingBottom: '14px',
         background: 'rgba(99,102,241,0.03)',
         borderBottom: '1px solid rgba(99,102,241,0.12)',
-        gap: 16,
-        flexWrap: 'wrap',
-        alignItems: 'center',
+        width: '100%',
       }}
     >
-      <span
+      <div
         style={{
-          fontSize: 10,
-          letterSpacing: 2,
-          textTransform: 'uppercase',
-          color: '#64748b',
-          fontWeight: 600,
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+          gap: 16,
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          padding: '0 16px',
         }}
       >
-        Sponsored
-      </span>
-      <div
-        ref={adsterraRef}
-        data-adsterra-slot={slotId}
-        style={{ width: 728, maxWidth: '100%', minHeight: 90 }}
-      />
-      <div
-        ref={monetagRef}
-        data-monetag-slot={slotId}
-        style={{ minHeight: 60 }}
-      />
+        <span
+          style={{
+            fontSize: 10,
+            letterSpacing: 2,
+            textTransform: 'uppercase',
+            color: '#64748b',
+            fontWeight: 600,
+          }}
+        >
+          Sponsored
+        </span>
+        <div
+          ref={adsterraRef}
+          data-adsterra-slot={slotId}
+          style={{ width: 728, maxWidth: '100%', minHeight: 90 }}
+        />
+        <div
+          ref={monetagRef}
+          data-monetag-slot={slotId}
+          style={{ minHeight: 60 }}
+        />
+      </div>
     </div>
   );
 }
