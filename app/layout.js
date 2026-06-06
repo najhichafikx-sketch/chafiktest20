@@ -7,6 +7,7 @@ import AnalyticsTracker from '@/components/AnalyticsTracker';
 import MonetagProvider from '@/components/MonetagProvider';
 import MonetagServiceWorker from '@/components/MonetagServiceWorker';
 import AdsterraBanner from '@/components/AdsterraBanner';
+import MonetagBanner from '@/components/MonetagBanner';
 import { WebsiteSchema, OrganizationSchema, SoftwareAppSchema, JsonLd } from '@/lib/seo';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -69,6 +70,7 @@ export default function RootLayout({ children }) {
         <AnalyticsTracker />
         <MonetagServiceWorker />
         <Navbar />
+        <MonetagBanner slotId="global-300x250" />
         <AdsterraBanner />
         <MonetagProvider>{children}</MonetagProvider>
         <Footer />
@@ -79,7 +81,6 @@ export default function RootLayout({ children }) {
         </Script>
 
         <Script src="https://5gvci.com/pfe/current/tag.min.js?z=11103150" data-cfasync="false" strategy="beforeInteractive" />
-        <Script src="https://quge5.com/88/tag.min.js" data-zone="246361" async data-cfasync="false" strategy="beforeInteractive" />
         <Script id="monetag-onclick" strategy="beforeInteractive">{`(function(s){s.dataset.zone='11103201',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}</Script>
         <Script id="monetag-inpage-push" strategy="afterInteractive">{`(function(s){s.dataset.zone='11103207',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}</Script>
       </body>
