@@ -61,22 +61,11 @@ export default function LandingPageClient() {
   }, []);
 
   useEffect(() => {
-    fetch('/api/generate-landing-page', { method: 'GET' })
-      .then(r => r.json())
-      .then(d => {
-        if (d?.limited && d.retry_after_seconds > 0) {
-          setServerCooldown(d.retry_after_seconds * 1000);
-        }
-      })
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
     if (aiLoading) return;
     const localRemaining = getLocalCooldownRemaining();
     const totalRemaining = Math.max(localRemaining, serverCooldown);
     if (totalRemaining <= 0) return;
-    const interval = setInterval(() => setNow(Date.now()), 1000);
+    const interval = setInterval(() => setNow(Date.now()), 60000);
     return () => clearInterval(interval);
   }, [aiLoading, serverCooldown]);
 
@@ -97,10 +86,9 @@ export default function LandingPageClient() {
     const totalSec = Math.floor(ms / 1000);
     const h = Math.floor(totalSec / 3600);
     const m = Math.floor((totalSec % 3600) / 60);
-    const s = totalSec % 60;
     if (h > 0) return `${h} ساعة ${m} دقيقة`;
-    if (m > 0) return `${m} دقيقة ${s} ثانية`;
-    return `${s} ثانية`;
+    if (m > 0) return `${m} دقيقة`;
+    return `${totalSec} ثانية`;
   }
 
   const generatedHTML = useMemo(() => generateLandingPage(form), [form]);
@@ -125,31 +113,26 @@ export default function LandingPageClient() {
     setAiLoading(true);
     showMsg('✨ AI is enhancing your texts...', 'info');
 
-    const languageName = LANGUAGES.find(l => l.id === form.language)?.label || 'English';
-    const isRTL = form.language === 'ar';
     const customPrompt = `You are an expert landing page copywriter specializing in conversion optimization.
 
-Generate all landing page content in ${languageName}. ${isRTL ? 'Use proper RTL layout for Arabic text.' : 'Use proper LTR layout.'}
-
-Given the following product info, improve the headline and description to be more professional, compelling, and conversion-focused. Keep the same meaning but make it more persuasive. The output must be written entirely in ${languageName}.
+Given the following product info, improve the headline and description to be more professional, compelling, and conversion-focused. Keep the same meaning but make it more persuasive.
 
 Product name: ${form.name}
-Template type: ${form.template}
 Current headline: ${form.headline}
 Current description: ${form.description}
-Target language: ${languageName}
 
 Return your response in EXACTLY this plain text format (no markdown, no code blocks, no quotes):
-HEADLINE: [improved headline in ${languageName}, max 80 characters]
-DESCRIPTION: [improved description in ${languageName}, 1-2 sentences, max 200 characters]`;
+HEADLINE: [improved headline, max 80 characters]
+DESCRIPTION: [improved description, 1-2 sentences, max 200 characters]`;
 
     try {
-      const res = await fetch('/api/generate-landing-page', {
+      const res = await fetch('/api/landing-page/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          input: `${form.name} - ${form.headline}`,
           prompt: customPrompt,
+          language: form.language || 'en',
+          template_type: form.template || 'default'
         }),
       });
 
@@ -163,7 +146,7 @@ DESCRIPTION: [improved description in ${languageName}, 1-2 sentences, max 200 ch
 
       const data = await res.json();
       if (!data.success && !data.text) {
-        showMsg(data.message || '⚙️ الخدمة غير متاحة حالياً، يرجى المحاولة لاحقاً', 'error');
+        showMsg(data.message || 'الخدمة غير متاحة حالياً، يرجى المحاولة لاحقاً', 'error');
         return;
       }
 
@@ -181,7 +164,7 @@ DESCRIPTION: [improved description in ${languageName}, 1-2 sentences, max 200 ch
       } catch {}
       showMsg('✅ Texts improved by AI!', 'success');
     } catch (err) {
-      showMsg('⏳ الخدمة غير متاحة حالياً، يرجى المحاولة لاحقاً', 'error');
+      showMsg('الخدمة غير متاحة حالياً، يرجى المحاولة لاحقاً', 'error');
     } finally {
       setAiLoading(false);
     }

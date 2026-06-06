@@ -6,7 +6,7 @@ import Link from 'next/link';
 import {
   LayoutDashboard, Wrench, Megaphone, DollarSign, BarChart3,
   Settings, Key, Globe, SearchX, FileText, Newspaper,
-  MessageSquare, Users, LogOut, Brain, CheckCircle2, XCircle
+  MessageSquare, Users, LogOut, Brain, CheckCircle2, XCircle, Eye, EyeOff
 } from 'lucide-react';
 
 export default function AdminPage() {
@@ -15,12 +15,22 @@ export default function AdminPage() {
   const [status, setStatus] = useState(null);
   const [logs, setLogs] = useState([]);
 
+  const [aiKeyInput, setAiKeyInput] = useState('');
+  const [aiKeyVisible, setAiKeyVisible] = useState(false);
+  const [aiKeyConfigured, setAiKeyConfigured] = useState(false);
+  const [aiSaving, setAiSaving] = useState(false);
+  const [aiMessage, setAiMessage] = useState('');
+  const [aiTestResult, setAiTestResult] = useState('');
+  const [aiTesting, setAiTesting] = useState(false);
+  const [dailyUsage, setDailyUsage] = useState(0);
+
   useEffect(() => {
     const t = localStorage.getItem('admin_token');
     if (!t) { router.push('/admin-login'); return; }
     setToken(t);
     fetchStatus(t);
     fetchLogs(t);
+    fetchAiSettings(t);
   }, [router]);
 
   async function fetchStatus(t) {
@@ -30,6 +40,9 @@ export default function AdminPage() {
     if (res.status === 401) { localStorage.removeItem('admin_token'); router.push('/admin-login'); return; }
     const data = await res.json();
     setStatus(data);
+    if (typeof data.dailyLandingPageUsage === 'number') {
+      setDailyUsage(data.dailyLandingPageUsage);
+    }
   }
 
   async function fetchLogs(t) {
@@ -38,6 +51,69 @@ export default function AdminPage() {
     });
     const data = await res.json();
     setLogs(Array.isArray(data) ? data : []);
+  }
+
+  async function fetchAiSettings(t) {
+    try {
+      const res = await fetch('/api/admin/settings/openrouter', {
+        headers: { 'Authorization': `Bearer ${t}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAiKeyConfigured(!!data.isConfigured);
+      }
+    } catch (e) {}
+  }
+
+  async function handleSaveKey(e) {
+    e?.preventDefault();
+    if (!aiKeyInput.trim() || aiSaving) return;
+    setAiSaving(true);
+    setAiMessage('');
+    try {
+      const res = await fetch('/api/admin/settings/openrouter', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey: aiKeyInput.trim() })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAiMessage('✅ ' + (data.message || 'تم الحفظ'));
+        setAiKeyInput('');
+        setAiKeyConfigured(true);
+        fetchStatus(token);
+      } else {
+        setAiMessage('❌ ' + (data.message || 'فشل الحفظ'));
+      }
+    } catch (e) {
+      setAiMessage('❌ Network error');
+    } finally {
+      setAiSaving(false);
+    }
+  }
+
+  async function handleTestConnection() {
+    if (aiTesting) return;
+    setAiTesting(true);
+    setAiTestResult('');
+    try {
+      const keyToTest = aiKeyInput.trim() || '****';
+      const res = await fetch('/api/admin/settings/openrouter/test', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey: keyToTest })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAiTestResult('✓ الاتصال ناجح');
+      } else {
+        setAiTestResult('✗ فشل الاتصال');
+      }
+    } catch {
+      setAiTestResult('✗ فشل الاتصال');
+    } finally {
+      setAiTesting(false);
+    }
   }
 
   function handleLogout() {
@@ -66,6 +142,18 @@ export default function AdminPage() {
   ];
 
   const aiConnected = status?.apiStatus === 'Online';
+
+  const aiInputStyle = {
+    flex: 1,
+    padding: '10px 14px',
+    background: 'var(--bg-tertiary)',
+    border: '1px solid var(--bg-glass-border)',
+    borderRadius: 8,
+    color: 'var(--text-primary)',
+    fontSize: '0.9rem',
+    fontFamily: 'monospace',
+    direction: 'ltr'
+  };
 
   return (
     <div style={{ padding: '32px 40px', maxWidth: 1200, margin: '0 auto' }}>
@@ -139,23 +227,82 @@ export default function AdminPage() {
         <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '0 0 16px 0', lineHeight: 1.6 }}>
           OpenRouter API Key — مفتاح الـ AI الذي يستخدمه الموقع لإنشاء المحتوى. يُدار مركزياً ولا يظهر للمستخدمين.
         </p>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <Link href="/admin/api-settings" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            background: 'linear-gradient(135deg, #a855f7, #ec4899)', color: '#fff',
-            padding: '10px 18px', borderRadius: 8, fontSize: 14, fontWeight: 600,
-            textDecoration: 'none', boxShadow: '0 4px 12px rgba(168,85,247,0.3)'
-          }}>
-            <Key size={16} /> إدارة المفتاح
-          </Link>
-          <Link href="/admin/api-settings" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            background: 'transparent', color: 'var(--text-primary)',
-            padding: '10px 18px', borderRadius: 8, fontSize: 14, fontWeight: 600,
-            textDecoration: 'none', border: '1px solid var(--bg-glass-border)'
-          }}>
-            <Settings size={16} /> اختبار الاتصال
-          </Link>
+
+        <form onSubmit={handleSaveKey} style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative', flex: 1, minWidth: 280 }}>
+              <input
+                type={aiKeyVisible ? 'text' : 'password'}
+                value={aiKeyInput}
+                onChange={e => setAiKeyInput(e.target.value)}
+                placeholder="sk-or-v1-..."
+                style={{ ...aiInputStyle, paddingRight: 44, width: '100%' }}
+                autoComplete="off"
+                spellCheck="false"
+              />
+              <button
+                type="button"
+                onClick={() => setAiKeyVisible(v => !v)}
+                aria-label={aiKeyVisible ? 'Hide' : 'Show'}
+                style={{
+                  position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)',
+                  background: 'transparent', border: 'none', color: 'var(--text-secondary)',
+                  cursor: 'pointer', padding: 4, display: 'flex'
+                }}
+              >
+                {aiKeyVisible ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            <button
+              type="submit"
+              disabled={aiSaving || !aiKeyInput.trim()}
+              className="btn btn-primary"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px', fontSize: 14, fontWeight: 600 }}
+            >
+              {aiSaving ? '⏳ جاري الحفظ...' : '💾 حفظ'}
+            </button>
+            <button
+              type="button"
+              onClick={handleTestConnection}
+              disabled={aiTesting}
+              className="btn btn-secondary"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px', fontSize: 14, fontWeight: 600 }}
+            >
+              {aiTesting ? '⏳ جاري الاختبار...' : '🔌 Test Connection'}
+            </button>
+          </div>
+
+          {aiMessage && (
+            <div style={{
+              fontSize: 13, fontWeight: 600,
+              color: aiMessage.startsWith('✅') ? '#10b981' : '#ef4444',
+              padding: '8px 12px', background: aiMessage.startsWith('✅') ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
+              borderRadius: 8, border: `1px solid ${aiMessage.startsWith('✅') ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`
+            }}>
+              {aiMessage}
+            </div>
+          )}
+
+          {aiTestResult && (
+            <div style={{
+              fontSize: 13, fontWeight: 700,
+              color: aiTestResult.startsWith('✓') ? '#10b981' : '#ef4444',
+              padding: '8px 12px', background: aiTestResult.startsWith('✓') ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
+              borderRadius: 8, border: `1px solid ${aiTestResult.startsWith('✓') ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`
+            }}>
+              {aiTestResult}
+            </div>
+          )}
+        </form>
+
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 8,
+          padding: '8px 14px', background: 'var(--bg-tertiary)',
+          border: '1px solid var(--bg-glass-border)', borderRadius: 8,
+          fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)'
+        }}>
+          <span>📊 إجمالي الطلبات اليوم:</span>
+          <strong style={{ color: 'var(--text-primary)', fontSize: 16 }}>{dailyUsage}</strong>
         </div>
       </div>
 
