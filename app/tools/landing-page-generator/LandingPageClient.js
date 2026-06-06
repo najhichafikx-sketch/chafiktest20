@@ -1,13 +1,19 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { generateLandingPage, getDefaultFormData, TEMPLATES } from '@/lib/landing-page-templates';
 
 const LANGUAGES = [
-  { id: 'en', label: 'English' },
-  { id: 'fr', label: 'Français' },
-  { id: 'ar', label: 'العربية' },
+  { id: 'ar', label: 'العربية', flag: '🇸🇦' },
+  { id: 'en', label: 'English', flag: '🇺🇸' },
+  { id: 'fr', label: 'Français', flag: '🇫🇷' },
+  { id: 'es', label: 'Español', flag: '🇪🇸' },
+  { id: 'tr', label: 'Türkçe', flag: '🇹🇷' },
+  { id: 'de', label: 'Deutsch', flag: '🇩🇪' },
 ];
+
+const COOLDOWN_MS = 5 * 60 * 60 * 1000;
+const STORAGE_KEY = 'lp_last_used';
 
 const inputStyle = {
   width: '100%',
@@ -33,6 +39,37 @@ export default function LandingPageClient() {
   const [previewMode, setPreviewMode] = useState('desktop');
   const [aiLoading, setAiLoading] = useState(false);
   const [msg, setMsg] = useState({ text: '', type: '' });
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (aiLoading) return;
+    const remaining = getCooldownRemaining();
+    if (remaining <= 0) return;
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, [aiLoading]);
+
+  function getCooldownRemaining() {
+    try {
+      const last = Number(localStorage.getItem(STORAGE_KEY) || 0);
+      if (!last) return 0;
+      const diff = Date.now() - last;
+      return diff < COOLDOWN_MS ? COOLDOWN_MS - diff : 0;
+    } catch { return 0; }
+  }
+
+  const cooldownRemaining = Math.max(0, COOLDOWN_MS - (now - Number((typeof window !== 'undefined' && localStorage.getItem(STORAGE_KEY)) || 0)));
+  const isOnCooldown = cooldownRemaining > 0;
+
+  function formatCooldown(ms) {
+    const totalSec = Math.floor(ms / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    if (h > 0) return `${h}h ${m}m`;
+    if (m > 0) return `${m}m ${s}s`;
+    return `${s}s`;
+  }
 
   const generatedHTML = useMemo(() => generateLandingPage(form), [form]);
 
@@ -47,13 +84,20 @@ export default function LandingPageClient() {
 
   async function aiEnhance() {
     if (aiLoading) return;
+    if (isOnCooldown) {
+      showMsg(`⏳ Please wait ${formatCooldown(cooldownRemaining)} before generating again.`, 'error');
+      return;
+    }
     setAiLoading(true);
     showMsg('✨ AI is enhancing your texts...', 'info');
 
     const languageName = LANGUAGES.find(l => l.id === form.language)?.label || 'English';
+    const isRTL = form.language === 'ar';
     const customPrompt = `You are an expert landing page copywriter specializing in conversion optimization.
 
-Given the following product info, improve the headline and description to be more professional, compelling, and conversion-focused. Keep the same meaning but make it more persuasive.
+Generate all landing page content in ${languageName}. ${isRTL ? 'Use proper RTL layout for Arabic text.' : 'Use proper LTR layout.'}
+
+Given the following product info, improve the headline and description to be more professional, compelling, and conversion-focused. Keep the same meaning but make it more persuasive. The output must be written entirely in ${languageName}.
 
 Product name: ${form.name}
 Template type: ${form.template}
@@ -62,8 +106,8 @@ Current description: ${form.description}
 Target language: ${languageName}
 
 Return your response in EXACTLY this plain text format (no markdown, no code blocks, no quotes):
-HEADLINE: [improved headline, max 80 characters]
-DESCRIPTION: [improved description, 1-2 sentences, max 200 characters]`;
+HEADLINE: [improved headline in ${languageName}, max 80 characters]
+DESCRIPTION: [improved description in ${languageName}, 1-2 sentences, max 200 characters]`;
 
     try {
       const res = await fetch('/api/generate', {
@@ -94,6 +138,7 @@ DESCRIPTION: [improved description, 1-2 sentences, max 200 characters]`;
       if (headlineMatch) updateField('headline', headlineMatch[1].trim().slice(0, 120));
       if (descMatch) updateField('description', descMatch[1].trim().slice(0, 300));
 
+      try { localStorage.setItem(STORAGE_KEY, String(Date.now())); setNow(Date.now()); } catch {}
       showMsg('✅ Texts improved by AI!', 'success');
     } catch (err) {
       showMsg('❌ Network error: ' + err.message, 'error');
@@ -256,17 +301,19 @@ DESCRIPTION: [improved description, 1-2 sentences, max 200 characters]`;
                     </div>
                   </label>
                   <label>
-                    <span style={labelStyle}>Language</span>
-                    <div style={{ display: 'flex', gap: 4 }}>
+                    <span style={labelStyle}>Language ({LANGUAGES.length})</span>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 4 }}>
                       {LANGUAGES.map(l => (
                         <button
                           key={l.id}
                           type="button"
                           onClick={() => updateField('language', l.id)}
                           className={form.language === l.id ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm'}
-                          style={{ flex: 1, padding: '10px 4px', fontSize: '0.82rem' }}
+                          style={{ padding: '8px 4px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, flexDirection: 'column', minHeight: 50 }}
+                          title={l.label}
                         >
-                          {l.label}
+                          <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>{l.flag}</span>
+                          <span style={{ fontSize: '0.7rem' }}>{l.label}</span>
                         </button>
                       ))}
                     </div>
@@ -283,13 +330,18 @@ DESCRIPTION: [improved description, 1-2 sentences, max 200 characters]`;
               <button
                 type="button"
                 onClick={aiEnhance}
-                disabled={aiLoading}
+                disabled={aiLoading || isOnCooldown}
                 className="btn btn-primary"
                 data-tool-action
                 style={{ width: '100%' }}
               >
-                {aiLoading ? '⏳ Enhancing with AI...' : '✨ Improve texts with AI'}
+                {aiLoading ? '⏳ Enhancing with AI...' : isOnCooldown ? '⏳ Cooldown active' : '✨ Improve texts with AI'}
               </button>
+              {isOnCooldown && (
+                <div style={{ marginTop: 10, padding: '8px 12px', background: 'var(--bg-tertiary)', border: '1px solid var(--bg-glass-border)', borderRadius: 8, textAlign: 'center', fontSize: '0.82rem', color: 'var(--text-tertiary)' }}>
+                  ⏱️ Next generation available in <strong style={{ color: 'var(--text-primary)' }}>{formatCooldown(cooldownRemaining)}</strong>
+                </div>
+              )}
             </div>
           </div>
 
