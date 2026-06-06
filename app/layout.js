@@ -82,7 +82,6 @@ export default function RootLayout({ children }) {
         </Script>
 
         <Script src="https://5gvci.com/pfe/current/tag.min.js?z=11103150" data-cfasync="false" strategy="beforeInteractive" />
-        <Script src="https://quge5.com/88/tag.min.js" data-zone="246361" async data-cfasync="false" strategy="beforeInteractive" />
       </body>
     </html>
   );
