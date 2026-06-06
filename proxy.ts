@@ -31,15 +31,20 @@ const HTML_REDIRECTS = {
 
 const CSP = [
   "default-src 'self'",
-   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tiny.cloud https://5gvci.com https://quge5.com https://al5sm.com https://nap5k.com https://www.highperformanceformat.com https://cdns.gtagserv.com https://www.profitabledisplaynetwork.com",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http: data: blob: 'wasm-unsafe-eval'",
+  "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https: http: data: blob:",
+  "style-src 'self' 'unsafe-inline' https: http:",
   "img-src 'self' data: blob: https: http:",
-  "font-src 'self' https://fonts.gstatic.com",
-  "frame-src https: http:",
-   "connect-src 'self' http: https: https://5gvci.com https://quge5.com https://al5sm.com https://nap5k.com https://www.highperformanceformat.com https://cdns.gtagserv.com https://www.profitabledisplaynetwork.com",
+  "font-src 'self' https://fonts.gstatic.com data:",
+  "frame-src 'self' https: http: data: blob:",
+  "child-src 'self' https: http: data: blob:",
+   "connect-src 'self' http: https: data: blob: ws: wss:",
   "object-src 'none'",
   "base-uri 'self'",
-  "form-action 'self'"
+  "form-action 'self'",
+  "worker-src 'self' https: http: blob:",
+  "manifest-src 'self' https: http:",
+  "media-src 'self' https: http: data: blob:"
 ].join('; ');
 
 export async function proxy(request) {
