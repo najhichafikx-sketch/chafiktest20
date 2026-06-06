@@ -21,46 +21,6 @@ const TABS = [
 
 const READINESS_FIELDS = ['title', 'description', 'keywords'];
 
-const TOOLS = [
-  { href: '/tools/ai-digital-creator', emoji: '🎯', name: 'AI Digital Creator', desc: 'تحسين منتجات Etsy وKDP وGumroad', current: true },
-  { href: '/tools/seo-article-generator', emoji: '📝', name: 'AI Article Generator', desc: 'مقالات SEO احترافية' },
-  { href: '/tools/landing-page-generator', emoji: '🌐', name: 'Landing Page Generator', desc: 'صفحات هبوط جاهزة' },
-  { href: '/tools/ai-humanizer', emoji: '🤖', name: 'AI Humanizer', desc: 'تحويل نص AI لنص بشري' },
-  { href: '/tools/digital-product-creator', emoji: '💡', name: 'Digital Product Creator', desc: 'إنشاء منتجات رقمية' },
-  { href: '/tools/etsy-listing-generator', emoji: '🛍️', name: 'Etsy Listing', desc: 'قوائم Etsy محسّنة' },
-  { href: '/tools/amazon-listing-generator', emoji: '📚', name: 'Amazon Listing', desc: 'قوائم KDP' },
-  { href: '/tools/shopify-seo-generator', emoji: '🛒', name: 'Shopify SEO', desc: 'تحسين متاجر Shopify' },
-  { href: '/tools/product-description-generator', emoji: '📄', name: 'Product Description', desc: 'وصف المنتجات' },
-  { href: '/tools/product-title-generator', emoji: '✏️', name: 'Product Title', desc: 'عناوين جذابة' },
-  { href: '/tools/pricing-optimizer', emoji: '💰', name: 'Pricing Optimizer', desc: 'تحسين التسعير' },
-  { href: '/tools/image-to-prompt', emoji: '📸', name: 'Image to Prompt', desc: 'تحويل الصور لـ prompts' },
-  { href: '/tools/video-to-prompt', emoji: '🎥', name: 'Video to Prompt', desc: 'تحويل الفيديو لـ prompts' },
-  { href: '/tools/youtube-suite', emoji: '📺', name: 'YouTube Suite', desc: 'أدوات يوتيوب شاملة' },
-  { href: '/tools/youtube-title-generator', emoji: '🎬', name: 'YouTube Title', desc: 'عناوين فيرال' },
-  { href: '/tools/youtube-description-generator', emoji: '📋', name: 'YouTube Description', desc: 'وصف قنوات' },
-  { href: '/tools/youtube-tags-generator', emoji: '🏷️', name: 'YouTube Tags', desc: 'تاغات يوتيوب' },
-  { href: '/tools/youtube-script-generator', emoji: '📜', name: 'YouTube Script', desc: 'سكربتات فيديو' },
-  { href: '/tools/youtube-seo-optimizer', emoji: '🔍', name: 'YouTube SEO', desc: 'تحسين SEO' },
-  { href: '/tools/thumbnail-prompt-generator', emoji: '🖼️', name: 'Thumbnail Prompt', desc: 'برومتات الصور المصغرة' },
-  { href: '/tools/tiktok-tools', emoji: '🎵', name: 'TikTok Suite', desc: 'أدوات تيكتوك' },
-  { href: '/tools/viral-video-ideas', emoji: '💡', name: 'Viral Video Ideas', desc: 'أفكار فيرال' },
-  { href: '/tools/viral-shorts-generator', emoji: '⚡', name: 'Viral Shorts', desc: 'شورتس فيرال' },
-  { href: '/tools/viral-hook-generator', emoji: '🪝', name: 'Viral Hook', desc: 'خطافات فيرال' },
-  { href: '/tools/storytelling-script-generator', emoji: '📖', name: 'Storytelling Script', desc: 'سكربتات قصصية' },
-  { href: '/tools/faceless-video-generator', emoji: '🎭', name: 'Faceless Video', desc: 'فيديو بدون ظهور' },
-  { href: '/tools/video-content-repurposer', emoji: '♻️', name: 'Video Repurposer', desc: 'إعادة استخدام المحتوى' },
-  { href: '/tools/ad-copy-generator', emoji: '📢', name: 'Ad Copy', desc: 'نصوص إعلانية' },
-  { href: '/tools/sales-copy-generator', emoji: '💼', name: 'Sales Copy', desc: 'نصوص بيعية' },
-  { href: '/tools/review-response-generator', emoji: '💬', name: 'Review Response', desc: 'ردود التقييمات' },
-  { href: '/tools/email-writer', emoji: '✉️', name: 'Digital Product Email', desc: 'إيميلات تسويقية' },
-  { href: '/tools/digital-product-name-generator', emoji: '🏷️', name: 'Product Name', desc: 'أسماء منتجات' },
-  { href: '/tools/dropshipping-research', emoji: '📦', name: 'Dropshipping Research', desc: 'بحث منتجات دروب شيبينج' },
-  { href: '/tools/product-idea-finder', emoji: '🔎', name: 'Product Idea Finder', desc: 'اكتشاف أفكار منتجات' },
-  { href: '/tools/product-image-enhancer', emoji: '✨', name: 'Product Image Enhancer', desc: 'تحسين صور المنتجات' },
-  { href: '/tools/community-post-generator', emoji: '👥', name: 'Community Post', desc: 'منشورات المجتمع' },
-  { href: '/tools/comment-reply-generator', emoji: '💭', name: 'Comment Reply', desc: 'ردود التعليقات' }
-];
-
 export default function DigitalCreatorClient() {
   const [platform, setPlatform] = useState('etsy');
   const [title, setTitle] = useState('');
@@ -76,7 +36,6 @@ export default function DigitalCreatorClient() {
   const [analysis, setAnalysis] = useState(null);
   const [activeTab, setActiveTab] = useState('seo');
   const [copiedKey, setCopiedKey] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -280,10 +239,6 @@ export default function DigitalCreatorClient() {
     <div style={{ background: '#0f0f1a', minHeight: '100vh', color: '#e2e8f0', direction: 'rtl' }}>
       <nav style={{ background: '#16162a', borderBottom: '1px solid #2d2d4e', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => setSidebarOpen(true)} aria-label="فتح قائمة الأدوات"
-            style={{ background: '#0f0f1a', border: '1px solid #2d2d4e', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', color: '#fff', fontSize: 18, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            ☰
-          </button>
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
             <defs>
               <linearGradient id="dcgrad" x1="0" y1="0" x2="32" y2="32">
@@ -429,36 +384,6 @@ export default function DigitalCreatorClient() {
           )}
         </main>
       </div>
-
-      {sidebarOpen && (
-        <>
-          <div onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 99, backdropFilter: 'blur(4px)' }} />
-          <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 320, maxWidth: '90vw', background: '#16162a', borderLeft: '1px solid #2d2d4e', zIndex: 100, display: 'flex', flexDirection: 'column', boxShadow: '-8px 0 24px rgba(0,0,0,0.4)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #2d2d4e' }}>
-              <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#fff' }}>🛠️ كل الأدوات</h2>
-              <button onClick={() => setSidebarOpen(false)} aria-label="إغلاق"
-                style={{ background: '#0f0f1a', border: '1px solid #2d2d4e', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', color: '#fff', fontSize: 14 }}>✕</button>
-            </div>
-            <div style={{ overflowY: 'auto', flex: 1, padding: '8px' }}>
-              {TOOLS.map((t, i) => (
-                <a key={i} href={t.href}
-                  style={{ display: 'flex', gap: 12, padding: '10px 12px', borderRadius: 8, marginBottom: 4, background: t.current ? 'linear-gradient(135deg, #6c63ff22, #f7258522)' : 'transparent', border: t.current ? '1px solid #6c63ff' : '1px solid transparent', textDecoration: 'none', transition: 'background 0.15s' }}
-                  onMouseEnter={(e) => { if (!t.current) e.currentTarget.style.background = '#0f0f1a'; }}
-                  onMouseLeave={(e) => { if (!t.current) e.currentTarget.style.background = 'transparent'; }}>
-                  <div style={{ fontSize: 22, lineHeight: 1, flexShrink: 0 }}>{t.emoji}</div>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: t.current ? '#a5b4fc' : '#fff', display: 'flex', alignItems: 'center', gap: 6 }}>
-                      {t.name}
-                      {t.current && <span style={{ background: '#6c63ff', color: '#fff', fontSize: 9, padding: '1px 5px', borderRadius: 4, fontWeight: 700 }}>الآن</span>}
-                    </div>
-                    <div style={{ fontSize: 11, color: '#64748b', marginTop: 2, lineHeight: 1.3 }}>{t.desc}</div>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
 
       <style>{`
         @media (max-width: 900px) {
