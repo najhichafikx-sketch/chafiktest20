@@ -62,7 +62,7 @@ export default function EditBlogPost() {
   const isNew = slugParam === 'new';
 
   const [form, setForm] = useState({
-    slug: '', title: '', content: '', excerpt: '', category: 'General',
+    id: null, slug: '', title: '', content: '', excerpt: '', category: 'General',
     tags: [], author: 'Chafiktech Ai', meta_description: '',
     seo_title: '', keywords: [],
     reading_time: 5, status: 'draft', featured_image: ''
@@ -93,6 +93,7 @@ export default function EditBlogPost() {
             const tagsArr = Array.isArray(p.tags) ? p.tags : (p.tags ? p.tags.split(',').map(t => t.trim()).filter(Boolean) : []);
             const kwArr = Array.isArray(p.keywords) ? p.keywords : (p.keywords ? p.keywords.split(',').map(k => k.trim()).filter(Boolean) : []);
             setForm({
+              id: p.id,
               slug: p.slug || '', title: p.title || '', content: p.content || '',
               excerpt: p.excerpt || '', category: p.category || 'General',
               tags: tagsArr, author: p.author || 'Chafiktech Ai',
@@ -212,6 +213,7 @@ export default function EditBlogPost() {
 
     const payload = {
       ...form,
+      id: undefined,
       tags: [...new Set([...selectedChips, ...form.tags.filter(t => !TOOL_CHIPS.includes(t))])],
       keywords: Array.isArray(form.keywords) ? form.keywords : form.keywords.split(',').map(k => k.trim()).filter(Boolean),
       reading_time: parseInt(form.reading_time) || 5,
@@ -227,7 +229,7 @@ export default function EditBlogPost() {
           body: JSON.stringify(payload)
         });
       } else {
-        res = await fetch(`/api/admin/blog/${slugParam}`, {
+        res = await fetch(`/api/admin/blog/${form.id || slugParam}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify(payload)
