@@ -8,6 +8,9 @@ import MonetagProvider from '@/components/MonetagProvider';
 import MonetagServiceWorker from '@/components/MonetagServiceWorker';
 import AdsterraBanner from '@/components/AdsterraBanner';
 import MonetagBanner from '@/components/MonetagBanner';
+import HeaderBanner from '@/components/ads/HeaderBanner';
+import SidebarAds from '@/components/ads/SidebarAds';
+import InPagePushDelayed from '@/components/ads/InPagePushDelayed';
 import { WebsiteSchema, OrganizationSchema, SoftwareAppSchema, JsonLd } from '@/lib/seo';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -70,6 +73,9 @@ export default function RootLayout({ children }) {
         <AnalyticsTracker />
         <MonetagServiceWorker />
         <Navbar />
+        <SidebarAds />
+        <HeaderBanner excludePaths={['/']} />
+        <InPagePushDelayed />
         <MonetagBanner slotId="global-top-300x250" />
         <AdsterraBanner slotId="global-top" />
         <MonetagProvider>
