@@ -60,7 +60,7 @@ export default function AdminPage() {
     { icon: Key, label: 'API Keys', desc: 'Manage API credentials', href: '/admin/api-settings', color: '#ec4899' },
     { icon: Globe, label: 'Platforms', desc: 'Connected platform management', href: '/admin/platforms-views', color: '#14b8a6' },
     { icon: FileText, label: 'Content', desc: 'Content management overview', href: '/admin/blog', color: '#a855f7' },
-    { icon: Newspaper, label: 'Blog Articles', desc: 'Write and manage blog posts', href: '/admin/blog', color: '#2563eb' },
+    { icon: Newspaper, label: 'Blog Articles', desc: 'Write and manage blog posts', href: '/admin/blog-articles', color: '#2563eb' },
     { icon: MessageSquare, label: 'Prompt Articles', desc: 'Create and manage prompts', href: '/admin/prompts', color: '#06b6d4' },
     { icon: Users, label: 'Users', desc: 'User account management', href: '/admin/users', color: '#84cc16' },
   ];
