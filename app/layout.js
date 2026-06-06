@@ -68,10 +68,10 @@ export default function RootLayout({ children }) {
         <AnalyticsTracker />
         <MonetagServiceWorker />
         <Navbar />
+        <BannerSlot slotId="site-top" />
 
         <main>
           {children}
-          <BannerSlot slotId="site-bottom" />
         </main>
 
         <Footer />
