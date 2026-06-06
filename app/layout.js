@@ -7,7 +7,6 @@ import AnalyticsTracker from '@/components/AnalyticsTracker';
 import MonetagProvider from '@/components/MonetagProvider';
 import MonetagServiceWorker from '@/components/MonetagServiceWorker';
 import AdsterraBanner from '@/components/AdsterraBanner';
-import CustomBanner from '@/components/CustomBanner';
 import { WebsiteSchema, OrganizationSchema, SoftwareAppSchema, JsonLd } from '@/lib/seo';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -70,7 +69,6 @@ export default function RootLayout({ children }) {
         <AnalyticsTracker />
         <MonetagServiceWorker />
         <Navbar />
-        <CustomBanner size="leaderboard" href="/pricing" title="Unlock Pro — Unlimited AI Generations" subtitle="Get 50% off this week • No credit card needed" cta="Get Started" />
         <AdsterraBanner />
         <MonetagProvider>{children}</MonetagProvider>
         <Footer />
