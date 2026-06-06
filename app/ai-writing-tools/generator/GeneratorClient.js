@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import ToolBanner from '@/components/ads/ToolBanner';
 
 const ACCENT = '#7c3aed';
 const LANGUAGES = [
@@ -143,6 +144,8 @@ export default function GeneratorClient() {
           <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 28 }}>
             <span style={{ marginRight: 8 }}>✍️</span> AI Article Generator
           </h1>
+
+          <ToolBanner slotId="ai-generator" />
 
           <div style={{ marginBottom: 20 }}>
             <label style={labelStyle}>Topic</label>
