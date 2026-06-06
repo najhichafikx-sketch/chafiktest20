@@ -162,16 +162,44 @@ export default function EditBlogPost() {
         const dataUrl = canvas.toDataURL(isPng ? 'image/png' : 'image/jpeg', 0.85);
         const base64Length = dataUrl.length - (dataUrl.indexOf(',') + 1);
         const compressedSize = Math.floor(base64Length * 3 / 4);
+        let finalDataUrl;
+        let finalSize;
         if (compressedSize > 3 * 1024 * 1024) {
-          const smaller = canvas.toDataURL('image/jpeg', 0.7);
-          set('featured_image', smaller);
-          setImageFile({ name: file.name.replace(/\.\w+$/, '.jpg'), size: Math.floor((smaller.length - (smaller.indexOf(',') + 1)) * 3 / 4) });
+          finalDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          finalSize = Math.floor((finalDataUrl.length - (finalDataUrl.indexOf(',') + 1)) * 3 / 4);
         } else {
-          set('featured_image', dataUrl);
-          setImageFile({ name: file.name, size: compressedSize });
+          finalDataUrl = dataUrl;
+          finalSize = compressedSize;
         }
-        setMessage(`✅ Image ready: ${width}x${height}px (${formatSize(compressedSize)})`);
-        setTimeout(() => setMessage(''), 2500);
+        set('featured_image', finalDataUrl);
+        setImageFile({ name: file.name, size: finalSize });
+        setMessage(`✅ Image ready: ${width}x${height}px (${formatSize(finalSize)}) — saving...`);
+
+        const postId = form.id || (typeof window !== 'undefined' && window.location.pathname.match(/\/edit\/(\d+)/)?.[1]);
+        const token = localStorage.getItem('admin_token');
+        if (postId && token) {
+          fetch(`/api/admin/blog/${postId}/image`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ image: finalDataUrl })
+          })
+            .then(r => r.json())
+            .then(d => {
+              if (d.success) {
+                setMessage(`✅ Image saved! (${formatSize(finalSize)}) — visible now`);
+              } else {
+                setMessage(`⚠️ Image ready but save failed: ${d.message}. Will retry on Save.`);
+              }
+              setTimeout(() => setMessage(''), 4000);
+            })
+            .catch(err => {
+              setMessage(`⚠️ Image ready but save failed: ${err.message}. Will retry on Save.`);
+              setTimeout(() => setMessage(''), 4000);
+            });
+        } else {
+          setMessage(`✅ Image ready: ${width}x${height}px (${formatSize(finalSize)}) — will save on form Save`);
+          setTimeout(() => setMessage(''), 3500);
+        }
       };
       img.onerror = () => {
         setMessage('❌ Failed to load image');
