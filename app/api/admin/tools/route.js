@@ -16,14 +16,14 @@ const ALL_TOOLS = [
 ];
 
 const MODELS = [
-  'anthropic/claude-3-haiku',
-  'anthropic/claude-3-sonnet',
   'openai/gpt-4o-mini',
   'openai/gpt-4o',
   'google/gemini-2.5-flash',
   'google/gemini-2.5-pro',
-  'meta-llama/llama-3-70b-instruct',
-  'deepseek/deepseek-v3'
+  'anthropic/claude-3.5-haiku',
+  'anthropic/claude-sonnet-4.5',
+  'anthropic/claude-haiku-4.5',
+  'meta-llama/llama-3.3-70b-instruct'
 ];
 
 export async function GET(request) {
@@ -41,7 +41,7 @@ export async function GET(request) {
     const tools = ALL_TOOLS.map(id => ({
       tool_id: id,
       enabled: settingsMap[id]?.enabled ?? true,
-      model: settingsMap[id]?.model || 'anthropic/claude-3-haiku',
+      model: settingsMap[id]?.model || 'openai/gpt-4o-mini',
       system_prompt: settingsMap[id]?.system_prompt || ''
     }));
 

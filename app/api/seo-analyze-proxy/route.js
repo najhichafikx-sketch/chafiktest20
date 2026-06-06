@@ -1,44 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getSetting } from '@/lib/db';
-
-async function getApiKey() {
-  if (process.env.OPENROUTER_API_KEY) return process.env.OPENROUTER_API_KEY;
-  try {
-    const fs = require('fs');
-    const path = require('path');
-    const file = path.join(process.cwd(), 'data', 'keys.json');
-    if (fs.existsSync(file)) {
-      const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
-      if (data.openrouter_api_key) {
-        process.env.OPENROUTER_API_KEY = data.openrouter_api_key;
-        return data.openrouter_api_key;
-      }
-    }
-  } catch (e) {}
-  try {
-    const dbKey = await getSetting('openrouter_api_key');
-    if (dbKey && typeof dbKey === 'string' && dbKey.trim()) return dbKey.trim();
-  } catch (e) {}
-  return null;
-}
+import { generateAIContent } from '@/lib/openrouter';
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { action, article } = body;
+    const { action, article, topIssues } = body;
 
     if (!article) {
       return NextResponse.json({ error: 'Article is required' }, { status: 400 });
     }
-
-    const apiKey = await getApiKey();
-    if (!apiKey) {
-      return NextResponse.json({
-        error: 'AI feature not configured yet. Set OPENROUTER_API_KEY in Vercel Environment Variables, or add it via the admin dashboard (/admin/api-settings).'
-      }, { status: 503 });
-    }
-
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://chafiktech.com';
 
     if (action === 'analyze') {
       const systemPrompt = `You are an SEO analysis expert. Analyze the given article and return ONLY valid JSON with no markdown or explanation.`;
@@ -57,33 +27,12 @@ export async function POST(request) {
 }
 Article: ${article}`;
 
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': siteUrl,
-          'X-Title': 'SEO Analyzer'
-        },
-        body: JSON.stringify({
-          model: 'google/gemini-2.0-flash-001',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-          ]
-        })
+      const result = await generateAIContent({
+        prompt: userPrompt,
+        systemPrompt,
+        toolId: 'seo-analyzer',
+        maxTokens: 2500
       });
-
-      if (!response.ok) {
-        return NextResponse.json({ error: `OpenRouter API error (${response.status})` }, { status: 502 });
-      }
-
-      const data = await response.json();
-      const result = data.choices?.[0]?.message?.content;
-
-      if (!result) {
-        return NextResponse.json({ error: 'No content in API response' }, { status: 502 });
-      }
 
       let parsed;
       try {
@@ -97,7 +46,6 @@ Article: ${article}`;
     }
 
     if (action === 'improve') {
-      const { topIssues } = body;
       const systemPrompt = `You are an expert SEO writer. Rewrite articles to score 95+ on SEO while keeping the same topic, meaning, and language.`;
       const userPrompt = `You are an expert SEO writer. Rewrite this article to score 95+ on SEO while keeping the same topic, meaning, and language.
 Fix these specific issues: ${topIssues?.join(', ') || 'improve SEO score'}
@@ -112,39 +60,20 @@ Rules:
 - Use markdown formatting
 Article to improve: ${article}`;
 
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': siteUrl,
-          'X-Title': 'SEO Improver'
-        },
-        body: JSON.stringify({
-          model: 'google/gemini-2.0-flash-001',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-          ]
-        })
+      const result = await generateAIContent({
+        prompt: userPrompt,
+        systemPrompt,
+        toolId: 'seo-improver',
+        maxTokens: 4000
       });
-
-      if (!response.ok) {
-        return NextResponse.json({ error: `OpenRouter API error (${response.status})` }, { status: 502 });
-      }
-
-      const data = await response.json();
-      const result = data.choices?.[0]?.message?.content;
-
-      if (!result) {
-        return NextResponse.json({ error: 'No content in API response' }, { status: 502 });
-      }
 
       return NextResponse.json({ success: true, result });
     }
 
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
   } catch (err) {
-    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
+    const msg = err.message || 'Internal server error';
+    const isConfigError = msg.includes('AI feature not configured') || msg.includes('All models failed');
+    return NextResponse.json({ error: msg }, { status: isConfigError ? 503 : 502 });
   }
 }

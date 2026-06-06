@@ -1,26 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSetting } from '@/lib/db';
-
-async function getApiKey() {
-  if (process.env.OPENROUTER_API_KEY) return process.env.OPENROUTER_API_KEY;
-  try {
-    const fs = require('fs');
-    const path = require('path');
-    const file = path.join(process.cwd(), 'data', 'keys.json');
-    if (fs.existsSync(file)) {
-      const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
-      if (data.openrouter_api_key) {
-        process.env.OPENROUTER_API_KEY = data.openrouter_api_key;
-        return data.openrouter_api_key;
-      }
-    }
-  } catch (e) {}
-  try {
-    const dbKey = await getSetting('openrouter_api_key');
-    if (dbKey && typeof dbKey === 'string' && dbKey.trim()) return dbKey.trim();
-  } catch (e) {}
-  return null;
-}
+import { generateAIContent } from '@/lib/openrouter';
 
 const SYSTEM_PROMPT = "You are an expert human writer and SEO specialist. Write articles that sound 100% natural, engaging, and human. Never sound robotic. Use varied sentence structure, smooth transitions between sections, and rich vocabulary. Always write in the exact language specified. Use markdown formatting with # for H1, ## for H2, ### for H3.";
 
@@ -31,13 +10,6 @@ export async function POST(request) {
 
     if (!topic) {
       return NextResponse.json({ error: 'Topic is required' }, { status: 400 });
-    }
-
-    const apiKey = await getApiKey();
-    if (!apiKey) {
-      return NextResponse.json({
-        error: 'AI feature not configured yet. Set OPENROUTER_API_KEY in Vercel Environment Variables, or add it via the admin dashboard (/admin/api-settings).'
-      }, { status: 503 });
     }
 
     const userPrompt = `Write a complete, professional ${wordCount}-word article about: "${topic}".
@@ -58,39 +30,17 @@ Structure:
 
 Make it exactly ${wordCount} words. Sound 100% human. Use markdown.`;
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://chafiktech.com';
-
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': siteUrl,
-        'X-Title': 'AI Article Generator'
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.0-flash-001',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: userPrompt }
-        ]
-      })
+    const result = await generateAIContent({
+      prompt: userPrompt,
+      systemPrompt: SYSTEM_PROMPT,
+      toolId: 'seo-article',
+      maxTokens: Math.max(2000, (wordCount || 1000) * 2)
     });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      return NextResponse.json({ error: `OpenRouter API error (${response.status})` }, { status: 502 });
-    }
-
-    const data = await response.json();
-    const result = data.choices?.[0]?.message?.content;
-
-    if (!result) {
-      return NextResponse.json({ error: 'No content in API response' }, { status: 502 });
-    }
 
     return NextResponse.json({ success: true, result });
   } catch (err) {
-    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
+    const msg = err.message || 'Internal server error';
+    const isConfigError = msg.includes('AI feature not configured') || msg.includes('All models failed');
+    return NextResponse.json({ error: msg }, { status: isConfigError ? 503 : 502 });
   }
 }
