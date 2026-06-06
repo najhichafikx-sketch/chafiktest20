@@ -1,3 +1,9 @@
 google.com, pub-9023092769496331, DIRECT, f08c47fec0942fa0
-adsterra.com, 29641084, DIRECT
-effectivecpmnetwork.com, pl29641084, DIRECT
+adsterra.com, 29505514, DIRECT
+effectivecpmnetwork.com, pl29505514, DIRECT
+adsterra.com, 29505513, DIRECT
+effectivecpmnetwork.com, pl29505513, DIRECT
+adsterra.com, 29505515, DIRECT
+effectivecpmnetwork.com, pl29505515, DIRECT
+adsterra.com, 29505516, DIRECT
+effectivecpmnetwork.com, pl29505516, DIRECT
