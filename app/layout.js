@@ -70,9 +70,14 @@ export default function RootLayout({ children }) {
         <AnalyticsTracker />
         <MonetagServiceWorker />
         <Navbar />
-        <MonetagBanner slotId="global-300x250" />
-        <AdsterraBanner />
-        <MonetagProvider>{children}</MonetagProvider>
+        <MonetagBanner slotId="global-top-300x250" />
+        <AdsterraBanner slotId="global-top" />
+        <MonetagProvider>
+          {children}
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '24px 0' }}>
+            <AdsterraBanner slotId="global-bottom" />
+          </div>
+        </MonetagProvider>
         <Footer />
 
         <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
