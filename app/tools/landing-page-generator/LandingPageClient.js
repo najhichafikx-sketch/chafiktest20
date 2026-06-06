@@ -78,7 +78,12 @@ DESCRIPTION: [improved description, 1-2 sentences, max 200 characters]`;
 
       const data = await res.json();
       if (!data.success) {
-        showMsg('❌ ' + (data.error || 'AI enhancement failed'), 'error');
+        const errMsg = data.error || 'AI enhancement failed';
+        if (/not configured|API key/i.test(errMsg)) {
+          showMsg('⚙️ ' + errMsg, 'error');
+        } else {
+          showMsg('❌ ' + errMsg, 'error');
+        }
         return;
       }
 
