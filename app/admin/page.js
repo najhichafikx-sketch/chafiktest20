@@ -6,7 +6,7 @@ import Link from 'next/link';
 import {
   LayoutDashboard, Wrench, Megaphone, DollarSign, BarChart3,
   Settings, Key, Globe, SearchX, FileText, Newspaper,
-  MessageSquare, Users, LogOut
+  MessageSquare, Users, LogOut, Brain, CheckCircle2, XCircle
 } from 'lucide-react';
 
 export default function AdminPage() {
@@ -65,6 +65,8 @@ export default function AdminPage() {
     { icon: Users, label: 'Users', desc: 'User account management', href: '/admin/users', color: '#84cc16' },
   ];
 
+  const aiConnected = status?.apiStatus === 'Online';
+
   return (
     <div style={{ padding: '32px 40px', maxWidth: 1200, margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
@@ -114,6 +116,47 @@ export default function AdminPage() {
             </div>
           </Link>
         ))}
+      </div>
+
+      <div style={{
+        background: 'var(--bg-glass)',
+        border: '1px solid var(--bg-glass-border)',
+        borderRadius: 12,
+        marginTop: 24,
+        padding: 24
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Brain size={20} color="#a855f7" />
+            <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>إعدادات الذكاء الاصطناعي</h3>
+            <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 400 }}>AI Settings</span>
+          </div>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 999, fontSize: 13, fontWeight: 600, background: aiConnected ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)', color: aiConnected ? '#10b981' : '#ef4444', border: `1px solid ${aiConnected ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
+            {aiConnected ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+            {aiConnected ? 'متصل ✓' : 'غير مُعيَّن'}
+          </div>
+        </div>
+        <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '0 0 16px 0', lineHeight: 1.6 }}>
+          OpenRouter API Key — مفتاح الـ AI الذي يستخدمه الموقع لإنشاء المحتوى. يُدار مركزياً ولا يظهر للمستخدمين.
+        </p>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <Link href="/admin/api-settings" style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            background: 'linear-gradient(135deg, #a855f7, #ec4899)', color: '#fff',
+            padding: '10px 18px', borderRadius: 8, fontSize: 14, fontWeight: 600,
+            textDecoration: 'none', boxShadow: '0 4px 12px rgba(168,85,247,0.3)'
+          }}>
+            <Key size={16} /> إدارة المفتاح
+          </Link>
+          <Link href="/admin/api-settings" style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            background: 'transparent', color: 'var(--text-primary)',
+            padding: '10px 18px', borderRadius: 8, fontSize: 14, fontWeight: 600,
+            textDecoration: 'none', border: '1px solid var(--bg-glass-border)'
+          }}>
+            <Settings size={16} /> اختبار الاتصال
+          </Link>
+        </div>
       </div>
 
       <div style={{

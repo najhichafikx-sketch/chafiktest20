@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { generateLandingPage, getDefaultFormData, TEMPLATES } from '@/lib/landing-page-templates';
 
 const LANGUAGES = [
@@ -40,16 +40,47 @@ export default function LandingPageClient() {
   const [aiLoading, setAiLoading] = useState(false);
   const [msg, setMsg] = useState({ text: '', type: '' });
   const [now, setNow] = useState(() => Date.now());
+  const [serverCooldown, setServerCooldown] = useState(0);
+  const [pngLoading, setPngLoading] = useState(false);
+  const [showShareLink, setShowShareLink] = useState(false);
+  const iframeRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hash = window.location.hash.replace(/^#form=/, '');
+    if (hash) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(atob(hash)));
+        if (decoded && typeof decoded === 'object') {
+          setForm(prev => ({ ...prev, ...decoded }));
+          setMsg({ text: '✅ Loaded from shareable link', type: 'success' });
+          setTimeout(() => setMsg({ text: '', type: '' }), 3000);
+        }
+      } catch (e) {}
+    }
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/generate-landing-page', { method: 'GET' })
+      .then(r => r.json())
+      .then(d => {
+        if (d?.limited && d.retry_after_seconds > 0) {
+          setServerCooldown(d.retry_after_seconds * 1000);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (aiLoading) return;
-    const remaining = getCooldownRemaining();
-    if (remaining <= 0) return;
+    const localRemaining = getLocalCooldownRemaining();
+    const totalRemaining = Math.max(localRemaining, serverCooldown);
+    if (totalRemaining <= 0) return;
     const interval = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(interval);
-  }, [aiLoading]);
+  }, [aiLoading, serverCooldown]);
 
-  function getCooldownRemaining() {
+  function getLocalCooldownRemaining() {
     try {
       const last = Number(localStorage.getItem(STORAGE_KEY) || 0);
       if (!last) return 0;
@@ -58,7 +89,8 @@ export default function LandingPageClient() {
     } catch { return 0; }
   }
 
-  const cooldownRemaining = Math.max(0, COOLDOWN_MS - (now - Number((typeof window !== 'undefined' && localStorage.getItem(STORAGE_KEY)) || 0)));
+  const localRemaining = Math.max(0, COOLDOWN_MS - (now - Number((typeof window !== 'undefined' && localStorage.getItem(STORAGE_KEY)) || 0)));
+  const cooldownRemaining = Math.max(localRemaining, serverCooldown);
   const isOnCooldown = cooldownRemaining > 0;
 
   function formatCooldown(ms) {
@@ -66,9 +98,9 @@ export default function LandingPageClient() {
     const h = Math.floor(totalSec / 3600);
     const m = Math.floor((totalSec % 3600) / 60);
     const s = totalSec % 60;
-    if (h > 0) return `${h}h ${m}m`;
-    if (m > 0) return `${m}m ${s}s`;
-    return `${s}s`;
+    if (h > 0) return `${h} ساعة ${m} دقيقة`;
+    if (m > 0) return `${m} دقيقة ${s} ثانية`;
+    return `${s} ثانية`;
   }
 
   const generatedHTML = useMemo(() => generateLandingPage(form), [form]);
@@ -79,13 +111,15 @@ export default function LandingPageClient() {
 
   function showMsg(text, type = 'info') {
     setMsg({ text, type });
-    setTimeout(() => setMsg({ text: '', type: '' }), 3500);
+    if (type !== 'error') {
+      setTimeout(() => setMsg({ text: '', type: '' }), 3500);
+    }
   }
 
   async function aiEnhance() {
     if (aiLoading) return;
     if (isOnCooldown) {
-      showMsg(`⏳ Please wait ${formatCooldown(cooldownRemaining)} before generating again.`, 'error');
+      showMsg(`⏳ الخدمة غير متاحة حالياً، يرجى المحاولة لاحقاً. المحاولة التالية بعد ${formatCooldown(cooldownRemaining)}`, 'error');
       return;
     }
     setAiLoading(true);
@@ -110,38 +144,44 @@ HEADLINE: [improved headline in ${languageName}, max 80 characters]
 DESCRIPTION: [improved description in ${languageName}, 1-2 sentences, max 200 characters]`;
 
     try {
-      const res = await fetch('/api/generate', {
+      const res = await fetch('/api/generate-landing-page', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          toolId: 'landing-page',
           input: `${form.name} - ${form.headline}`,
           prompt: customPrompt,
         }),
       });
 
-      const data = await res.json();
-      if (!data.success) {
-        const errMsg = data.error || 'AI enhancement failed';
-        if (/not configured|API key/i.test(errMsg)) {
-          showMsg('⚙️ ' + errMsg, 'error');
-        } else {
-          showMsg('❌ ' + errMsg, 'error');
-        }
+      if (res.status === 429) {
+        const data = await res.json();
+        const retryMs = (data.retry_after_seconds || 18000) * 1000;
+        setServerCooldown(retryMs);
+        showMsg('⏳ الخدمة غير متاحة حالياً، يرجى المحاولة لاحقاً', 'error');
         return;
       }
 
-      const text = (data.html || data.text || '').replace(/<[^>]*>/g, '');
+      const data = await res.json();
+      if (!data.success && !data.text) {
+        showMsg(data.message || '⚙️ الخدمة غير متاحة حالياً، يرجى المحاولة لاحقاً', 'error');
+        return;
+      }
+
+      const text = (data.text || data.html || '').replace(/<[^>]*>/g, '');
       const headlineMatch = text.match(/HEADLINE:\s*([^\n]+?)(?:\s*DESCRIPTION:|$)/i);
       const descMatch = text.match(/DESCRIPTION:\s*([\s\S]+?)$/i);
 
       if (headlineMatch) updateField('headline', headlineMatch[1].trim().slice(0, 120));
       if (descMatch) updateField('description', descMatch[1].trim().slice(0, 300));
 
-      try { localStorage.setItem(STORAGE_KEY, String(Date.now())); setNow(Date.now()); } catch {}
+      try {
+        localStorage.setItem(STORAGE_KEY, String(Date.now()));
+        setNow(Date.now());
+        setServerCooldown(0);
+      } catch {}
       showMsg('✅ Texts improved by AI!', 'success');
     } catch (err) {
-      showMsg('❌ Network error: ' + err.message, 'error');
+      showMsg('⏳ الخدمة غير متاحة حالياً، يرجى المحاولة لاحقاً', 'error');
     } finally {
       setAiLoading(false);
     }
@@ -166,6 +206,75 @@ DESCRIPTION: [improved description in ${languageName}, 1-2 sentences, max 200 ch
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     showMsg('✅ HTML file downloaded!', 'success');
+  }
+
+  async function downloadPNG() {
+    if (!iframeRef.current) {
+      showMsg('❌ Preview not ready', 'error');
+      return;
+    }
+    setPngLoading(true);
+    showMsg('🖼️ Generating PNG...', 'info');
+    try {
+      const iframe = iframeRef.current;
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (!iframeDoc || !iframeDoc.body) {
+        showMsg('❌ Cannot access preview', 'error');
+        return;
+      }
+      const rect = iframe.getBoundingClientRect();
+      const width = Math.max(800, Math.round(rect.width));
+      const height = Math.max(600, Math.round(iframeDoc.documentElement.scrollHeight || rect.height));
+      const clonedHTML = iframeDoc.documentElement.outerHTML;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><foreignObject width="100%" height="100%">${clonedHTML.replace(/<script[\s\S]*?<\/script>/gi, '')}</foreignObject></svg>`;
+      const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => reject(new Error('Image load failed'));
+        img.src = url;
+      });
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+      URL.revokeObjectURL(url);
+      canvas.toBlob((blob) => {
+        if (!blob) { showMsg('❌ Failed to create PNG', 'error'); return; }
+        const pngUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const safeName = (form.name || 'landing-page').replace(/[^a-z0-9]/gi, '-').toLowerCase();
+        a.href = pngUrl;
+        a.download = `${safeName}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(pngUrl);
+        showMsg('✅ PNG downloaded!', 'success');
+      }, 'image/png');
+    } catch (err) {
+      showMsg('❌ PNG export failed: ' + err.message, 'error');
+    } finally {
+      setPngLoading(false);
+    }
+  }
+
+  function generateShareLink() {
+    try {
+      const payload = btoa(encodeURIComponent(JSON.stringify(form)));
+      const url = `${window.location.origin}${window.location.pathname}#form=${payload}`;
+      navigator.clipboard.writeText(url).then(
+        () => { setShowShareLink(true); showMsg('✅ Shareable link copied to clipboard!', 'success'); },
+        () => showMsg('❌ Failed to copy link', 'error')
+      );
+    } catch {
+      showMsg('❌ Failed to generate link', 'error');
+    }
   }
 
   const iframeStyle = previewMode === 'mobile'
@@ -335,11 +444,11 @@ DESCRIPTION: [improved description in ${languageName}, 1-2 sentences, max 200 ch
                 data-tool-action
                 style={{ width: '100%' }}
               >
-                {aiLoading ? '⏳ Enhancing with AI...' : isOnCooldown ? '⏳ Cooldown active' : '✨ Improve texts with AI'}
+                {aiLoading ? '⏳ Enhancing with AI...' : isOnCooldown ? '⏳ الخدمة غير متاحة حالياً' : '✨ Improve texts with AI'}
               </button>
               {isOnCooldown && (
                 <div style={{ marginTop: 10, padding: '8px 12px', background: 'var(--bg-tertiary)', border: '1px solid var(--bg-glass-border)', borderRadius: 8, textAlign: 'center', fontSize: '0.82rem', color: 'var(--text-tertiary)' }}>
-                  ⏱️ Next generation available in <strong style={{ color: 'var(--text-primary)' }}>{formatCooldown(cooldownRemaining)}</strong>
+                  ⏱️ المحاولة التالية بعد <strong style={{ color: 'var(--text-primary)' }}>{formatCooldown(cooldownRemaining)}</strong>
                 </div>
               )}
             </div>
@@ -373,6 +482,7 @@ DESCRIPTION: [improved description in ${languageName}, 1-2 sentences, max 200 ch
               </div>
               <div style={{ display: 'flex', justifyContent: 'center', overflow: 'auto' }}>
                 <iframe
+                  ref={iframeRef}
                   srcDoc={generatedHTML}
                   style={{ ...iframeStyle, border: '1px solid var(--bg-glass-border)', borderRadius: 8, background: '#fff' }}
                   title="Landing Page Preview"
@@ -390,7 +500,7 @@ DESCRIPTION: [improved description in ${languageName}, 1-2 sentences, max 200 ch
             onClick={copyHTML}
             className="btn btn-primary btn-lg"
             data-tool-action
-            style={{ minWidth: 200 }}
+            style={{ minWidth: 180 }}
           >
             📋 Copy HTML
           </button>
@@ -399,9 +509,28 @@ DESCRIPTION: [improved description in ${languageName}, 1-2 sentences, max 200 ch
             onClick={downloadHTML}
             className="btn btn-secondary btn-lg"
             data-tool-action
-            style={{ minWidth: 200 }}
+            style={{ minWidth: 180 }}
           >
             ⬇️ Download HTML
+          </button>
+          <button
+            type="button"
+            onClick={downloadPNG}
+            disabled={pngLoading}
+            className="btn btn-secondary btn-lg"
+            data-tool-action
+            style={{ minWidth: 180 }}
+          >
+            {pngLoading ? '⏳ Generating...' : '🖼️ Download PNG'}
+          </button>
+          <button
+            type="button"
+            onClick={generateShareLink}
+            className="btn btn-secondary btn-lg"
+            data-tool-action
+            style={{ minWidth: 180 }}
+          >
+            🔗 Share Link
           </button>
         </div>
       </div>
