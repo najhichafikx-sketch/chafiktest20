@@ -2,7 +2,50 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+const ADSTERRA_KEY = 'a64a753a91e1df2d14eac4534cea9820';
 const SIDE_KEY = 'chafik_side_dismissed';
+const ADSTERRA_CDNS = [
+  'https://cdns.gtagserv.com',
+  'https://www.highperformanceformat.com',
+  'https://www.profitabledisplaynetwork.com',
+];
+
+function loadAdsterra(container) {
+  if (!container) return;
+  let idx = 0;
+  let stopped = false;
+  let timeoutId;
+
+  const cleanup = () => {
+    container.innerHTML = '';
+    if (timeoutId) clearTimeout(timeoutId);
+  };
+
+  const tryNext = () => {
+    if (stopped || idx >= ADSTERRA_CDNS.length) return;
+    const cdn = ADSTERRA_CDNS[idx++];
+    const config = document.createElement('script');
+    config.type = 'text/javascript';
+    config.text = `window.atOptions={'key':'${ADSTERRA_KEY}','format':'iframe','height':300,'width':160,'params':{}};`;
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.src = `${cdn}/${ADSTERRA_KEY}/invoke.js`;
+    s.async = false;
+    s.dataset.cfasync = 'false';
+    s.onerror = () => { if (stopped) return; cleanup(); tryNext(); };
+    s.onload = () => {
+      if (stopped) return;
+      timeoutId = window.setTimeout(() => {
+        if (!container.querySelector('iframe')) { cleanup(); tryNext(); }
+      }, 2500);
+    };
+    container.appendChild(config);
+    container.appendChild(s);
+  };
+
+  tryNext();
+  return () => { stopped = true; cleanup(); };
+}
 
 export default function SideBanner({ side = 'left' }) {
   const ref = useRef(null);
@@ -20,19 +63,13 @@ export default function SideBanner({ side = 'left' }) {
 
   useEffect(() => {
     if (!visible || !ref.current) return;
-    const s = document.createElement('script');
-    s.src = 'https://nap5k.com/tag.min.js';
-    s.async = true;
-    s.dataset.zone = '11103207';
-    s.dataset.cfasync = 'false';
-    ref.current.appendChild(s);
+    const cleanup = loadAdsterra(ref.current);
+    return cleanup;
   }, [visible]);
 
   if (!visible || dismissed) return null;
 
-  const pos = side === 'left'
-    ? { left: '16px' }
-    : { right: '16px' };
+  const pos = side === 'left' ? { left: '16px' } : { right: '16px' };
 
   return (
     <div
@@ -49,7 +86,7 @@ export default function SideBanner({ side = 'left' }) {
         borderRadius: '14px',
         padding: '10px 8px 8px',
         boxShadow: '0 12px 40px rgba(0,0,0,0.45)',
-        maxWidth: '180px',
+        width: '176px',
       }}
     >
       <button
@@ -91,7 +128,7 @@ export default function SideBanner({ side = 'left' }) {
       >
         Sponsored
       </div>
-      <div ref={ref} style={{ width: 160, minHeight: 300 }} />
+      <div ref={ref} style={{ width: 160, height: 300 }} />
     </div>
   );
 }
