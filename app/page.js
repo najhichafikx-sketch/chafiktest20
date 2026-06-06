@@ -83,6 +83,10 @@ function ToolsSection() {
           <ToolCard href="/prompts" icon="🚀" name="Prompt Viral" desc="Browse our curated library of viral AI prompts for marketing, SEO, creative writing, and more." />
         </CategorySection>
 
+        <CategorySection title="Website Builders" desc="Design and launch professional websites with AI-powered tools.">
+          <ToolCard href="/tools/landing-page-generator" icon="🌐" name="Landing Page Generator" desc="Create professional landing pages in seconds with AI-powered templates, live preview, and instant HTML export." />
+        </CategorySection>
+
         <CategorySection title="Creator Suites" desc="Complete toolkits for YouTube, TikTok, and digital product creators.">
           <ToolCard href="/tools/digital-product-creator" icon="💻" name="AI Digital Creator Suite" desc="Create ebooks, courses, templates, and software with AI-guided product development and marketing tools." />
           <ToolCard href="/tools/youtube-creator" icon="📺" name="AI YouTube Creator Suite" desc="Complete toolkit for YouTube creators including titles, scripts, hooks, SEO optimization, thumbnails, and viral content ideas." />

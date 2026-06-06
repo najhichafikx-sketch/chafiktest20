@@ -1,14 +1,18 @@
-import ToolPage from '@/components/ToolPage';
+import LandingPageClient from './LandingPageClient';
 
 export const metadata = {
   title: 'AI Landing Page Generator',
-  description: 'Generate high-converting landing page copy with AI-powered headlines, subheadlines, bullet points, and CTAs.',
-  openGraph: { title: 'AI Landing Page Generator', description: 'Generate high-converting landing page copy with AI-powered headlines, subheadlines, bullet points, and CTAs.' },
-  twitter: { title: 'AI Landing Page Generator', description: 'Generate high-converting landing page copy with AI-powered headlines, subheadlines, bullet points, and CTAs.' }
+  description: 'Create professional landing pages in seconds with AI-powered templates, live preview, and instant HTML export. 6 templates: SaaS, Mobile App, Agency, Event, Coming Soon, Portfolio.',
+  openGraph: {
+    title: 'AI Landing Page Generator',
+    description: 'Create professional landing pages in seconds with AI-powered templates, live preview, and instant HTML export.',
+  },
+  twitter: {
+    title: 'AI Landing Page Generator',
+    description: 'Create professional landing pages in seconds with AI-powered templates, live preview, and instant HTML export.',
+  },
 };
 
 export default function Page() {
-  return <ToolPage icon="🌐" title="Landing Page Generator"
-    description="Generate high-converting landing page copy with AI."
-    toolId="landing-page" placeholder="Describe your product or service..." showSidebar />
-};
+  return <LandingPageClient />;
+}
