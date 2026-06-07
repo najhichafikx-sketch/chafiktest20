@@ -239,6 +239,7 @@ export default function WatermarkRemover() {
     ctx.arc(pos.x, pos.y, brushSize / 2, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
+    setHasMask(true);
   }, [tool, brushSize]);
 
   const previewRect = useCallback((pos) => {
@@ -269,6 +270,7 @@ export default function WatermarkRemover() {
     const h = Math.abs(pos.y - start.y);
     ctx.fillStyle = MASK_COLOR;
     ctx.fillRect(x, y, w, h);
+    setHasMask(true);
   }, []);
 
   let lassoPathRef = useRef(null);
@@ -302,6 +304,7 @@ export default function WatermarkRemover() {
       ctx.fill(lassoPathRef.current);
     }
     lassoPathRef.current = null;
+    setHasMask(true);
   }, []);
 
   const resetToSource = useCallback(() => {
