@@ -2,12 +2,22 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { SEED_POSTS } from '@/lib/seed-blog';
 
 const BLOG_CATEGORIES = ['All', 'YouTube', 'SEO', 'AI Tools', 'Social Media', 'Marketing', 'E-commerce', 'Business', 'Content', 'Customer Service', 'Image AI', 'Digital Products'];
 
 function fallbackImage(slug) {
   return `https://picsum.photos/seed/${encodeURIComponent(slug)}/800/450`;
 }
+
+const STATIC_POSTS = SEED_POSTS.map(p => ({
+  slug: p.slug,
+  title: p.title,
+  category: p.category || 'General',
+  excerpt: p.excerpt || '',
+  reading_time: p.reading_time || 2,
+  featured_image: p.featured_image || ''
+}));
 
 export default function BlogPage() {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -21,7 +31,8 @@ export default function BlogPage() {
         const res = await fetch('/api/blog', { cache: 'no-store' });
         const data = await res.json();
         if (!cancelled && data?.success && Array.isArray(data.posts)) {
-          setDbPosts(data.posts);
+          const published = data.posts.filter(p => p.status === 'published');
+          setDbPosts(published);
         }
       } catch {}
     })();
@@ -29,8 +40,14 @@ export default function BlogPage() {
   }, []);
 
   const allPosts = useMemo(() => {
-    const merged = [];
     const seen = new Set();
+    const merged = [];
+    for (const p of STATIC_POSTS) {
+      if (!seen.has(p.slug)) {
+        seen.add(p.slug);
+        merged.push(p);
+      }
+    }
     for (const p of dbPosts) {
       if (p?.slug && !seen.has(p.slug)) {
         seen.add(p.slug);
