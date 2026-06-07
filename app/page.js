@@ -85,6 +85,7 @@ function ToolsSection() {
 
         <CategorySection title="Website Builders" desc="Design and launch professional websites with AI-powered tools.">
           <ToolCard href="/tools/landing-page-generator" icon="🌐" name="Landing Page Generator" desc="Create professional landing pages in seconds with AI-powered templates, live preview, and instant HTML export." />
+          <ToolCard href="/tools/cv-generator" icon="📄" name="AI CV Generator" desc="Build a professional CV in minutes with a multi-step form, profile photo upload, skill levels, and one-click PDF and Word export." />
         </CategorySection>
 
         <CategorySection title="Creator Suites" desc="Complete toolkits for YouTube, TikTok, and digital product creators.">
