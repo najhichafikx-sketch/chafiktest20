@@ -23,6 +23,11 @@ export default function AdminPage() {
   const [aiTestResult, setAiTestResult] = useState('');
   const [aiTesting, setAiTesting] = useState(false);
   const [dailyUsage, setDailyUsage] = useState(0);
+  const [lpModel, setLpModel] = useState('openai/gpt-4o-mini');
+  const [lpModelSaving, setLpModelSaving] = useState(false);
+  const [lpModelMessage, setLpModelMessage] = useState('');
+  const [monthlyUsage, setMonthlyUsage] = useState(0);
+  const [lastUsed, setLastUsed] = useState(null);
 
   useEffect(() => {
     const t = localStorage.getItem('admin_token');
@@ -61,8 +66,57 @@ export default function AdminPage() {
       const data = await res.json();
       if (data.success) {
         setAiKeyConfigured(!!data.isConfigured);
+        if (data.landingPageModel) setLpModel(data.landingPageModel);
       }
     } catch (e) {}
+    try {
+      const res = await fetch('/api/landing-page/usage-stats', {
+        headers: { 'Authorization': `Bearer ${t}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMonthlyUsage(data.monthly || 0);
+        setLastUsed(data.last_used || null);
+      }
+    } catch (e) {}
+  }
+
+  async function handleSaveModel() {
+    if (lpModelSaving || !lpModel.trim()) return;
+    setLpModelSaving(true);
+    setLpModelMessage('');
+    try {
+      const res = await fetch('/api/admin/settings/openrouter', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ landingPageModel: lpModel.trim() })
+      });
+      const data = await res.json();
+      setLpModelMessage(data.success ? '✅ Model saved' : '❌ ' + (data.message || 'Save failed'));
+    } catch (e) {
+      setLpModelMessage('❌ Network error');
+    } finally {
+      setLpModelSaving(false);
+    }
+  }
+
+  function formatLastUsed(iso) {
+    if (!iso) return 'Never';
+    try {
+      const d = new Date(iso);
+      const now = new Date();
+      const diffMs = now - d;
+      const min = Math.floor(diffMs / 60000);
+      if (min < 1) return 'Just now';
+      if (min < 60) return `${min} min ago`;
+      const hr = Math.floor(min / 60);
+      if (hr < 24) return `${hr}h ago`;
+      const day = Math.floor(hr / 24);
+      if (day < 30) return `${day}d ago`;
+      return d.toLocaleDateString();
+    } catch {
+      return iso;
+    }
   }
 
   async function handleSaveKey(e) {
@@ -296,14 +350,68 @@ export default function AdminPage() {
         </form>
 
         <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          padding: '8px 14px', background: 'var(--bg-tertiary)',
-          border: '1px solid var(--bg-glass-border)', borderRadius: 8,
-          fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)'
+          display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 16
         }}>
-          <span>📊 إجمالي الطلبات اليوم:</span>
-          <strong style={{ color: 'var(--text-primary)', fontSize: 16 }}>{dailyUsage}</strong>
+          <UsageStat label="Daily Usage" value={dailyUsage} icon="📊" />
+          <UsageStat label="Monthly Usage" value={monthlyUsage} icon="📈" />
+          <UsageStat label="Last Used" value={formatLastUsed(lastUsed)} icon="⏱️" />
         </div>
+
+        <div style={{
+          display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap',
+          padding: '12px 14px', background: 'var(--bg-tertiary)',
+          border: '1px solid var(--bg-glass-border)', borderRadius: 8
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1, minWidth: 240 }}>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+              Landing Page AI Model
+            </label>
+            <select
+              value={lpModel}
+              onChange={e => setLpModel(e.target.value)}
+              disabled={lpModelSaving}
+              style={{
+                padding: '8px 12px',
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--bg-glass-border)',
+                borderRadius: 6,
+                color: 'var(--text-primary)',
+                fontSize: 14,
+                fontFamily: 'monospace',
+                direction: 'ltr',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="openai/gpt-4o-mini">openai/gpt-4o-mini (Recommended)</option>
+              <option value="openai/gpt-4o">openai/gpt-4o (Premium)</option>
+              <option value="google/gemini-2.5-flash">google/gemini-2.5-flash (Fast)</option>
+              <option value="google/gemini-2.5-pro">google/gemini-2.5-pro (Pro)</option>
+              <option value="anthropic/claude-sonnet-4.5">anthropic/claude-sonnet-4.5 (Premium)</option>
+              <option value="anthropic/claude-3.5-haiku">anthropic/claude-3.5-haiku (Balanced)</option>
+              <option value="meta-llama/llama-3.3-70b-instruct">meta-llama/llama-3.3-70b-instruct (Open)</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            onClick={handleSaveModel}
+            disabled={lpModelSaving}
+            className="btn btn-primary"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px', fontSize: 14, fontWeight: 600, alignSelf: 'flex-end' }}
+          >
+            {lpModelSaving ? '⏳ Saving...' : '💾 Save Model'}
+          </button>
+        </div>
+
+        {lpModelMessage && (
+          <div style={{
+            fontSize: 13, fontWeight: 600, marginTop: 8,
+            color: lpModelMessage.startsWith('✅') ? '#10b981' : '#ef4444',
+            padding: '8px 12px', background: lpModelMessage.startsWith('✅') ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
+            borderRadius: 8, border: `1px solid ${lpModelMessage.startsWith('✅') ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`
+          }}>
+            {lpModelMessage}
+          </div>
+        )}
       </div>
 
       <div style={{
@@ -360,6 +468,24 @@ function StatBox({ icon: Icon, label, value, color }) {
       </div>
       <div style={{ fontSize: 24, fontWeight: 700, color: '#fff' }}>{value}</div>
       <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{label}</div>
+    </div>
+  );
+}
+
+function UsageStat({ label, value, icon }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 10,
+      padding: '10px 14px', background: 'var(--bg-tertiary)',
+      border: '1px solid var(--bg-glass-border)', borderRadius: 8
+    }}>
+      <span style={{ fontSize: 22 }}>{icon}</span>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <span style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+          {label}
+        </span>
+        <strong style={{ color: 'var(--text-primary)', fontSize: 16, fontWeight: 700 }}>{value}</strong>
+      </div>
     </div>
   );
 }

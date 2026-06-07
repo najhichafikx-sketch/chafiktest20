@@ -36,10 +36,21 @@ export async function GET(request) {
   const apiKey = await loadApiKey();
   const hasKey = !!apiKey;
 
+  let landingPageModel = 'openai/gpt-4o-mini';
+  try {
+    const stored = await getSetting('landing_page_model');
+    if (stored && typeof stored === 'string' && stored.trim()) {
+      landingPageModel = stored.trim();
+    } else if (stored && typeof stored === 'object' && stored.value) {
+      landingPageModel = String(stored.value).trim();
+    }
+  } catch (e) {}
+
   return Response.json({
     success: true,
     isConfigured: hasKey,
     maskedKey: hasKey ? maskKey(apiKey) : null,
+    landingPageModel,
     usageCount: 0,
     status: hasKey ? 'active' : 'inactive'
   });
@@ -57,34 +68,47 @@ export async function POST(request) {
   try { body = await request.json(); } catch {
     return Response.json({ success: false, message: 'Invalid JSON' }, { status: 400 });
   }
-  const { apiKey } = body;
+  const { apiKey, landingPageModel } = body;
 
-  if (!apiKey || !apiKey.startsWith('sk-or-v1-')) {
-    return Response.json({ success: false, message: 'Invalid OpenRouter API Key format' }, { status: 400 });
+  if (apiKey !== undefined) {
+    if (!apiKey || !apiKey.startsWith('sk-or-v1-')) {
+      return Response.json({ success: false, message: 'Invalid OpenRouter API Key format' }, { status: 400 });
+    }
+
+    process.env.OPENROUTER_API_KEY = apiKey;
+
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const dir = path.join(process.cwd(), 'data');
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(path.join(dir, 'keys.json'), JSON.stringify({ openrouter_api_key: apiKey }, null, 2));
+    } catch (e) {
+      // Vercel has read-only filesystem; DB write below handles persistence
+    }
+
+    try {
+      await setSetting('openrouter_api_key', apiKey);
+    } catch (e) {
+      return Response.json({
+        success: false,
+        message: 'Failed to persist API key to database. Make sure DATABASE_URL is configured.'
+      }, { status: 500 });
+    }
+
+    await writeLog('INFO', 'OpenRouter API Key updated by Admin');
   }
 
-  process.env.OPENROUTER_API_KEY = apiKey;
-
-  try {
-    const fs = require('fs');
-    const path = require('path');
-    const dir = path.join(process.cwd(), 'data');
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(path.join(dir, 'keys.json'), JSON.stringify({ openrouter_api_key: apiKey }, null, 2));
-  } catch (e) {
-    // Vercel has read-only filesystem; DB write below handles persistence
+  if (landingPageModel !== undefined && typeof landingPageModel === 'string' && landingPageModel.trim()) {
+    try {
+      await setSetting('landing_page_model', landingPageModel.trim());
+    } catch (e) {
+      return Response.json({
+        success: false,
+        message: 'Failed to persist landing page model.'
+      }, { status: 500 });
+    }
   }
 
-  try {
-    await setSetting('openrouter_api_key', apiKey);
-  } catch (e) {
-    return Response.json({
-      success: false,
-      message: 'Failed to persist API key to database. Make sure DATABASE_URL is configured.'
-    }, { status: 500 });
-  }
-
-  await writeLog('INFO', 'OpenRouter API Key updated by Admin');
-
-  return Response.json({ success: true, message: 'OpenRouter API Key saved.' });
+  return Response.json({ success: true, message: 'Settings saved.' });
 }
