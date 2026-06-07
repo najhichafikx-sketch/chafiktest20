@@ -104,7 +104,7 @@ export default function WatermarkRemover() {
     mctx.clearRect(0, 0, mc.width, mc.height);
     maskDataRef.current = mctx.getImageData(0, 0, mc.width, mc.height);
     undoStackRef.current = [];
-    setHasMask(false);
+    setHasMask(true);
   }, []);
 
   useEffect(() => {
@@ -542,6 +542,7 @@ export default function WatermarkRemover() {
                   </button>
                 ))}
               </div>
+              <p style={{ textAlign: 'center', color: 'var(--text-tertiary)', fontSize: '0.8rem', margin: '0 0 12px' }}>Paint over the watermark area using the tools above, then click Remove Watermark</p>
               <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
                 <div style={{ flex: '1 1 60%', minWidth: 280, position: 'relative', userSelect: 'none', overflow: 'hidden' }}>
                   <canvas ref={imageCanvasRef} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 8, userSelect: 'none', pointerEvents: 'none' }} />
