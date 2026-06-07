@@ -2,57 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { YOUTUBE_BLOG_POSTS } from '@/lib/blog-content';
 
-const BLOG_CATEGORIES = ['All', 'YouTube', 'SEO', 'AI Tools', 'Social Media', 'Marketing', 'E-commerce', 'Business', 'Content', 'Customer Service'];
-
-const STATIC_EXCERPT = {
-  'ai-seo-article-generator': 'Learn how to generate SEO-optimized articles with AI.',
-  'image-to-prompt-ai': 'Transform images into detailed AI prompts.',
-  'video-to-prompt-ai': 'Convert videos into detailed AI generation prompts.',
-  'tiktok-ai-tools': 'Discover the best AI tools for TikTok growth.',
-  'youtube-ai-suite': 'Complete YouTube SEO optimization with AI tools.',
-  'viral-exchange': 'Earn credits and grow your audience through community video exchange.',
-  'feedback-exchange': 'Get real creator feedback with structured scores across five dimensions.',
-  'audience-test-lab': 'Test your videos before publishing with simulated audience sessions.',
-  'ai-humanizer-guide': 'Humanize AI-generated text to bypass detectors.',
-  'ai-ad-copy-generator': 'Create high-converting ad copy with AI.',
-  'amazon-ai-listing': 'Optimize Amazon listings with AI for more sales.',
-  'ai-product-descriptions': 'Generate compelling product descriptions with AI.',
-  'etsy-ai-listing': 'Optimize Etsy listings with AI for better rankings.',
-  'ai-landing-page-generator': 'Create high-converting landing pages with AI.',
-  'ai-sales-copy': 'Write persuasive sales copy using AI.',
-  'shopify-ai-seo': 'Optimize your Shopify store for Google with AI.',
-  'ai-product-titles': 'Generate SEO-optimized product titles with AI.',
-  'ai-review-responses': 'Generate professional review replies with AI.',
-  'ai-pricing-optimization': 'Optimize your pricing strategy with AI insights.',
-  'ai-product-ideas': 'Discover winning product ideas using AI research.',
-  'ai-product-images': 'Improve product images with AI enhancement tools.',
-  'ai-digital-products': 'Build and sell digital products using AI.',
-  'ai-product-names': 'Generate catchy names for digital products.',
-  'ai-email-marketing': 'Write high-converting email copy with AI.',
-  'ai-dropshipping-research': 'Research winning dropshipping products with AI.',
-  'ai-writing-prompts': 'Create better content with powerful AI prompts.',
-  'viral-content-prompts': 'Generate viral-worthy content prompts with AI.'
-};
-
-const EXISTING_POSTS = Object.entries(STATIC_EXCERPT).map(([slug, excerpt]) => ({
-  slug,
-  title: slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-  category: 'AI Tools',
-  excerpt,
-  reading_time: 7
-}));
-
-const YOUTUBE_POSTS = YOUTUBE_BLOG_POSTS.map(p => ({
-  slug: p.slug,
-  title: p.title,
-  category: p.category,
-  excerpt: p.excerpt,
-  reading_time: p.reading_time
-}));
-
-const STATIC_POSTS = [...EXISTING_POSTS, ...YOUTUBE_POSTS];
+const BLOG_CATEGORIES = ['All', 'YouTube', 'SEO', 'AI Tools', 'Social Media', 'Marketing', 'E-commerce', 'Business', 'Content', 'Customer Service', 'Image AI', 'Digital Products'];
 
 function fallbackImage(slug) {
   return `https://picsum.photos/seed/${encodeURIComponent(slug)}/800/450`;
@@ -78,8 +29,8 @@ export default function BlogPage() {
   }, []);
 
   const allPosts = useMemo(() => {
-    const seen = new Set();
     const merged = [];
+    const seen = new Set();
     for (const p of dbPosts) {
       if (p?.slug && !seen.has(p.slug)) {
         seen.add(p.slug);
@@ -88,25 +39,12 @@ export default function BlogPage() {
           title: p.title,
           category: p.category || 'General',
           excerpt: p.excerpt || p.meta_description || '',
-          reading_time: p.reading_time || 5,
+          reading_time: p.reading_time || 2,
           featured_image: p.featured_image || ''
         });
       }
     }
-    for (const p of STATIC_POSTS) {
-      if (!seen.has(p.slug)) {
-        seen.add(p.slug);
-        merged.push({
-          slug: p.slug,
-          title: p.title,
-          category: p.category,
-          excerpt: p.excerpt,
-          reading_time: p.reading_time,
-          featured_image: ''
-        });
-      }
-    }
-    return merged.sort((a, b) => (b.reading_time || 0) - (a.reading_time || 0));
+    return merged.sort((a, b) => a.title.localeCompare(b.title));
   }, [dbPosts]);
 
   const filtered = allPosts.filter(p => {

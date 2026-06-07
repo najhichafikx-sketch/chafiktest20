@@ -4,21 +4,35 @@ import { TOOL_NAMES, TOOL_ARTICLES } from '@/lib/tool-content';
 import { YOUTUBE_BLOG_POSTS } from '@/lib/blog-content';
 import { SEED_POSTS } from '@/lib/seed-blog';
 
-const EXISTING_POSTS = SEED_POSTS.map(p => ({
-  slug: p.slug,
-  title: p.title,
-  category: p.category,
-  excerpt: p.excerpt,
-  reading_time: p.reading_time
-}));
-
-const ALL_POSTS = [...EXISTING_POSTS, ...YOUTUBE_BLOG_POSTS.map(p => ({
-  slug: p.slug,
-  title: p.title,
-  category: p.category,
-  excerpt: p.excerpt,
-  reading_time: p.reading_time
-}))];
+const ALL_POSTS = (() => {
+  const seen = new Set();
+  const out = [];
+  for (const p of SEED_POSTS) {
+    if (!seen.has(p.slug)) {
+      seen.add(p.slug);
+      out.push({
+        slug: p.slug,
+        title: p.title,
+        category: p.category,
+        excerpt: p.excerpt,
+        reading_time: p.reading_time
+      });
+    }
+  }
+  for (const p of YOUTUBE_BLOG_POSTS) {
+    if (!seen.has(p.slug)) {
+      seen.add(p.slug);
+      out.push({
+        slug: p.slug,
+        title: p.title,
+        category: p.category,
+        excerpt: p.excerpt,
+        reading_time: p.reading_time
+      });
+    }
+  }
+  return out;
+})();
 
 const BLOG_CONTENT_MAP = {};
 for (const post of SEED_POSTS) BLOG_CONTENT_MAP[post.slug] = post.content;
