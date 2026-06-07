@@ -153,12 +153,12 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setAiMessage('✅ ' + (data.message || 'تم الحفظ'));
+        setAiMessage('✅ ' + (data.message || 'Saved successfully'));
         setAiKeyInput('');
         setAiKeyConfigured(true);
         fetchStatus(token);
       } else {
-        setAiMessage('❌ ' + (data.message || 'فشل الحفظ'));
+        setAiMessage('❌ ' + (data.message || 'Save failed'));
       }
     } catch (e) {
       setAiMessage('❌ Network error');
@@ -180,12 +180,12 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setAiTestResult('✓ الاتصال ناجح');
+        setAiTestResult('✓ Connection successful');
       } else {
-        setAiTestResult('✗ فشل الاتصال');
+        setAiTestResult('✗ Connection failed');
       }
     } catch {
-      setAiTestResult('✗ فشل الاتصال');
+      setAiTestResult('✗ Connection failed');
     } finally {
       setAiTesting(false);
     }
@@ -204,12 +204,12 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setYtMessage('✅ ' + (data.message || 'تم الحفظ'));
+        setYtMessage('✅ ' + (data.message || 'Saved successfully'));
         setYtKeyInput('');
         setYtKeyConfigured(true);
         fetchStatus(token);
       } else {
-        setYtMessage('❌ ' + (data.message || 'فشل الحفظ'));
+        setYtMessage('❌ ' + (data.message || 'Save failed'));
       }
     } catch (e) {
       setYtMessage('❌ Network error');
@@ -231,12 +231,12 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setYtTestResult('✓ الاتصال ناجح');
+        setYtTestResult('✓ Connection successful');
       } else {
-        setYtTestResult('✗ ' + (data.message || 'فشل الاتصال'));
+        setYtTestResult('✗ ' + (data.message || 'Connection failed'));
       }
     } catch {
-      setYtTestResult('✗ فشل الاتصال');
+      setYtTestResult('✗ Connection failed');
     } finally {
       setYtTesting(false);
     }
@@ -342,16 +342,16 @@ export default function AdminPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Brain size={20} color="#a855f7" />
-            <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>إعدادات الذكاء الاصطناعي</h3>
+            <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>AI Settings</h3>
             <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 400 }}>AI Settings</span>
           </div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 999, fontSize: 13, fontWeight: 600, background: aiConnected ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)', color: aiConnected ? '#10b981' : '#ef4444', border: `1px solid ${aiConnected ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
             {aiConnected ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
-            {aiConnected ? 'متصل ✓' : 'غير مُعيَّن'}
+            {aiConnected ? 'Connected ✓' : 'Not configured'}
           </div>
         </div>
         <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '0 0 16px 0', lineHeight: 1.6 }}>
-          OpenRouter API Key — مفتاح الـ AI الذي يستخدمه الموقع لإنشاء المحتوى. يُدار مركزياً ولا يظهر للمستخدمين.
+          OpenRouter API Key — the AI key used by the site to generate content. Managed centrally and never shown to users.
         </p>
 
         <form onSubmit={handleSaveKey} style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
@@ -385,7 +385,7 @@ export default function AdminPage() {
               className="btn btn-primary"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px', fontSize: 14, fontWeight: 600 }}
             >
-              {aiSaving ? '⏳ جاري الحفظ...' : '💾 حفظ'}
+              {aiSaving ? '⏳ Saving...' : '💾 Save'}
             </button>
             <button
               type="button"
@@ -394,7 +394,7 @@ export default function AdminPage() {
               className="btn btn-secondary"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px', fontSize: 14, fontWeight: 600 }}
             >
-              {aiTesting ? '⏳ جاري الاختبار...' : '🔌 Test Connection'}
+              {aiTesting ? '⏳ Testing...' : '🔌 Test Connection'}
             </button>
           </div>
 
@@ -493,11 +493,11 @@ export default function AdminPage() {
             <div>
               <div style={{ fontSize: 14, fontWeight: 700 }}>YouTube Data API v3 Key</div>
               <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>
-                مفتاح YouTube Data API v3 — يُستخدم لأداة YouTube Creator Suite Pro (الترندات + أدوات يوتيوب).
+                The YouTube Data API v3 key — used by the YouTube Creator Suite Pro tool (trends + YouTube utilities).
               </div>
             </div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 999, fontSize: 12, fontWeight: 600, background: ytKeyConfigured ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)', color: ytKeyConfigured ? '#10b981' : '#ef4444', border: `1px solid ${ytKeyConfigured ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
-              {ytKeyConfigured ? '🟢 متصل' : '🔴 غير مُعيَّن'}
+              {ytKeyConfigured ? '🟢 Connected' : '🔴 Not configured'}
             </div>
           </div>
 
@@ -532,7 +532,7 @@ export default function AdminPage() {
                 className="btn btn-primary"
                 style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px', fontSize: 14, fontWeight: 600 }}
               >
-                {ytSaving ? '⏳ جاري الحفظ...' : '💾 حفظ'}
+                {ytSaving ? '⏳ Saving...' : '💾 Save'}
               </button>
               <button
                 type="button"
@@ -541,7 +541,7 @@ export default function AdminPage() {
                 className="btn btn-secondary"
                 style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px', fontSize: 14, fontWeight: 600 }}
               >
-                {ytTesting ? '⏳ جاري الاختبار...' : '🔌 Test Connection'}
+                {ytTesting ? '⏳ Testing...' : '🔌 Test Connection'}
               </button>
             </div>
 

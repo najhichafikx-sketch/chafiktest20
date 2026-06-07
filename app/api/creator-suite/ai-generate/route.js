@@ -63,7 +63,7 @@ export async function POST(request) {
       const retryAfterSeconds = Math.ceil((RATE_LIMIT_MS - (now - lastUsed)) / 1000);
       return Response.json({
         error: 'rate_limited',
-        message: 'تم استخدام هذه الأداة مؤخراً. الرجاء الانتظار 5 ساعات قبل المحاولة مرة أخرى.',
+        message: 'This tool was used recently. Please wait 5 hours before trying again.',
         retry_after_seconds: retryAfterSeconds
       }, { status: 429, headers: { 'Retry-After': String(retryAfterSeconds) } });
     }
@@ -85,7 +85,7 @@ export async function POST(request) {
   if (!apiKey) {
     return Response.json({
       error: 'no_api_key',
-      message: 'لم يتم تكوين مفتاح OpenRouter. أضفه في لوحة الإدارة.'
+      message: 'OpenRouter API key is not configured. Add it in the admin dashboard.'
     }, { status: 503 });
   }
 
@@ -151,6 +151,6 @@ export async function POST(request) {
   await writeLog('ERROR', 'Creator suite AI generation failed', { errors: errors.join(' | '), tool });
   return Response.json({
     error: 'generation_failed',
-    message: 'فشل توليد المحتوى. حاول مرة أخرى.'
+    message: 'Content generation failed. Please try again.'
   }, { status: 503 });
 }

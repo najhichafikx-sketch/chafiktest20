@@ -92,5 +92,5 @@ export async function POST(request) {
   }
 
   await writeLog('INFO', 'YouTube Data API Key updated by Admin');
-  return Response.json({ success: true, message: 'تم حفظ المفتاح بنجاح' });
+  return Response.json({ success: true, message: 'API key saved successfully' });
 }

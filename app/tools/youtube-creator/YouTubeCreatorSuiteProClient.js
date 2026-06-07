@@ -1,18 +1,18 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import styles from './youtube-creator-suite-pro.module.css';
 
 const SIDEBAR = [
   {
-    group: 'الرئيسية',
+    group: 'Main',
     items: [
-      { id: 'trends', label: 'الترندات', icon: '🔥' },
-      { id: 'revenue', label: 'توقعات الربح', icon: '💰' }
+      { id: 'trends', label: 'Trending', icon: '🔥' },
+      { id: 'revenue', label: 'Revenue Forecast', icon: '💰' }
     ]
   },
   {
-    group: 'أدوات الذكاء الاصطناعي',
+    group: 'AI Tools',
     items: [
       { id: 'ai-idea', label: 'Video Idea Generator', icon: '💡' },
       { id: 'ai-hooks', label: 'Viral Hooks', icon: '🪝' },
@@ -25,62 +25,62 @@ const SIDEBAR = [
     ]
   },
   {
-    group: 'أدوات يوتيوب',
+    group: 'YouTube Tools',
     items: [
-      { id: 'ut-tags', label: 'مستخرج التاغات', icon: '🏷️' },
-      { id: 'ut-hashtag', label: 'مولد الهاشتاقات', icon: '#️⃣' },
-      { id: 'ut-title-extract', label: 'مستخرج العنوان', icon: '📝' },
-      { id: 'ut-title-gen', label: 'مولد العنوان', icon: '✍️' },
-      { id: 'ut-title-length', label: 'مدقق طول العنوان', icon: '📏' },
-      { id: 'ut-desc-extract', label: 'مستخرج الوصف', icon: '📋' },
-      { id: 'ut-desc-gen', label: 'مولد الوصف', icon: '📃' },
-      { id: 'ut-embed', label: 'مولد كود التضمين', icon: '📺' },
-      { id: 'ut-channel-id', label: 'مستخرج ID القناة', icon: '🆔' },
-      { id: 'ut-video-stats', label: 'إحصائيات الفيديو', icon: '📊' },
-      { id: 'ut-channel-stats', label: 'إحصائيات القناة', icon: '📈' },
-      { id: 'ut-region', label: 'فحص القيود الإقليمية', icon: '🌍' },
-      { id: 'ut-channel-logo', label: 'تحميل لوغو القناة', icon: '🖼️' },
-      { id: 'ut-channel-banner', label: 'تحميل بنر القناة', icon: '🎨' },
-      { id: 'ut-channel-finder', label: 'البحث عن قناة', icon: '🔍' },
-      { id: 'ut-thumbnail', label: 'تحميل الصورة المصغرة', icon: '🖼️' },
-      { id: 'ut-timestamp', label: 'مولد رابط الطابع الزمني', icon: '⏱️' },
-      { id: 'ut-subscribe', label: 'مولد رابط الاشتراك', icon: '🔔' },
-      { id: 'ut-revenue-calc', label: 'حاسبة الأرباح', icon: '💵' },
-      { id: 'ut-video-count', label: 'عداد الفيديوهات', icon: '🔢' },
-      { id: 'ut-title-cap', label: 'أداة كتابة العنوان بالحروف الكبيرة', icon: '🔠' },
-      { id: 'ut-comment-pick', label: 'منتقي التعليقات', icon: '🎲' },
-      { id: 'ut-views-ratio', label: 'حاسبة نسبة المشاهدات', icon: '📐' },
-      { id: 'ut-channel-age', label: 'فحص عمر القناة', icon: '🎂' }
+      { id: 'ut-tags', label: 'Tag Extractor', icon: '🏷️' },
+      { id: 'ut-hashtag', label: 'Hashtag Generator', icon: '#️⃣' },
+      { id: 'ut-title-extract', label: 'Title Extractor', icon: '📝' },
+      { id: 'ut-title-gen', label: 'Title Generator', icon: '✍️' },
+      { id: 'ut-title-length', label: 'Title Length Checker', icon: '📏' },
+      { id: 'ut-desc-extract', label: 'Description Extractor', icon: '📋' },
+      { id: 'ut-desc-gen', label: 'Description Generator', icon: '📃' },
+      { id: 'ut-embed', label: 'Embed Code Generator', icon: '📺' },
+      { id: 'ut-channel-id', label: 'Channel ID Extractor', icon: '🆔' },
+      { id: 'ut-video-stats', label: 'Video Statistics', icon: '📊' },
+      { id: 'ut-channel-stats', label: 'Channel Statistics', icon: '📈' },
+      { id: 'ut-region', label: 'Region Restriction Check', icon: '🌍' },
+      { id: 'ut-channel-logo', label: 'Channel Logo Downloader', icon: '🖼️' },
+      { id: 'ut-channel-banner', label: 'Channel Banner Downloader', icon: '🎨' },
+      { id: 'ut-channel-finder', label: 'Channel Finder', icon: '🔍' },
+      { id: 'ut-thumbnail', label: 'Thumbnail Downloader', icon: '🖼️' },
+      { id: 'ut-timestamp', label: 'Timestamp Link Generator', icon: '⏱️' },
+      { id: 'ut-subscribe', label: 'Subscribe Link Generator', icon: '🔔' },
+      { id: 'ut-revenue-calc', label: 'Revenue Calculator', icon: '💵' },
+      { id: 'ut-video-count', label: 'Video Counter', icon: '🔢' },
+      { id: 'ut-title-cap', label: 'Title Case Tool', icon: '🔠' },
+      { id: 'ut-comment-pick', label: 'Comment Picker', icon: '🎲' },
+      { id: 'ut-views-ratio', label: 'Views-to-Likes Ratio', icon: '📐' },
+      { id: 'ut-channel-age', label: 'Channel Age Checker', icon: '🎂' }
     ]
   }
 ];
 
 const NICHES = [
-  { id: 'tech', label: 'التقنية', categoryId: '28' },
-  { id: 'health', label: 'الصحة', categoryId: '26' },
-  { id: 'money', label: 'الربح من الإنترنت', categoryId: '28' },
-  { id: 'cooking', label: 'الطبخ', categoryId: '26' },
-  { id: 'education', label: 'التعليم', categoryId: '27' },
-  { id: 'gaming', label: 'الألعاب', categoryId: '20' },
-  { id: 'travel', label: 'السفر', categoryId: '19' },
-  { id: 'sports', label: 'الرياضة', categoryId: '17' }
+  { id: 'tech', label: 'Technology', categoryId: '28' },
+  { id: 'health', label: 'Health', categoryId: '26' },
+  { id: 'money', label: 'Make Money Online', categoryId: '28' },
+  { id: 'cooking', label: 'Cooking', categoryId: '26' },
+  { id: 'education', label: 'Education', categoryId: '27' },
+  { id: 'gaming', label: 'Gaming', categoryId: '20' },
+  { id: 'travel', label: 'Travel', categoryId: '19' },
+  { id: 'sports', label: 'Sports', categoryId: '17' }
 ];
 
 const COUNTRIES = [
-  { code: 'SA', label: 'السعودية' },
-  { code: 'EG', label: 'مصر' },
-  { code: 'AE', label: 'الإمارات' },
-  { code: 'US', label: 'أمريكا' },
-  { code: 'GB', label: 'بريطانيا' }
+  { code: 'SA', label: 'Saudi Arabia' },
+  { code: 'EG', label: 'Egypt' },
+  { code: 'AE', label: 'UAE' },
+  { code: 'US', label: 'USA' },
+  { code: 'GB', label: 'UK' }
 ];
 
 const LANGUAGES = [
-  { code: 'ar', label: 'العربية' },
   { code: 'en', label: 'English' },
-  { code: 'fr', label: 'Français' },
-  { code: 'es', label: 'Español' },
-  { code: 'tr', label: 'Türkçe' },
-  { code: 'de', label: 'Deutsch' }
+  { code: 'ar', label: 'Arabic' },
+  { code: 'fr', label: 'French' },
+  { code: 'es', label: 'Spanish' },
+  { code: 'tr', label: 'Turkish' },
+  { code: 'de', label: 'German' }
 ];
 
 const RPM_TABLE = {
@@ -118,30 +118,30 @@ const AI_TOOL_PROMPTS = {
 };
 
 const UTILITY_CONFIG = {
-  'ut-tags': { kind: 'videoId', label: 'رابط أو ID الفيديو', placeholder: 'https://youtu.be/... أو videoId', tool: 'tag-extractor', submitLabel: 'استخراج التاغات' },
-  'ut-hashtag': { kind: 'text-ai', label: 'الموضوع', placeholder: 'مثال: تقنية، طبخ، ألعاب...', tool: 'ai-generate', systemPrompt: 'You are a YouTube hashtag expert. Generate 20 relevant hashtags for the given topic. Mix broad, niche, and trending hashtags. Format as a space-separated list with # prefix.', submitLabel: 'توليد الهاشتاقات' },
-  'ut-title-extract': { kind: 'videoId', label: 'رابط أو ID الفيديو', placeholder: 'https://youtu.be/...', tool: 'title-extractor', submitLabel: 'استخراج العنوان' },
-  'ut-title-gen': { kind: 'text-ai', label: 'الموضوع', placeholder: 'مثال: مراجعة iPhone 15', tool: 'ai-generate', systemPrompt: 'You are a YouTube title specialist. Generate 15 viral video titles for the given topic. Mix curiosity, numbers, and power words. Output as a numbered list. Output in the user\'s chosen language.', submitLabel: 'توليد العناوين' },
-  'ut-title-length': { kind: 'frontend', frontend: 'title-length', label: 'العنوان', placeholder: 'اكتب العنوان هنا...', submitLabel: 'فحص الطول' },
-  'ut-desc-extract': { kind: 'videoId', label: 'رابط أو ID الفيديو', placeholder: 'https://youtu.be/...', tool: 'description-extractor', submitLabel: 'استخراج الوصف' },
-  'ut-desc-gen': { kind: 'text-ai', label: 'عنوان الفيديو', placeholder: 'مثال: أفضل 5 لغات برمجة 2026', tool: 'ai-generate', systemPrompt: 'You are a YouTube description specialist. Write a full YouTube description for the given title with: hook paragraph, what viewers will learn, timestamps placeholder, keywords section, hashtags, and CTA. Output in the user\'s chosen language.', submitLabel: 'توليد الوصف' },
-  'ut-embed': { kind: 'frontend', frontend: 'embed', label: 'رابط الفيديو', placeholder: 'https://www.youtube.com/watch?v=...', submitLabel: 'توليد كود التضمين' },
-  'ut-channel-id': { kind: 'frontend', frontend: 'channel-id', label: 'رابط أو اسم القناة', placeholder: 'https://www.youtube.com/@channelname', tool: 'channel-id-extractor', submitLabel: 'استخراج ID القناة' },
-  'ut-video-stats': { kind: 'videoId', label: 'رابط أو ID الفيديو', placeholder: 'https://youtu.be/...', tool: 'video-statistics', submitLabel: 'عرض الإحصائيات' },
-  'ut-channel-stats': { kind: 'channelRef', label: 'رابط أو ID القناة', placeholder: 'https://youtube.com/@channel', tool: 'channel-statistics', submitLabel: 'عرض إحصائيات القناة' },
-  'ut-region': { kind: 'videoId', label: 'رابط أو ID الفيديو', placeholder: 'https://youtu.be/...', tool: 'region-restriction', submitLabel: 'فحص القيود' },
-  'ut-channel-logo': { kind: 'channelRef', label: 'رابط أو ID القناة', placeholder: 'https://youtube.com/@channel', tool: 'channel-logo', submitLabel: 'جلب اللوغو' },
-  'ut-channel-banner': { kind: 'channelRef', label: 'رابط أو ID القناة', placeholder: 'https://youtube.com/@channel', tool: 'channel-banner', submitLabel: 'جلب البنر' },
-  'ut-channel-finder': { kind: 'text', label: 'اسم القناة للبحث', placeholder: 'مثال: Marques Brownlee', tool: 'channel-finder', submitLabel: 'البحث' },
-  'ut-thumbnail': { kind: 'videoId', label: 'رابط أو ID الفيديو', placeholder: 'https://youtu.be/...', tool: 'thumbnail-downloader', submitLabel: 'جلب الصور المصغرة' },
-  'ut-timestamp': { kind: 'frontend', frontend: 'timestamp', label: 'رابط الفيديو والوقت', placeholder: 'الصق الرابط والثواني (مثال: https://youtu.be/abc 90)', submitLabel: 'توليد الرابط' },
-  'ut-subscribe': { kind: 'frontend', frontend: 'subscribe', label: 'رابط القناة', placeholder: 'https://youtube.com/@channel', submitLabel: 'توليد رابط الاشتراك' },
-  'ut-revenue-calc': { kind: 'frontend', frontend: 'revenue-calc', label: '', placeholder: '', submitLabel: 'احسب' },
-  'ut-video-count': { kind: 'channelRef', label: 'رابط أو ID القناة', placeholder: 'https://youtube.com/@channel', tool: 'video-count', submitLabel: 'عدّ الفيديوهات' },
-  'ut-title-cap': { kind: 'frontend', frontend: 'title-cap', label: 'العنوان', placeholder: 'اكتب العنوان هنا...', submitLabel: 'تحويل' },
-  'ut-comment-pick': { kind: 'frontend', frontend: 'comment-pick', label: 'التعليقات (واحد في كل سطر)', placeholder: 'تعليق 1\nتعليق 2\n...', submitLabel: 'اختيار تعليق عشوائي' },
-  'ut-views-ratio': { kind: 'frontend', frontend: 'views-ratio', label: '', placeholder: '', submitLabel: 'احسب النسبة' },
-  'ut-channel-age': { kind: 'channelRef', label: 'رابط أو ID القناة', placeholder: 'https://youtube.com/@channel', tool: 'channel-age', submitLabel: 'فحص العمر' }
+  'ut-tags': { kind: 'videoId', label: 'Video URL or ID', placeholder: 'https://youtu.be/... or videoId', tool: 'tag-extractor', submitLabel: 'Extract Tags' },
+  'ut-hashtag': { kind: 'text-ai', label: 'Topic', placeholder: 'e.g. technology, cooking, gaming...', tool: 'ai-generate', systemPrompt: 'You are a YouTube hashtag expert. Generate 20 relevant hashtags for the given topic. Mix broad, niche, and trending hashtags. Format as a space-separated list with # prefix.', submitLabel: 'Generate Hashtags' },
+  'ut-title-extract': { kind: 'videoId', label: 'Video URL or ID', placeholder: 'https://youtu.be/...', tool: 'title-extractor', submitLabel: 'Extract Title' },
+  'ut-title-gen': { kind: 'text-ai', label: 'Topic', placeholder: 'e.g. iPhone 15 review', tool: 'ai-generate', systemPrompt: 'You are a YouTube title specialist. Generate 15 viral video titles for the given topic. Mix curiosity, numbers, and power words. Output as a numbered list. Output in the user\'s chosen language.', submitLabel: 'Generate Titles' },
+  'ut-title-length': { kind: 'frontend', frontend: 'title-length', label: 'Title', placeholder: 'Type your title here...', submitLabel: 'Check Length' },
+  'ut-desc-extract': { kind: 'videoId', label: 'Video URL or ID', placeholder: 'https://youtu.be/...', tool: 'description-extractor', submitLabel: 'Extract Description' },
+  'ut-desc-gen': { kind: 'text-ai', label: 'Video Title', placeholder: 'e.g. Top 5 Programming Languages 2026', tool: 'ai-generate', systemPrompt: 'You are a YouTube description specialist. Write a full YouTube description for the given title with: hook paragraph, what viewers will learn, timestamps placeholder, keywords section, hashtags, and CTA. Output in the user\'s chosen language.', submitLabel: 'Generate Description' },
+  'ut-embed': { kind: 'frontend', frontend: 'embed', label: 'Video URL', placeholder: 'https://www.youtube.com/watch?v=...', submitLabel: 'Generate Embed Code' },
+  'ut-channel-id': { kind: 'frontend', frontend: 'channel-id', label: 'Channel URL or Name', placeholder: 'https://www.youtube.com/@channelname', tool: 'channel-id-extractor', submitLabel: 'Extract Channel ID' },
+  'ut-video-stats': { kind: 'videoId', label: 'Video URL or ID', placeholder: 'https://youtu.be/...', tool: 'video-statistics', submitLabel: 'View Statistics' },
+  'ut-channel-stats': { kind: 'channelRef', label: 'Channel URL or ID', placeholder: 'https://youtube.com/@channel', tool: 'channel-statistics', submitLabel: 'View Channel Statistics' },
+  'ut-region': { kind: 'videoId', label: 'Video URL or ID', placeholder: 'https://youtu.be/...', tool: 'region-restriction', submitLabel: 'Check Restrictions' },
+  'ut-channel-logo': { kind: 'channelRef', label: 'Channel URL or ID', placeholder: 'https://youtube.com/@channel', tool: 'channel-logo', submitLabel: 'Fetch Logo' },
+  'ut-channel-banner': { kind: 'channelRef', label: 'Channel URL or ID', placeholder: 'https://youtube.com/@channel', tool: 'channel-banner', submitLabel: 'Fetch Banner' },
+  'ut-channel-finder': { kind: 'text', label: 'Channel Name to Search', placeholder: 'e.g. Marques Brownlee', tool: 'channel-finder', submitLabel: 'Search' },
+  'ut-thumbnail': { kind: 'videoId', label: 'Video URL or ID', placeholder: 'https://youtu.be/...', tool: 'thumbnail-downloader', submitLabel: 'Fetch Thumbnails' },
+  'ut-timestamp': { kind: 'frontend', frontend: 'timestamp', label: 'Video URL and Time', placeholder: 'Paste URL and seconds (e.g. https://youtu.be/abc 90)', submitLabel: 'Generate Link' },
+  'ut-subscribe': { kind: 'frontend', frontend: 'subscribe', label: 'Channel URL', placeholder: 'https://youtube.com/@channel', submitLabel: 'Generate Subscribe Link' },
+  'ut-revenue-calc': { kind: 'frontend', frontend: 'revenue-calc', label: '', placeholder: '', submitLabel: 'Calculate' },
+  'ut-video-count': { kind: 'channelRef', label: 'Channel URL or ID', placeholder: 'https://youtube.com/@channel', tool: 'video-count', submitLabel: 'Count Videos' },
+  'ut-title-cap': { kind: 'frontend', frontend: 'title-cap', label: 'Title', placeholder: 'Type your title here...', submitLabel: 'Convert' },
+  'ut-comment-pick': { kind: 'frontend', frontend: 'comment-pick', label: 'Comments (one per line)', placeholder: 'comment 1\ncomment 2\n...', submitLabel: 'Pick Random Comment' },
+  'ut-views-ratio': { kind: 'frontend', frontend: 'views-ratio', label: '', placeholder: '', submitLabel: 'Calculate Ratio' },
+  'ut-channel-age': { kind: 'channelRef', label: 'Channel URL or ID', placeholder: 'https://youtube.com/@channel', tool: 'channel-age', submitLabel: 'Check Age' }
 };
 
 export default function YouTubeCreatorSuiteProClient() {
@@ -149,7 +149,7 @@ export default function YouTubeCreatorSuiteProClient() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [rateLimit, setRateLimit] = useState({ allowed: true, retry_after_seconds: 0 });
   const [globalError, setGlobalError] = useState('');
-  const [language, setLanguage] = useState('ar');
+  const [language, setLanguage] = useState('en');
 
   useEffect(() => {
     async function loadRateLimit() {
@@ -190,7 +190,7 @@ export default function YouTubeCreatorSuiteProClient() {
         </div>
 
         <div className={styles.langRow}>
-          <label className={styles.langLabel}>اللغة</label>
+          <label className={styles.langLabel}>Language</label>
           <select className={styles.langSelect} value={language} onChange={e => setLanguage(e.target.value)}>
             {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
           </select>
@@ -198,9 +198,9 @@ export default function YouTubeCreatorSuiteProClient() {
 
         <div className={`${styles.rateBox} ${rateLimit.allowed ? styles.rateBoxOk : styles.rateBoxWarn}`}>
           {rateLimit.allowed ? (
-            <>✅ جاهز للاستخدام</>
+            <>✅ Ready to use</>
           ) : (
-            <>⏳ الرجاء الانتظار: <strong>{formatCountdown(rateLimit.retry_after_seconds)}</strong></>
+            <>⏳ Please wait: <strong>{formatCountdown(rateLimit.retry_after_seconds)}</strong></>
           )}
         </div>
 
@@ -275,11 +275,11 @@ function timeAgo(iso) {
   const d = new Date(iso);
   const now = new Date();
   const days = Math.floor((now - d) / 86400000);
-  if (days < 1) return 'اليوم';
-  if (days < 7) return `قبل ${days} يوم`;
-  if (days < 30) return `قبل ${Math.floor(days / 7)} أسبوع`;
-  if (days < 365) return `قبل ${Math.floor(days / 30)} شهر`;
-  return `قبل ${Math.floor(days / 365)} سنة`;
+  if (days < 1) return 'Today';
+  if (days < 7) return `${days} days ago`;
+  if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+  if (days < 365) return `${Math.floor(days / 30)} months ago`;
+  return `${Math.floor(days / 365)} years ago`;
 }
 
 function TrendsView({ language, onError, onRateLimit }) {
@@ -307,13 +307,13 @@ function TrendsView({ language, onError, onRateLimit }) {
         const data = await res.json();
         if (cancelled) return;
         if (!res.ok) {
-          onError(data.message || 'فشل تحميل الترندات');
+          onError(data.message || 'Failed to load trends');
           setVideos([]);
         } else {
           setVideos(data.videos || []);
         }
       } catch (e) {
-        if (!cancelled) onError('فشل الاتصال بالخادم');
+        if (!cancelled) onError('Server connection failed');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -359,27 +359,27 @@ function TrendsView({ language, onError, onRateLimit }) {
         if (data.error === 'rate_limited') {
           onRateLimit({ allowed: false, retry_after_seconds: data.retry_after_seconds || 0 });
         }
-        setExtractStates(s => ({ ...s, [key]: { loading: false, output: '', error: data.message || 'فشل التوليد' } }));
+        setExtractStates(s => ({ ...s, [key]: { loading: false, output: '', error: data.message || 'Generation failed' } }));
       } else {
         setExtractStates(s => ({ ...s, [key]: { loading: false, output: data.result || '', error: '' } }));
         if (data.retry_after_seconds != null) onRateLimit({ allowed: true, retry_after_seconds: 0 });
       }
     } catch (e) {
-      setExtractStates(s => ({ ...s, [key]: { loading: false, output: '', error: 'فشل الاتصال' } }));
+      setExtractStates(s => ({ ...s, [key]: { loading: false, output: '', error: 'Connection failed' } }));
     }
   }
 
   return (
     <div className={styles.view}>
       <div className={styles.viewHeader}>
-        <h2 className={styles.viewTitle}>🔥 الترندات — أكثر الفيديوهات رواجاً</h2>
-        <p className={styles.viewSubtitle}>اكتشف الفيديوهات الرائجة في مجالك واستخرج منها نصوصاً وعناوين بالذكاء الاصطناعي</p>
+        <h2 className={styles.viewTitle}>🔥 Trending — Most Popular Videos</h2>
+        <p className={styles.viewSubtitle}>Discover trending videos in your niche and extract scripts and titles with AI</p>
       </div>
 
       <div className={styles.searchRow}>
         <input
           className={styles.searchInput}
-          placeholder="🔍 ابحث بكلمة مفتاحية (اختياري)..."
+          placeholder="🔍 Search by keyword (optional)..."
           value={keyword}
           onChange={e => setKeyword(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') refresh(); }}
@@ -388,7 +388,7 @@ function TrendsView({ language, onError, onRateLimit }) {
           {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
         </select>
         <button type="button" className={styles.btnPrimary} onClick={refresh} disabled={loading}>
-          {loading ? '⏳ جاري التحميل...' : '🔄 تحديث'}
+          {loading ? '⏳ Loading...' : '🔄 Refresh'}
         </button>
       </div>
 
@@ -408,10 +408,10 @@ function TrendsView({ language, onError, onRateLimit }) {
       {loading ? (
         <div className={styles.loadingBox}>
           <div className={styles.spinner}></div>
-          <p>جاري تحميل الفيديوهات الرائجة...</p>
+          <p>Loading trending videos...</p>
         </div>
       ) : videos.length === 0 ? (
-        <div className={styles.emptyBox}>لا توجد فيديوهات. تأكد من إضافة مفتاح YouTube Data API في لوحة الإدارة.</div>
+        <div className={styles.emptyBox}>No videos found. Make sure to add a YouTube Data API key in the admin dashboard.</div>
       ) : (
         <div className={styles.videoGrid}>
           {videos.map((v, i) => (
@@ -429,13 +429,13 @@ function TrendsView({ language, onError, onRateLimit }) {
                 </div>
                 <div className={styles.extractRow}>
                   <button type="button" className={styles.extractBtn} onClick={() => handleExtract(v, 'script')} disabled={extractStates[`${v.id}-script`]?.loading}>
-                    سكريبت
+                    Script
                   </button>
                   <button type="button" className={styles.extractBtn} onClick={() => handleExtract(v, 'title')} disabled={extractStates[`${v.id}-title`]?.loading}>
-                    عنوان
+                    Title
                   </button>
                   <button type="button" className={styles.extractBtn} onClick={() => handleExtract(v, 'tags')} disabled={extractStates[`${v.id}-tags`]?.loading}>
-                    كلمات مفتاحية
+                    Keywords
                   </button>
                   <button type="button" className={styles.extractBtn} onClick={() => handleExtract(v, 'thumbnail')} disabled={extractStates[`${v.id}-thumbnail`]?.loading}>
                     Thumbnail
@@ -445,7 +445,7 @@ function TrendsView({ language, onError, onRateLimit }) {
                   <div className={styles.extractOutput}>
                     <pre>{extractStates[`${v.id}-script`]?.output || extractStates[`${v.id}-title`]?.output || extractStates[`${v.id}-tags`]?.output || extractStates[`${v.id}-thumbnail`]?.output}</pre>
                     <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(extractStates[`${v.id}-script`]?.output || extractStates[`${v.id}-title`]?.output || extractStates[`${v.id}-tags`]?.output || extractStates[`${v.id}-thumbnail`]?.output)}>
-                      📋 نسخ
+                      📋 Copy
                     </button>
                   </div>
                 )}
@@ -487,35 +487,28 @@ function RevenueView() {
   return (
     <div className={styles.view}>
       <div className={styles.viewHeader}>
-        <h2 className={styles.viewTitle}>💰 توقعات الربح الشهري</h2>
-        <p className={styles.viewSubtitle}>احسب أرباحك المتوقعة من قناتك على يوتيوب بناءً على المشاهدات والمجال</p>
+        <h2 className={styles.viewTitle}>💰 Monthly Revenue Forecast</h2>
+        <p className={styles.viewSubtitle}>Calculate your expected YouTube earnings based on views and niche</p>
       </div>
 
       <div className={styles.card}>
         <div className={styles.fieldGrid}>
           <div className={styles.field}>
-            <label className={styles.label}>متوسط المشاهدات لكل فيديو</label>
+            <label className={styles.label}>Average views per video</label>
             <input type="number" className={styles.input} value={views} onChange={e => setViews(Number(e.target.value) || 0)} min="0" />
           </div>
           <div className={styles.field}>
-            <label className={styles.label}>عدد الفيديوهات شهرياً</label>
+            <label className={styles.label}>Videos per month</label>
             <input type="number" className={styles.input} value={videosPerMonth} onChange={e => setVideosPerMonth(Number(e.target.value) || 0)} min="0" />
           </div>
           <div className={styles.field}>
-            <label className={styles.label}>المجال</label>
+            <label className={styles.label}>Niche</label>
             <select className={styles.select} value={niche} onChange={e => setNiche(e.target.value)}>
-              <option value="tech">التقنية</option>
-              <option value="health">الصحة</option>
-              <option value="money">الربح من الإنترنت</option>
-              <option value="cooking">الطبخ</option>
-              <option value="education">التعليم</option>
-              <option value="gaming">الألعاب</option>
-              <option value="travel">السفر</option>
-              <option value="sports">الرياضة</option>
+              {NICHES.map(n => <option key={n.id} value={n.id}>{n.label}</option>)}
             </select>
           </div>
           <div className={styles.field}>
-            <label className={styles.label}>المنطقة الجغرافية</label>
+            <label className={styles.label}>Region</label>
             <select className={styles.select} value={country} onChange={e => setCountry(e.target.value)}>
               {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
             </select>
@@ -528,36 +521,36 @@ function RevenueView() {
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>💵</div>
-              <div className={styles.statLabel}>إجمالي الربح المتوقع</div>
+              <div className={styles.statLabel}>Total expected revenue</div>
               <div className={styles.statValue}>${result.minRevenue.toFixed(0)} - ${result.maxRevenue.toFixed(0)}</div>
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>📊</div>
-              <div className={styles.statLabel}>متوسط RPM</div>
+              <div className={styles.statLabel}>Average RPM</div>
               <div className={styles.statValue}>${result.avgRpm.toFixed(2)}</div>
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>👁️</div>
-              <div className={styles.statLabel}>إجمالي المشاهدات</div>
+              <div className={styles.statLabel}>Total views</div>
               <div className={styles.statValue}>{formatNumber(result.totalViews)}</div>
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>📈</div>
-              <div className={styles.statLabel}>نسبة النمو المتوقعة</div>
+              <div className={styles.statLabel}>Expected growth rate</div>
               <div className={styles.statValue}>+{result.growth}%</div>
             </div>
           </div>
 
           <div className={styles.card}>
-            <h3 className={styles.cardTitle}>تفاصيل كل فيديو</h3>
+            <h3 className={styles.cardTitle}>Per-video details</h3>
             <div className={styles.tableWrap}>
               <table className={styles.table}>
                 <thead>
                   <tr>
-                    <th>الفيديو</th>
-                    <th>المشاهدات</th>
-                    <th>الربح الأدنى</th>
-                    <th>الربح الأعلى</th>
+                    <th>Video</th>
+                    <th>Views</th>
+                    <th>Min revenue</th>
+                    <th>Max revenue</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -587,25 +580,25 @@ function AIToolView({ toolId, language, onError, onRateLimit }) {
   const [loading, setLoading] = useState(false);
 
   const config = {
-    'ai-idea': { title: '💡 مولد أفكار الفيديو', placeholder: 'صف مجالك أو موضوع قناتك...', multiline: true, hint: 'مثال: قناة تقنية متخصصة في المراجعات' },
-    'ai-hooks': { title: '🪝 مولد الهوكات الفيروسية', placeholder: 'موضوع الفيديو...', multiline: true, hint: 'مثال: كيف تبدأ مشروعك التجاري' },
-    'ai-script': { title: '📜 كاتب السكريبت', placeholder: 'عنوان أو موضوع الفيديو...', multiline: true, hint: 'مثال: أفضل 5 لغات برمجة في 2026' },
-    'ai-title': { title: '✏️ مولد العناوين', placeholder: 'موضوع الفيديو...', multiline: false, hint: 'مثال: مراجعة iPhone 15 Pro Max' },
-    'ai-description': { title: '📄 مولد الوصف', placeholder: 'عنوان الفيديو...', multiline: false, hint: 'مثال: أفضل 5 لغات برمجة للمبتدئين' },
-    'ai-tags': { title: '🏷️ مولد التاغات', placeholder: 'عنوان أو موضوع الفيديو...', multiline: false, hint: 'مثال: مراجعة آيفون 15' },
-    'ai-thumbnail': { title: '🖼️ مولد بروموت الصور المصغرة', placeholder: 'موضوع الفيديو...', multiline: true, hint: 'مثال: كيف تربح من اليوتيوب' },
-    'ai-seo': { title: '🔍 محسّن SEO', placeholder: 'العنوان الحالي', multiline: false, extra: true, extraPlaceholder: 'الوصف الحالي...', extra2: true, extra2Placeholder: 'التاغات الحالية (مفصولة بفواصل)...', hint: 'الصق العنوان والوصف والتاغات لتحليلها' }
+    'ai-idea': { title: '💡 Video Idea Generator', placeholder: 'Describe your niche or channel topic...', multiline: true, hint: 'e.g. A tech channel focused on reviews' },
+    'ai-hooks': { title: '🪝 Viral Hooks Generator', placeholder: 'Video topic...', multiline: true, hint: 'e.g. How to start your own business' },
+    'ai-script': { title: '📜 Script Writer', placeholder: 'Video title or topic...', multiline: true, hint: 'e.g. Top 5 programming languages in 2026' },
+    'ai-title': { title: '✏️ Title Generator', placeholder: 'Video topic...', multiline: false, hint: 'e.g. iPhone 15 Pro Max review' },
+    'ai-description': { title: '📄 Description Generator', placeholder: 'Video title...', multiline: false, hint: 'e.g. Top 5 programming languages for beginners' },
+    'ai-tags': { title: '🏷️ Tags Generator', placeholder: 'Video title or topic...', multiline: false, hint: 'e.g. iPhone 15 review' },
+    'ai-thumbnail': { title: '🖼️ Thumbnail Prompt Generator', placeholder: 'Video topic...', multiline: true, hint: 'e.g. How to make money on YouTube' },
+    'ai-seo': { title: '🔍 SEO Optimizer', placeholder: 'Current title', multiline: false, extra: true, extraPlaceholder: 'Current description...', extra2: true, extra2Placeholder: 'Current tags (comma-separated)...', hint: 'Paste the title, description, and tags to analyze them' }
   }[toolId] || {};
 
   async function generate() {
     if (!input.trim()) {
-      onError('الرجاء إدخال مدخلات');
+      onError('Please enter your input');
       return;
     }
     setLoading(true);
     setOutput('');
     onError('');
-    const languageName = LANGUAGES.find(l => l.code === language)?.label || 'العربية';
+    const languageName = LANGUAGES.find(l => l.code === language)?.label || 'English';
     const baseSystem = AI_TOOL_PROMPTS[toolId] || '';
     const systemPrompt = `${baseSystem} Output language: ${languageName}.`;
 
@@ -625,13 +618,13 @@ function AIToolView({ toolId, language, onError, onRateLimit }) {
         if (data.error === 'rate_limited') {
           onRateLimit({ allowed: false, retry_after_seconds: data.retry_after_seconds || 0 });
         }
-        onError(data.message || 'فشل التوليد');
+        onError(data.message || 'Generation failed');
       } else {
         setOutput(data.result || '');
         if (data.retry_after_seconds != null) onRateLimit({ allowed: true, retry_after_seconds: 0 });
       }
     } catch (e) {
-      onError('فشل الاتصال بالخادم');
+      onError('Server connection failed');
     } finally {
       setLoading(false);
     }
@@ -646,31 +639,31 @@ function AIToolView({ toolId, language, onError, onRateLimit }) {
 
       <div className={styles.card}>
         <div className={styles.field}>
-          <label className={styles.label}>المدخل</label>
+          <label className={styles.label}>Input</label>
           <textarea className={styles.textarea} value={input} onChange={e => setInput(e.target.value)} placeholder={config.placeholder} rows={config.multiline ? 4 : 2} />
         </div>
         {config.extra && (
           <div className={styles.field}>
-            <label className={styles.label}>المدخل الإضافي</label>
+            <label className={styles.label}>Additional Input</label>
             <textarea className={styles.textarea} value={extra} onChange={e => setExtra(e.target.value)} placeholder={config.extraPlaceholder} rows={3} />
           </div>
         )}
         {config.extra2 && (
           <div className={styles.field}>
-            <label className={styles.label}>المدخل الإضافي 2</label>
+            <label className={styles.label}>Additional Input 2</label>
             <textarea className={styles.textarea} value={extra2} onChange={e => setExtra2(e.target.value)} placeholder={config.extra2Placeholder} rows={2} />
           </div>
         )}
         <button type="button" className={styles.btnPrimary} onClick={generate} disabled={loading}>
-          {loading ? '⏳ جاري التوليد...' : '✨ توليد'}
+          {loading ? '⏳ Generating...' : '✨ Generate'}
         </button>
       </div>
 
       {output && (
         <div className={styles.card}>
           <div className={styles.outputHeader}>
-            <h3 className={styles.cardTitle}>النتيجة</h3>
-            <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output)}>📋 نسخ</button>
+            <h3 className={styles.cardTitle}>Result</h3>
+            <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output)}>📋 Copy</button>
           </div>
           <pre className={styles.output}>{output}</pre>
         </div>
@@ -692,7 +685,7 @@ function UtilityToolView({ toolId, language, onError, onRateLimit }) {
       return runFrontend();
     }
     if (!input.trim()) {
-      onError('الرجاء إدخال قيمة');
+      onError('Please enter a value');
       return;
     }
     setLoading(true);
@@ -723,13 +716,13 @@ function UtilityToolView({ toolId, language, onError, onRateLimit }) {
         if (data.error === 'rate_limited') {
           onRateLimit({ allowed: false, retry_after_seconds: data.retry_after_seconds || 0 });
         }
-        onError(data.message || 'فشل التوليد');
-        setOutput({ error: data.message || 'فشل' });
+        onError(data.message || 'Operation failed');
+        setOutput({ error: data.message || 'Failed' });
       } else {
         setOutput(data);
       }
     } catch (e) {
-      onError('فشل الاتصال بالخادم');
+      onError('Server connection failed');
     } finally {
       setLoading(false);
     }
@@ -740,15 +733,15 @@ function UtilityToolView({ toolId, language, onError, onRateLimit }) {
     onError('');
     const v = input.trim();
     if (cfg.frontend === 'title-length') {
-      if (!v) { onError('أدخل عنواناً'); return; }
+      if (!v) { onError('Please enter a title'); return; }
       const len = v.length;
       let status = 'green';
       if (len > 70) status = 'red';
       else if (len > 60) status = 'yellow';
-      setOutput({ type: 'title-length', length: len, status, recommendation: len > 70 ? 'العنوان طويل جداً - YouTube يقطع بعد 70 حرف' : len > 60 ? 'مقبول لكن حاول تقصيره' : 'طول مثالي' });
+      setOutput({ type: 'title-length', length: len, status, recommendation: len > 70 ? 'Title is too long - YouTube truncates after 70 characters' : len > 60 ? 'Acceptable but try to shorten it' : 'Perfect length' });
     } else if (cfg.frontend === 'embed') {
       const vid = extractVideoId(v);
-      if (!vid || vid.length !== 11) { onError('رابط غير صالح'); return; }
+      if (!vid || vid.length !== 11) { onError('Invalid URL'); return; }
       const embed = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${vid}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
       setOutput({ type: 'embed', embed, videoId: vid });
     } else if (cfg.frontend === 'channel-id') {
@@ -757,19 +750,19 @@ function UtilityToolView({ toolId, language, onError, onRateLimit }) {
       setOutput({ type: 'channel-id', ref, id });
     } else if (cfg.frontend === 'timestamp') {
       const parts = v.split(/\s+/);
-      if (parts.length < 2) { onError('الصق الرابط ثم الوقت بالثواني'); return; }
+      if (parts.length < 2) { onError('Paste the URL and the time in seconds'); return; }
       const seconds = parseInt(parts[parts.length - 1]);
       const url = parts.slice(0, -1).join(' ');
       const vid = extractVideoId(url);
-      if (!vid || vid.length !== 11) { onError('رابط غير صالح'); return; }
-      if (isNaN(seconds) || seconds < 0) { onError('وقت غير صالح'); return; }
+      if (!vid || vid.length !== 11) { onError('Invalid URL'); return; }
+      if (isNaN(seconds) || seconds < 0) { onError('Invalid time'); return; }
       setOutput({ type: 'timestamp', url: `https://youtu.be/${vid}?t=${seconds}`, seconds });
     } else if (cfg.frontend === 'subscribe') {
       const ref = extractChannelRef(v);
       const target = ref.type === 'id' ? `channel/${ref.value}` : ref.value;
       setOutput({ type: 'subscribe', url: `https://www.youtube.com/${target}?sub_confirmation=1` });
     } else if (cfg.frontend === 'title-cap') {
-      if (!v) { onError('أدخل عنواناً'); return; }
+      if (!v) { onError('Please enter a title'); return; }
       const titled = v.toLowerCase().split(/\s+/).map((w, i) => {
         if (i === 0) return w.charAt(0).toUpperCase() + w.slice(1);
         const small = new Set(['a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 'of', 'on', 'or', 'the', 'to', 'with']);
@@ -778,26 +771,26 @@ function UtilityToolView({ toolId, language, onError, onRateLimit }) {
       setOutput({ type: 'title-cap', original: v, titled });
     } else if (cfg.frontend === 'comment-pick') {
       const lines = v.split('\n').map(l => l.trim()).filter(Boolean);
-      if (lines.length === 0) { onError('الصق تعليقاً واحداً على الأقل'); return; }
+      if (lines.length === 0) { onError('Paste at least one comment'); return; }
       const pick = lines[Math.floor(Math.random() * lines.length)];
       setOutput({ type: 'comment-pick', winner: pick, total: lines.length });
     } else if (cfg.frontend === 'revenue-calc') {
-      onError('استخدم أداة "توقعات الربح" من القائمة الرئيسية');
+      onError('Use the "Revenue Forecast" tool from the main menu');
     } else if (cfg.frontend === 'views-ratio') {
-      onError('الرجاء استخدام الحقول أدناه');
+      onError('Please use the fields below');
     }
   }
 
   function runViewsRatio() {
     const views = Number(frontendState.views) || 0;
     const likes = Number(frontendState.likes) || 0;
-    if (views <= 0) { onError('أدخل عدد المشاهدات'); return; }
+    if (views <= 0) { onError('Please enter the number of views'); return; }
     const ratio = (likes / views) * 100;
     let benchmark = '';
-    if (ratio >= 4) benchmark = 'ممتاز - أعلى من المتوسط';
-    else if (ratio >= 2.5) benchmark = 'جيد جداً';
-    else if (ratio >= 1) benchmark = 'متوسط';
-    else benchmark = 'منخفض - حاول تحسين المحتوى';
+    if (ratio >= 4) benchmark = 'Excellent - above average';
+    else if (ratio >= 2.5) benchmark = 'Very good';
+    else if (ratio >= 1) benchmark = 'Average';
+    else benchmark = 'Low - try to improve your content';
     setOutput({ type: 'views-ratio', ratio, likes, views, benchmark });
   }
 
@@ -805,11 +798,11 @@ function UtilityToolView({ toolId, language, onError, onRateLimit }) {
     return (
       <div className={styles.view}>
         <div className={styles.viewHeader}>
-          <h2 className={styles.viewTitle}>💵 حاسبة الأرباح</h2>
-          <p className={styles.viewSubtitle}>اذهب إلى &quot;توقعات الربح&quot; في القائمة الرئيسية لاستخدام الحاسبة الكاملة</p>
+          <h2 className={styles.viewTitle}>💵 Revenue Calculator</h2>
+          <p className={styles.viewSubtitle}>Go to &quot;Revenue Forecast&quot; in the main menu to use the full calculator</p>
         </div>
         <div className={styles.card}>
-          <button type="button" className={styles.btnPrimary} onClick={() => window.scrollTo(0, 0)}>افتح توقعات الربح</button>
+          <button type="button" className={styles.btnPrimary} onClick={() => window.scrollTo(0, 0)}>Open Revenue Forecast</button>
         </div>
       </div>
     );
@@ -819,25 +812,25 @@ function UtilityToolView({ toolId, language, onError, onRateLimit }) {
     return (
       <div className={styles.view}>
         <div className={styles.viewHeader}>
-          <h2 className={styles.viewTitle}>📐 حاسبة نسبة المشاهدات للإعجابات</h2>
+          <h2 className={styles.viewTitle}>📐 Views-to-Likes Ratio Calculator</h2>
         </div>
         <div className={styles.card}>
           <div className={styles.fieldGrid}>
             <div className={styles.field}>
-              <label className={styles.label}>عدد المشاهدات</label>
+              <label className={styles.label}>Number of views</label>
               <input type="number" className={styles.input} value={frontendState.views || ''} onChange={e => setFrontendState({ ...frontendState, views: e.target.value })} />
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>عدد الإعجابات</label>
+              <label className={styles.label}>Number of likes</label>
               <input type="number" className={styles.input} value={frontendState.likes || ''} onChange={e => setFrontendState({ ...frontendState, likes: e.target.value })} />
             </div>
           </div>
-          <button type="button" className={styles.btnPrimary} onClick={runViewsRatio}>احسب النسبة</button>
+          <button type="button" className={styles.btnPrimary} onClick={runViewsRatio}>Calculate Ratio</button>
         </div>
         {output?.type === 'views-ratio' && (
           <div className={styles.card}>
             <div className={styles.statCard}>
-              <div className={styles.statLabel}>نسبة الإعجاب</div>
+              <div className={styles.statLabel}>Like ratio</div>
               <div className={styles.statValue}>{output.ratio.toFixed(2)}%</div>
               <div className={styles.statIcon}>✅</div>
             </div>
@@ -851,8 +844,8 @@ function UtilityToolView({ toolId, language, onError, onRateLimit }) {
   return (
     <div className={styles.view}>
       <div className={styles.viewHeader}>
-        <h2 className={styles.viewTitle}>{cfg.label || 'أداة'}</h2>
-        {cfg.placeholder && <p className={styles.viewSubtitle}>أدخل القيمة المطلوبة ثم اضغط {cfg.submitLabel}</p>}
+        <h2 className={styles.viewTitle}>{cfg.label || 'Tool'}</h2>
+        {cfg.placeholder && <p className={styles.viewSubtitle}>Enter the required value then click {cfg.submitLabel}</p>}
       </div>
 
       {cfg.kind !== 'frontend' || ['title-length', 'embed', 'channel-id', 'timestamp', 'subscribe', 'title-cap', 'comment-pick'].includes(cfg.frontend) ? (
@@ -868,7 +861,7 @@ function UtilityToolView({ toolId, language, onError, onRateLimit }) {
             </div>
           )}
           <button type="button" className={styles.btnPrimary} onClick={run} disabled={loading}>
-            {loading ? '⏳ جاري المعالجة...' : `✨ ${cfg.submitLabel}`}
+            {loading ? '⏳ Processing...' : `✨ ${cfg.submitLabel}`}
           </button>
         </div>
       ) : null}
@@ -887,8 +880,8 @@ function UtilityOutput({ output, frontend }) {
     const color = output.status === 'green' ? '#10b981' : output.status === 'yellow' ? '#f59e0b' : '#ef4444';
     return (
       <div className={styles.card}>
-        <div className={styles.cardTitle}>النتيجة</div>
-        <div style={{ fontSize: '2rem', fontWeight: 700, color, margin: '12px 0' }}>{output.length} حرف</div>
+        <div className={styles.cardTitle}>Result</div>
+        <div style={{ fontSize: '2rem', fontWeight: 700, color, margin: '12px 0' }}>{output.length} characters</div>
         <div className={styles.statLabel} style={{ color }}>{output.recommendation}</div>
       </div>
     );
@@ -897,9 +890,9 @@ function UtilityOutput({ output, frontend }) {
   if (frontend === 'embed' && output.type === 'embed') {
     return (
       <div className={styles.card}>
-        <div className={styles.cardTitle}>كود التضمين</div>
+        <div className={styles.cardTitle}>Embed Code</div>
         <pre className={styles.output}>{output.embed}</pre>
-        <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.embed)}>📋 نسخ</button>
+        <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.embed)}>📋 Copy</button>
       </div>
     );
   }
@@ -907,9 +900,9 @@ function UtilityOutput({ output, frontend }) {
   if (frontend === 'timestamp' && output.type === 'timestamp') {
     return (
       <div className={styles.card}>
-        <div className={styles.cardTitle}>الرابط بالطابع الزمني</div>
+        <div className={styles.cardTitle}>Timestamped Link</div>
         <pre className={styles.output}>{output.url}</pre>
-        <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.url)}>📋 نسخ</button>
+        <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.url)}>📋 Copy</button>
       </div>
     );
   }
@@ -917,9 +910,9 @@ function UtilityOutput({ output, frontend }) {
   if (frontend === 'subscribe' && output.type === 'subscribe') {
     return (
       <div className={styles.card}>
-        <div className={styles.cardTitle}>رابط الاشتراك المباشر</div>
+        <div className={styles.cardTitle}>Direct Subscribe Link</div>
         <pre className={styles.output}>{output.url}</pre>
-        <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.url)}>📋 نسخ</button>
+        <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.url)}>📋 Copy</button>
       </div>
     );
   }
@@ -927,9 +920,9 @@ function UtilityOutput({ output, frontend }) {
   if (frontend === 'title-cap' && output.type === 'title-cap') {
     return (
       <div className={styles.card}>
-        <div className={styles.cardTitle}>النتيجة</div>
+        <div className={styles.cardTitle}>Result</div>
         <pre className={styles.output}>{output.titled}</pre>
-        <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.titled)}>📋 نسخ</button>
+        <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.titled)}>📋 Copy</button>
       </div>
     );
   }
@@ -937,9 +930,9 @@ function UtilityOutput({ output, frontend }) {
   if (frontend === 'comment-pick' && output.type === 'comment-pick') {
     return (
       <div className={styles.card}>
-        <div className={styles.cardTitle}>🎉 الفائز من {output.total} تعليق</div>
+        <div className={styles.cardTitle}>🎉 Winner from {output.total} comments</div>
         <pre className={styles.output}>{output.winner}</pre>
-        <button type="button" className={styles.btnPrimary} onClick={() => location.reload()}>🎲 اختيار آخر</button>
+        <button type="button" className={styles.btnPrimary} onClick={() => location.reload()}>🎲 Pick Another</button>
       </div>
     );
   }
@@ -947,15 +940,15 @@ function UtilityOutput({ output, frontend }) {
   if (output.type === 'channel-id') {
     return (
       <div className={styles.card}>
-        <div className={styles.cardTitle}>النتيجة</div>
+        <div className={styles.cardTitle}>Result</div>
         {output.id ? (
           <>
             <div className={styles.statLabel}>Channel ID</div>
             <pre className={styles.output}>{output.id}</pre>
-            <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.id)}>📋 نسخ</button>
+            <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.id)}>📋 Copy</button>
           </>
         ) : (
-          <div className={styles.extractError}>⚠️ للـ handles (مثل @name) يلزم YouTube API key - أضفه في الإدارة ثم ارجع</div>
+          <div className={styles.extractError}>⚠️ For handles (like @name), a YouTube API key is required - add it in admin and come back</div>
         )}
       </div>
     );
@@ -964,7 +957,7 @@ function UtilityOutput({ output, frontend }) {
   if (output.data) {
     return (
       <div className={styles.card}>
-        <div className={styles.cardTitle}>النتيجة</div>
+        <div className={styles.cardTitle}>Result</div>
         <pre className={styles.output}>{JSON.stringify(output.data, null, 2)}</pre>
       </div>
     );
@@ -973,16 +966,16 @@ function UtilityOutput({ output, frontend }) {
   if (output.result && toolIdIsAI(frontend)) {
     return (
       <div className={styles.card}>
-        <div className={styles.cardTitle}>النتيجة</div>
+        <div className={styles.cardTitle}>Result</div>
         <pre className={styles.output}>{output.result}</pre>
-        <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.result)}>📋 نسخ</button>
+        <button type="button" className={styles.btnSecondary} onClick={() => navigator.clipboard?.writeText(output.result)}>📋 Copy</button>
       </div>
     );
   }
 
   return (
     <div className={styles.card}>
-      <div className={styles.cardTitle}>النتيجة</div>
+      <div className={styles.cardTitle}>Result</div>
       <pre className={styles.output}>{JSON.stringify(output, null, 2)}</pre>
     </div>
   );

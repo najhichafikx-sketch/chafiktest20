@@ -94,7 +94,7 @@ export async function POST(request) {
     await writeLog('WARN', 'Transcript fetch failed for video', { videoId });
     return Response.json({
       success: false,
-      message: 'تعذر جلب النص. الفيديو قد لا يحتوي على ترجمة/تفريغ صوتي.'
+      message: 'Could not fetch the transcript. The video may not have captions/subtitles.'
     }, { status: 404 });
   }
 

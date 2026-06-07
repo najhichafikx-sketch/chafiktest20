@@ -31,7 +31,7 @@ export async function POST(request) {
   if (!apiKey) {
     return Response.json({
       success: false,
-      message: 'لم يتم تكوين مفتاح YouTube Data API. أضفه في لوحة الإدارة.'
+      message: 'YouTube Data API key is not configured. Add it in the admin dashboard.'
     }, { status: 503 });
   }
 
