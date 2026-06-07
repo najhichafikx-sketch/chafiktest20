@@ -16,7 +16,8 @@ const TABS = [
   { id: 'cover', label: 'الغلاف' },
   { id: 'pricing', label: 'التسعير' },
   { id: 'marketing', label: 'التسويق' },
-  { id: 'cro', label: 'CRO' }
+  { id: 'cro', label: 'CRO' },
+  { id: 'intelligence', label: '🔥 Market Intel' }
 ];
 
 const READINESS_FIELDS = ['title', 'description', 'keywords'];
@@ -36,6 +37,9 @@ export default function DigitalCreatorClient() {
   const [analysis, setAnalysis] = useState(null);
   const [activeTab, setActiveTab] = useState('seo');
   const [copiedKey, setCopiedKey] = useState(null);
+  const [intelligence, setIntelligence] = useState(null);
+  const [intelLoading, setIntelLoading] = useState(false);
+  const [intelError, setIntelError] = useState(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -89,6 +93,8 @@ export default function DigitalCreatorClient() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Request failed');
       setAnalysis(data.analysis);
+      setIntelligence(null);
+      setIntelError(null);
       setActiveTab('seo');
     } catch (e) {
       setError(e.message);
@@ -120,6 +126,26 @@ export default function DigitalCreatorClient() {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const loadIntelligence = async () => {
+    if (!analysis || intelLoading) return;
+    setIntelLoading(true);
+    setIntelError(null);
+    try {
+      const res = await fetch('/api/digital-creator/market-intelligence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ analysis, platform })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load market intelligence');
+      setIntelligence(data);
+    } catch (e) {
+      setIntelError(e.message);
+    } finally {
+      setIntelLoading(false);
+    }
   };
 
   const ScoreRing = ({ value, label, color }) => {
@@ -233,6 +259,182 @@ export default function DigitalCreatorClient() {
         </div>
       );
     }
+    if (activeTab === 'intelligence') {
+      const viralColor = !intelligence ? '#94a3b8'
+        : intelligence.viral_score.level === 'viral' ? '#f72585'
+        : intelligence.viral_score.level === 'high' ? '#6c63ff'
+        : intelligence.viral_score.level === 'medium' ? '#fbbf24' : '#94a3b8';
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {!intelligence && !intelLoading && !intelError && (
+            <div style={{ background: 'linear-gradient(135deg, #16162a, #1e1e3a)', border: '1px solid #2d2d4e', borderRadius: 14, padding: 28, textAlign: 'center' }}>
+              <div style={{ fontSize: 56, marginBottom: 10 }}>🚀</div>
+              <h3 style={{ color: '#fff', margin: '0 0 8px', fontSize: 18 }}>AI Market Intelligence Engine</h3>
+              <p style={{ color: '#94a3b8', fontSize: 13, lineHeight: 1.6, maxWidth: 520, margin: '0 auto 18px' }}>
+                Generate a complete viral-launch report: viral score, cross-platform competition heatmap, smart price per marketplace, AI thumbnail prompts, and one-click publish payloads for Etsy, KDP, Gumroad, TPT, and Creative Fabrica.
+              </p>
+              <button onClick={loadIntelligence} data-tool-action
+                style={{ background: 'linear-gradient(135deg, #f72585, #6c63ff)', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 22px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                🔥 Run Market Intelligence
+              </button>
+            </div>
+          )}
+
+          {intelLoading && (
+            <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 14, padding: 36, textAlign: 'center' }}>
+              <div style={{ width: 50, height: 50, border: '4px solid #2d2d4e', borderTopColor: '#f72585', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 14px' }} />
+              <p style={{ color: '#cbd5e1', fontSize: 14, margin: 0 }}>Running competitive intelligence, pricing models, and AI insights...</p>
+            </div>
+          )}
+
+          {intelError && (
+            <div style={{ background: '#7f1d1d33', border: '1px solid #ef4444', borderRadius: 10, padding: 14, color: '#fca5a5', fontSize: 13 }}>
+              ⚠️ {intelError} <button onClick={loadIntelligence} style={{ marginLeft: 10, background: '#2d2d4e', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 12, cursor: 'pointer' }}>Retry</button>
+            </div>
+          )}
+
+          {intelligence && (
+            <>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
+                <div style={{ background: 'linear-gradient(135deg, #16162a, #1e1e3a)', border: '2px solid ' + viralColor, borderRadius: 14, padding: 18 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <ScoreRing value={intelligence.viral_score.score} label="Viral Score" color={viralColor} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>Level</div>
+                      <div style={{ fontSize: 18, fontWeight: 800, color: viralColor, textTransform: 'uppercase' }}>{intelligence.viral_score.level}</div>
+                      {intelligence.cached && <div style={{ fontSize: 10, color: '#64748b', marginTop: 4 }}>♻️ Cached result</div>}
+                    </div>
+                  </div>
+                  {intelligence.viral_score.reasons?.length > 0 && (
+                    <ul style={{ margin: '14px 0 0', paddingRight: 18, color: '#cbd5e1', fontSize: 12, lineHeight: 1.7 }}>
+                      {intelligence.viral_score.reasons.slice(0, 4).map((r, i) => <li key={i} style={{ marginBottom: 3 }}>{r}</li>)}
+                    </ul>
+                  )}
+                </div>
+
+                {intelligence.ai_insights && (
+                  <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 14, padding: 18 }}>
+                    <div style={{ fontSize: 11, color: '#a5b4fc', textTransform: 'uppercase', fontWeight: 700, marginBottom: 6 }}>🧠 AI Market Insight</div>
+                    <p style={{ color: '#e2e8f0', fontSize: 13, lineHeight: 1.6, margin: 0 }}>{intelligence.ai_insights.market_insight}</p>
+                    {intelligence.ai_insights.platform_recommendation && (
+                      <div style={{ marginTop: 10, padding: 10, background: '#0f0f1a', borderRadius: 8, border: '1px solid #2d2d4e' }}>
+                        <div style={{ fontSize: 10, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 4 }}>🎯 Best platform</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>{intelligence.ai_insights.platform_recommendation.primary?.toUpperCase()}</div>
+                        <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>{intelligence.ai_insights.platform_recommendation.reason}</div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <h3 style={{ color: '#fff', fontSize: 15, margin: '4px 0 10px' }}>🔥 Cross-Platform Competition</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10 }}>
+                  {Object.entries(intelligence.competition_analysis).map(([pid, data]) => {
+                    const meta = intelligence.platforms?.[pid] || { name: pid, emoji: '🌐' };
+                    const levelColor = data.competition_level === 'low' ? '#10b981' : data.competition_level === 'medium' ? '#fbbf24' : '#ef4444';
+                    return (
+                      <div key={pid} style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 10, padding: 12 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                          <span style={{ fontSize: 20 }}>{meta.emoji}</span>
+                          <span style={{ color: '#fff', fontSize: 13, fontWeight: 600 }}>{meta.name}</span>
+                        </div>
+                        <div style={{ display: 'inline-block', background: levelColor + '22', color: levelColor, fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 4, textTransform: 'uppercase', marginBottom: 6 }}>
+                          {data.competition_level}
+                        </div>
+                        <div style={{ fontSize: 11, color: '#94a3b8' }}>Saturation: {data.market_saturation}</div>
+                        {data.opportunity_keywords?.length > 0 && (
+                          <div style={{ marginTop: 8, fontSize: 11, color: '#cbd5e1' }}>
+                            {data.opportunity_keywords.slice(0, 3).map((k, i) => (
+                              <span key={i} style={{ display: 'inline-block', background: '#0f0f1a', border: '1px solid #2d2d4e', borderRadius: 4, padding: '2px 6px', margin: '0 4px 4px 0', fontSize: 10 }}>{k}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <h3 style={{ color: '#fff', fontSize: 15, margin: '4px 0 10px' }}>💰 Smart Pricing per Platform</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
+                  {Object.entries(intelligence.pricing).map(([pid, p]) => {
+                    const meta = intelligence.platforms?.[pid] || { name: pid, emoji: '🌐' };
+                    const sColor = p.strategy === 'premium' ? '#f72585' : p.strategy === 'standard' ? '#6c63ff' : '#10b981';
+                    return (
+                      <div key={pid} style={{ background: 'linear-gradient(135deg, #16162a, #1e1e3a)', border: '1px solid ' + sColor, borderRadius: 10, padding: 14, textAlign: 'center' }}>
+                        <div style={{ fontSize: 22, marginBottom: 4 }}>{meta.emoji}</div>
+                        <div style={{ fontSize: 11, color: '#94a3b8' }}>{meta.name}</div>
+                        <div style={{ fontSize: 22, fontWeight: 800, color: sColor, margin: '6px 0' }}>{p.suggested_price}</div>
+                        <div style={{ fontSize: 10, color: sColor, textTransform: 'uppercase', fontWeight: 700 }}>{p.strategy}</div>
+                        <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 6, lineHeight: 1.4 }}>{p.reason}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <h3 style={{ color: '#fff', fontSize: 15, margin: '4px 0 10px' }}>🎨 AI Thumbnail Prompts</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 10 }}>
+                  {Object.entries(intelligence.thumbnail_prompts).map(([pid, prompt]) => {
+                    const meta = intelligence.platforms?.[pid.replace('_', '-')] || { name: pid, emoji: '🎨' };
+                    return (
+                      <div key={pid} style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 10, padding: 14 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span style={{ fontSize: 16 }}>{meta.emoji}</span>
+                            <span style={{ color: '#fff', fontSize: 12, fontWeight: 600 }}>{meta.name}</span>
+                          </div>
+                          <button onClick={() => copy(prompt, `thumb-${pid}`)} data-tool-action
+                            style={{ background: copiedKey === `thumb-${pid}` ? '#10b981' : '#2d2d4e', color: '#fff', border: 'none', borderRadius: 5, padding: '4px 8px', fontSize: 10, fontWeight: 600, cursor: 'pointer' }}>
+                            {copiedKey === `thumb-${pid}` ? '✅' : '📋'}
+                          </button>
+                        </div>
+                        <p style={{ color: '#cbd5e1', fontSize: 11, lineHeight: 1.5, margin: 0 }}>{prompt}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <h3 style={{ color: '#fff', fontSize: 15, margin: '4px 0 10px' }}>📤 One-Click Publish Preparation</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 10 }}>
+                  {Object.entries(intelligence.publish_actions).map(([pid, action]) => {
+                    const meta = intelligence.platforms?.[pid] || { name: pid, emoji: '🌐' };
+                    const isReady = action.status === 'ready';
+                    return (
+                      <div key={pid} style={{ background: '#16162a', border: '1px solid ' + (isReady ? '#10b981' : '#2d2d4e'), borderRadius: 10, padding: 14 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span style={{ fontSize: 18 }}>{meta.emoji}</span>
+                            <span style={{ color: '#fff', fontSize: 12, fontWeight: 600 }}>{meta.name}</span>
+                          </div>
+                          <span style={{ fontSize: 9, color: isReady ? '#10b981' : '#fbbf24', fontWeight: 700, textTransform: 'uppercase' }}>
+                            {isReady ? '✓ Ready' : '⏳ Manual'}
+                          </span>
+                        </div>
+                        <p style={{ color: '#94a3b8', fontSize: 11, lineHeight: 1.5, margin: '0 0 10px' }}>{action.note}</p>
+                        <button onClick={() => copy(JSON.stringify(action.payload, null, 2), `payload-${pid}`)} data-tool-action
+                          style={{ width: '100%', background: copiedKey === `payload-${pid}` ? '#10b981' : '#2d2d4e', color: '#fff', border: 'none', borderRadius: 6, padding: '7px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                          {copiedKey === `payload-${pid}` ? '✅ Payload Copied' : '📋 Copy Listing Payload (JSON)'}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{ background: '#0f0f1a', border: '1px dashed #2d2d4e', borderRadius: 8, padding: 10, marginTop: 10, color: '#64748b', fontSize: 11, textAlign: 'center' }}>
+                  ℹ️ Publish Adapter Layer prepares structured payloads. Actual publishing requires your platform credentials and is not automated.
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      );
+    }
   };
 
   return (
@@ -253,7 +455,7 @@ export default function DigitalCreatorClient() {
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {TABS.map(t => (
-            <button key={t.id} onClick={() => setActiveTab(t.id)}
+            <button key={t.id} onClick={() => { setActiveTab(t.id); if (t.id === 'intelligence' && analysis && !intelligence && !intelLoading) loadIntelligence(); }}
               style={{ background: activeTab === t.id ? 'linear-gradient(135deg, #6c63ff, #f72585)' : 'transparent', color: activeTab === t.id ? '#fff' : '#94a3b8', border: '1px solid ' + (activeTab === t.id ? 'transparent' : '#2d2d4e'), borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
               {t.label}
             </button>
