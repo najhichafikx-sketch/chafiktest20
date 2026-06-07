@@ -176,23 +176,25 @@ export default function WatermarkRemover() {
   }, []);
 
   const startDrawing = useCallback((e) => {
+    e.preventDefault();
     if (isProcessing) return;
     isDrawingRef.current = true;
     const pos = getPointerPos(e);
     drawStartRef.current = pos;
     lastPointRef.current = pos;
-    if (tool === 'brush' || tool === 'eraser') {
+    if (toolRef.current === 'brush' || toolRef.current === 'eraser') {
       saveUndo();
       drawAt(pos);
     }
-  }, [isProcessing, tool, getPointerPos, saveUndo]);
+  }, [isProcessing, getPointerPos, saveUndo]);
 
   const draw = useCallback((e) => {
+    e.preventDefault();
     if (!isDrawingRef.current) return;
     const pos = getPointerPos(e);
     const last = lastPointRef.current;
-    if (tool === 'brush' || tool === 'eraser') {
-      const step = brushSize / 6;
+    if (toolRef.current === 'brush' || toolRef.current === 'eraser') {
+      const step = brushSizeRef.current / 6;
       const dist = Math.hypot(pos.x - last.x, pos.y - last.y);
       if (dist > step) {
         const steps = Math.ceil(dist / step);
@@ -204,43 +206,52 @@ export default function WatermarkRemover() {
         drawAt(pos);
       }
     }
-    if (tool === 'rect') {
+    if (toolRef.current === 'rect') {
       previewRect(pos);
     }
-    if (tool === 'lasso') {
+    if (toolRef.current === 'lasso') {
       drawLassoTo(pos);
     }
     lastPointRef.current = pos;
-  }, [isDrawingRef, tool, brushSize, getPointerPos]);
+  }, [getPointerPos]);
 
   const endDrawing = useCallback((e) => {
+    if (e?.preventDefault) e.preventDefault();
     if (!isDrawingRef.current) return;
     isDrawingRef.current = false;
-    if (tool === 'rect') {
+    if (toolRef.current === 'rect') {
       saveUndo();
       const pos = getPointerPos(e);
       finishRect(pos);
     }
-    if (tool === 'lasso') {
+    if (toolRef.current === 'lasso') {
       saveUndo();
       finishLasso();
     }
     checkMask();
-  }, [tool, getPointerPos, saveUndo, checkMask]);
+  }, [getPointerPos, saveUndo, checkMask]);
+
+  const drawAtRef = useRef(null);
+  const toolRef = useRef(tool);
+  const brushSizeRef = useRef(brushSize);
+  useEffect(() => { toolRef.current = tool; }, [tool]);
+  useEffect(() => { brushSizeRef.current = brushSize; }, [brushSize]);
 
   const drawAt = useCallback((pos) => {
     const mc = maskCanvasRef.current;
     if (!mc) return;
     const ctx = mc.getContext('2d');
     ctx.save();
-    if (tool === 'eraser') ctx.globalCompositeOperation = 'destination-out';
+    if (toolRef.current === 'eraser') ctx.globalCompositeOperation = 'destination-out';
     ctx.fillStyle = MASK_COLOR;
     ctx.beginPath();
-    ctx.arc(pos.x, pos.y, brushSize / 2, 0, Math.PI * 2);
+    ctx.arc(pos.x, pos.y, brushSizeRef.current / 2, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
     setHasMask(true);
-  }, [tool, brushSize]);
+  }, []);
+
+  drawAtRef.current = drawAt;
 
   const previewRect = useCallback((pos) => {
     const mc = maskCanvasRef.current;
@@ -532,15 +543,15 @@ export default function WatermarkRemover() {
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-                <div style={{ flex: '1 1 60%', minWidth: 280, position: 'relative' }}>
-                  <canvas ref={imageCanvasRef} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 8 }} />
+                <div style={{ flex: '1 1 60%', minWidth: 280, position: 'relative', userSelect: 'none', overflow: 'hidden' }}>
+                  <canvas ref={imageCanvasRef} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 8, userSelect: 'none', pointerEvents: 'none' }} />
                   <canvas
                     ref={maskCanvasRef}
                     onPointerDown={startDrawing}
                     onPointerMove={draw}
                     onPointerUp={endDrawing}
                     onPointerLeave={endDrawing}
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', cursor: isProcessing ? 'wait' : 'crosshair', borderRadius: 8, touchAction: 'none' }}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', cursor: isProcessing ? 'wait' : 'crosshair', borderRadius: 8, touchAction: 'none', userSelect: 'none' }}
                   />
                 </div>
                 <div style={{ flex: '0 0 200px' }}>
