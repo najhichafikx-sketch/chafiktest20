@@ -343,15 +343,10 @@ export default function WatermarkRemover() {
 
     const inp = new Inpainter();
     try {
-      const result = await new Promise((resolve, reject) => {
-        try {
-          const r = inp.inpaint(
-            srcData, maskData, inpaintRadius, algorithm, blurAmount,
-            { onProgress: (p) => setProgress(p) }
-          );
-          resolve(r);
-        } catch (e) { reject(e); }
-      });
+      const result = await inp.inpaint(
+        srcData, maskData, inpaintRadius, algorithm, blurAmount,
+        { onProgress: (p) => setProgress(p) }
+      );
       setResultImageData(result);
       if (timerRef.current) clearInterval(timerRef.current);
       setTimerText('');

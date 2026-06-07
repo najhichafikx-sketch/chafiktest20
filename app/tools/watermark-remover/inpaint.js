@@ -1,5 +1,5 @@
 export class Inpainter {
-  inpaint(srcImageData, maskImageData, radius, algorithm, blurAmount, opts = {}) {
+  async inpaint(srcImageData, maskImageData, radius, algorithm, blurAmount, opts = {}) {
     const w = srcImageData.width;
     const h = srcImageData.height;
     const onProgress = opts.onProgress || (() => {});
@@ -18,9 +18,9 @@ export class Inpainter {
     const out = new Uint8ClampedArray(srcImageData.data);
     onProgress(0.05);
     if (algorithm === 'telea') {
-      this._teleaInpaint(out, mask, w, h, radius, onProgress);
+      await this._teleaInpaint(out, mask, w, h, radius, onProgress);
     } else {
-      this._diffusionInpaint(out, mask, w, h, radius, onProgress);
+      await this._diffusionInpaint(out, mask, w, h, radius, onProgress);
     }
     onProgress(1);
     return new ImageData(out, w, h);
@@ -93,7 +93,7 @@ export class Inpainter {
     }
   }
 
-  _diffusionInpaint(out, mask, w, h, radius, onProgress) {
+  async _diffusionInpaint(out, mask, w, h, radius, onProgress) {
     const conf = new Float32Array(w * h);
     for (let i = 0; i < w * h; i++) conf[i] = mask[i] === 0 ? 1.0 : 0.0;
     let changed = true;
@@ -134,10 +134,11 @@ export class Inpainter {
         }
       }
       if (iter % 10 === 0) onProgress(Math.min(0.95, 0.05 + (iter / 300) * 0.9));
+      await new Promise(r => setTimeout(r, 0));
     }
   }
 
-  _teleaInpaint(out, mask, w, h, radius, onProgress) {
+  async _teleaInpaint(out, mask, w, h, radius, onProgress) {
     let changed = true;
     let iter = 0;
     while (changed && iter++ < w * h) {
@@ -173,6 +174,7 @@ export class Inpainter {
         }
       }
       if (iter % 5 === 0) onProgress(Math.min(0.95, 0.05 + (iter / 150) * 0.9));
+      await new Promise(r => setTimeout(r, 0));
     }
   }
 }
