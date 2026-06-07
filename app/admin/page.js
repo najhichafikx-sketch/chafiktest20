@@ -21,6 +21,7 @@ export default function AdminPage() {
   const [aiSaving, setAiSaving] = useState(false);
   const [aiMessage, setAiMessage] = useState('');
   const [aiTestResult, setAiTestResult] = useState('');
+  const [aiTestHint, setAiTestHint] = useState('');
   const [aiTesting, setAiTesting] = useState(false);
   const [dailyUsage, setDailyUsage] = useState(0);
   const [lpModel, setLpModel] = useState('openai/gpt-4o-mini');
@@ -35,6 +36,7 @@ export default function AdminPage() {
   const [ytSaving, setYtSaving] = useState(false);
   const [ytMessage, setYtMessage] = useState('');
   const [ytTestResult, setYtTestResult] = useState('');
+  const [ytTestHint, setYtTestHint] = useState('');
   const [ytTesting, setYtTesting] = useState(false);
 
   useEffect(() => {
@@ -171,8 +173,14 @@ export default function AdminPage() {
     if (aiTesting) return;
     setAiTesting(true);
     setAiTestResult('');
+    setAiTestHint('');
     try {
-      const keyToTest = aiKeyInput.trim() || '****';
+      const keyToTest = aiKeyInput.trim();
+      if (!keyToTest) {
+        setAiTestResult('✗ Please paste a key to test');
+        setAiTesting(false);
+        return;
+      }
       const res = await fetch('/api/admin/settings/openrouter/test', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -180,12 +188,15 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setAiTestResult('✓ Connection successful');
+        setAiTestResult('✓ ' + (data.message || 'Connection successful'));
+        setAiTestHint('');
       } else {
-        setAiTestResult('✗ Connection failed');
+        setAiTestResult('✗ ' + (data.message || 'Connection failed'));
+        setAiTestHint(data.hint || '');
       }
     } catch {
       setAiTestResult('✗ Connection failed');
+      setAiTestHint('');
     } finally {
       setAiTesting(false);
     }
@@ -222,8 +233,14 @@ export default function AdminPage() {
     if (ytTesting) return;
     setYtTesting(true);
     setYtTestResult('');
+    setYtTestHint('');
     try {
-      const keyToTest = ytKeyInput.trim() || 'AIza****';
+      const keyToTest = ytKeyInput.trim();
+      if (!keyToTest) {
+        setYtTestResult('✗ Please paste a key to test');
+        setYtTesting(false);
+        return;
+      }
       const res = await fetch('/api/admin/settings/youtube/test', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -231,12 +248,15 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setYtTestResult('✓ Connection successful');
+        setYtTestResult('✓ ' + (data.message || 'Connection successful'));
+        setYtTestHint('');
       } else {
         setYtTestResult('✗ ' + (data.message || 'Connection failed'));
+        setYtTestHint(data.hint || '');
       }
     } catch {
       setYtTestResult('✗ Connection failed');
+      setYtTestHint('');
     } finally {
       setYtTesting(false);
     }
@@ -419,6 +439,17 @@ export default function AdminPage() {
               {aiTestResult}
             </div>
           )}
+
+          {aiTestHint && (
+            <div style={{
+              fontSize: 12, color: 'var(--text-secondary)',
+              padding: '8px 12px', background: 'rgba(245,158,11,0.08)',
+              borderRadius: 8, border: '1px solid rgba(245,158,11,0.3)',
+              lineHeight: 1.5
+            }}>
+              💡 {aiTestHint}
+            </div>
+          )}
         </form>
 
         <div style={{
@@ -564,6 +595,17 @@ export default function AdminPage() {
                 borderRadius: 8, border: `1px solid ${ytTestResult.startsWith('✓') ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`
               }}>
                 {ytTestResult}
+              </div>
+            )}
+
+            {ytTestHint && (
+              <div style={{
+                fontSize: 12, color: 'var(--text-secondary)',
+                padding: '8px 12px', background: 'rgba(245,158,11,0.08)',
+                borderRadius: 8, border: '1px solid rgba(245,158,11,0.3)',
+                lineHeight: 1.5
+              }}>
+                💡 {ytTestHint}
               </div>
             )}
           </form>
