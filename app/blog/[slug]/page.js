@@ -56,7 +56,22 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const post = ALL_POSTS.find(p => p.slug === slug);
+  let post = ALL_POSTS.find(p => p.slug === slug);
+  if (!post) {
+    try {
+      const dbRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.chafiktech.com'}/api/blog/${slug}`, { cache: 'no-store' });
+      const dbData = await dbRes.json();
+      if (dbData?.success && dbData.post) {
+        post = {
+          slug: dbData.post.slug,
+          title: dbData.post.title,
+          category: dbData.post.category || 'General',
+          excerpt: dbData.post.excerpt || dbData.post.meta_description || '',
+          reading_time: dbData.post.reading_time || 5
+        };
+      }
+    } catch {}
+  }
   if (!post) return { title: 'Article Not Found' };
   return {
     title: post.title,
@@ -98,14 +113,26 @@ async function getAllDbPosts() {
 
 export default async function BlogArticle({ params }) {
   const { slug } = await params;
-  const post = ALL_POSTS.find(p => p.slug === slug);
-  if (!post) notFound();
+  let post = ALL_POSTS.find(p => p.slug === slug);
+  let content = post ? BLOG_CONTENT_MAP[post.slug] : null;
+
+  if (!post) {
+    const dbFallback = await getDbPost(slug);
+    if (!dbFallback) notFound();
+    post = {
+      slug: dbFallback.slug,
+      title: dbFallback.title,
+      category: dbFallback.category || 'General',
+      excerpt: dbFallback.excerpt || dbFallback.meta_description || '',
+      reading_time: dbFallback.reading_time || 5
+    };
+    content = dbFallback.content;
+  }
 
   const toolId = TOOL_SLUG_TO_ID[post.slug];
   const toolName = toolId ? (TOOL_NAMES[toolId]?.name || null) : null;
   const toolFolder = TOOL_SLUG_TO_URL[post.slug];
   const toolHref = toolFolder ? `/tools/${toolFolder}` : null;
-  const content = BLOG_CONTENT_MAP[post.slug];
 
   const [dbPost, allDbPosts] = await Promise.all([getDbPost(slug), getAllDbPosts()]);
 
