@@ -153,7 +153,9 @@ export default async function BlogArticle({ params }) {
 
   const ver = dbPost?.updated_at || dbPost?.published_at || dbPost?.created_at || '';
   const imgVer = ver ? '?v=' + (typeof ver === 'string' ? ver.replace(/[^0-9]/g, '').slice(0, 14) : String(Date.now())) : '';
-  const featuredImage = `/api/blog/${slug}/image.png${imgVer}`;
+  const featuredImage = dbPost?.featured_image && dbPost.featured_image.startsWith('/uploads/')
+    ? dbPost.featured_image + imgVer
+    : `/api/blog/${slug}/image.png${imgVer}`;
 
   const seen = new Set();
   const mergedRelated = [];
