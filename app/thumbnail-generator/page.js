@@ -56,16 +56,8 @@ export default function ThumbnailGeneratorPage() {
         </div>
       </div>
 
-      {/* Main Layout */}
+      {/* Main Layout — Sidebar first for RTL (right side) */}
       <div className="flex flex-1 overflow-hidden">
-        <CanvasPreview
-          loading={loading}
-          loadingMessage=""
-          result={result}
-          onDownload={handleDownload}
-          onRedo={reset}
-          progress={progress}
-        />
         <Sidebar
           title={title}
           onTitleChange={setTitle}
@@ -82,6 +74,14 @@ export default function ThumbnailGeneratorPage() {
           onGenerate={handleGenerate}
           loading={loading}
           estimatedCost={estimatedCost}
+        />
+        <CanvasPreview
+          loading={loading}
+          loadingMessage=""
+          result={result}
+          onDownload={handleDownload}
+          onRedo={reset}
+          progress={progress}
         />
       </div>
     </div>

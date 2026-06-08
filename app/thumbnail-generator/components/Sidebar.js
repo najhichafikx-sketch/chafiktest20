@@ -29,7 +29,7 @@ export default function Sidebar({
   const presetColors = ['#EF4444', '#F97316', '#EAB308', '#22C55E', '#3B82F6', '#8B5CF6', '#EC4899', '#06B6D4', '#FFFFFF', '#6B7280'];
 
   return (
-    <aside className="w-[340px] shrink-0 bg-[#10131A] border-l border-white/5 flex flex-col h-full overflow-hidden">
+    <aside className="w-[340px] shrink-0 bg-[#10131A] border-r border-white/5 flex flex-col h-full overflow-hidden">
       <div className="flex-1 overflow-y-auto p-5 space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between">
