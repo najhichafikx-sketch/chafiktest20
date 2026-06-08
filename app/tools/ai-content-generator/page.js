@@ -177,7 +177,10 @@ export default function AIContentGeneratorPage() {
                           <span style={{ display: 'inline-block', width: 50, height: 8, background: `linear-gradient(90deg, ${scoreColor(t.score)} 0%, ${scoreColor(t.score)} ${t.score}%, #2a2a2e ${t.score}%, #2a2a2e 100%)`, borderRadius: 4 }} />
                           <span style={{ fontWeight: 800, fontSize: 12, color: scoreColor(t.score), fontFamily: 'monospace' }}>{t.score}%</span>
                         </span>
-                        <span style={{ flex: 1, fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', lineHeight: 1.4 }}>{t.title}</span>
+                        <span style={{ flex: 1, fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', lineHeight: 1.4 }}>
+                          {t.title}
+                          {t.reason && <span style={{ display: 'block', fontSize: 11, fontWeight: 400, color: 'var(--text-tertiary, #5a5a62)', marginTop: 3 }}>🔍 {t.reason}</span>}
+                        </span>
                         <button onClick={(e) => copyText(t.title, e.currentTarget)}
                           style={{ fontSize: 11, padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(139,92,246,0.2)', background: 'rgba(139,92,246,0.08)', color: '#8b5cf6', cursor: 'pointer', fontWeight: 600, flexShrink: 0 }}>
                           Copy
@@ -226,6 +229,25 @@ export default function AIContentGeneratorPage() {
                               </span>
                             ))}
                           </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {result.seoNotes && (
+                  <div style={{ background: 'var(--card-bg, #111114)', border: '1px solid #d4a82740', borderRadius: 10, overflow: 'hidden' }}>
+                    <div style={{ padding: '10px 16px', borderBottom: '1px solid #d4a82720', background: 'rgba(212,168,39,0.06)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 16 }}>📊</span>
+                      <h3 style={{ fontSize: 13, fontWeight: 700, color: '#d4a827', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>SEO Intelligence</h3>
+                    </div>
+                    <div style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-primary, #e8e6e0)', lineHeight: 1.7 }}>
+                      {Object.entries(result.seoNotes).filter(([, v]) => v).map(([key, text]) => (
+                        <div key={key} style={{ marginBottom: 10, padding: '10px 12px', borderRadius: 8, background: 'rgba(212,168,39,0.04)', border: '1px solid rgba(212,168,39,0.12)' }}>
+                          <div style={{ fontSize: 11, fontWeight: 700, color: '#d4a827', textTransform: 'uppercase', letterSpacing: '0.03em', marginBottom: 4 }}>
+                            {key === 'titles' ? '🏆 Title Strategy' : key === 'youtube' ? '▶️ YouTube SEO' : key === 'tiktok' ? '🎵 TikTok Tips' : key === 'instagram' ? '📸 Instagram Tips' : key === 'facebook' ? '👍 Facebook Tips' : key}
+                          </div>
+                          <div style={{ color: 'var(--text-secondary, #9a9890)', fontSize: 13, lineHeight: 1.6 }}>{text}</div>
                         </div>
                       ))}
                     </div>
