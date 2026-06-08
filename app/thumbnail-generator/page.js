@@ -350,7 +350,7 @@ export default function ThumbnailGeneratorPage() {
       )}
 
       {/* ===== Animations ===== */}
-      <style jsx>{`
+      <style>{`
         @keyframes marquee {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
