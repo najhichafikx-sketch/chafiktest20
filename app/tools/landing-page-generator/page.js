@@ -1,18 +1,19 @@
 import LandingPageClient from './LandingPageClient';
 
 export const metadata = {
-  title: 'AI Landing Page Generator — Create Pages in 6 Languages',
-  description: 'Generate professional, mobile-ready landing pages in seconds. Dark theme, drag-and-drop images, social media integration, 6 languages (EN/AR/FR/ES/TR/DE), instant HTML & PNG export.',
-  keywords: 'AI landing page generator, landing page AI, create landing page, multilingual landing page, html landing page, drag drop landing page',
+  title: 'AI Landing Page Generator - High-Converting SaaS Pages | ChafikTech',
+  description: 'Generate professional, high-converting landing pages with AI. HTML, React, Next.js, TailwindCSS, SEO metadata, image prompts, and conversion-optimized copy. SaaS-quality design with dark mode.',
+  keywords: 'AI landing page generator, landing page builder, SaaS landing page, conversion optimized, lead generation page, React landing page, Next.js landing page, Tailwind landing page, AI page builder',
   openGraph: {
-    title: 'AI Landing Page Generator',
-    description: 'Create professional, multilingual landing pages with AI in seconds.',
+    title: 'AI Landing Page Generator - Create High-Converting Pages in Seconds',
+    description: 'Generate complete landing pages with AI: hero, benefits, features, testimonials, FAQ, CTA. Export HTML, React, Next.js, TailwindCSS. SEO-optimized with image prompts.',
     type: 'website',
+    images: [{ url: '/og-landing-page.png', width: 1200, height: 630 }]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI Landing Page Generator',
-    description: 'Create professional, multilingual landing pages with AI in seconds.',
+    title: 'AI Landing Page Generator - Create High-Converting Pages in Seconds',
+    description: 'Generate complete landing pages with AI. Export HTML, React, Next.js, TailwindCSS. SEO-optimized with image prompts.',
   },
 };
 
