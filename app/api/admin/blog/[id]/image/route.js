@@ -95,7 +95,7 @@ export async function POST(request, { params }) {
       );
     } catch { /* DB unavailable */ }
 
-    // Update JSON with file path (fast fallback)
+    // Update JSON with base64 (persists across deploys + Neon down)
     try {
       const jsonFile = path.join(process.cwd(), 'data', 'blog.json');
       if (fs.existsSync(jsonFile)) {
@@ -103,7 +103,7 @@ export async function POST(request, { params }) {
         if (!Array.isArray(posts)) posts = posts.posts || [];
         const idx = posts.findIndex(p => Number(p.id) === numId || p.id === id);
         if (idx !== -1) {
-          posts[idx].featured_image = publicUrl;
+          posts[idx].featured_image = image;
           posts[idx].has_image = true;
           fs.writeFileSync(jsonFile, JSON.stringify(posts, null, 2), 'utf-8');
         }
