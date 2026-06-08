@@ -1,7 +1,139 @@
 import { generateAIContent } from '@/lib/openrouter';
 import { rateLimitMiddleware } from '@/lib/rate-limit';
 
-const limiter = rateLimitMiddleware({ interval: 30000, max: 10 });
+const limiter = rateLimitMiddleware({ interval: 60000, max: 5 });
+
+const FRAME_ANALYSIS_PROMPT = `Analyze this video frame with extreme professional detail. Cover every element below:
+
+1. SCENE TYPE: Interior/exterior, specific location/setting, time of day
+2. CAMERA: Angle (eye-level/low/high/dutch/aerial/overhead), movement (static/pan/tilt/dolly/tracking/steadicam/handheld/gimbal), shot size (wide/medium/close-up/extreme-close-up/macro)
+3. LIGHTING: Type (natural/artificial/mixed/hard/soft/diffused/neon/practical), direction (front/back/side/top/bottom/rim), key/fill/backlight setup, shadows quality
+4. COLORS: Dominant colors (hex references if obvious), color palette, temperature (warm/cool/neutral/teal-orange), saturation level, contrast ratio, any color grading style
+5. COMPOSITION: Rule of thirds, symmetry, leading lines, framing devices, foreground/midground/background layering, depth, negative space, focal point
+6. SUBJECT: Description, age range, gender, ethnicity, clothing/style, facial expression, eye direction, body language, position in frame
+7. ENVIRONMENT: Background elements, props, textures, materials, architecture style, nature, vegetation, water, sky, weather conditions
+8. MOOD & ATMOSPHERE: Emotional tone, tension level, serenity, energy, mystery, romance, horror, nostalgia, intensity
+9. VISUAL STYLE: Cinematic, documentary, vlog, commercial, film noir, vintage, retro, futuristic, naturalistic, surreal, animation style
+10. LENS & OPTICAL: Focal length estimate (wide/normal/telephoto), depth of field (shallow/medium/deep), focus type, lens flares, chromatic aberration, bokeh quality, distortion, anamorphic traits
+11. MOTION DYNAMICS: Visible motion (subject motion/camera motion/object motion), motion blur amount and direction
+12. TEXTURES & DETAILS: Surface textures, skin detail, fabric weave, environmental detail level
+13. SPECIAL EFFECTS: VFX, CGI, compositing, filters, color overlays, grain, vignette, glows, particle effects
+
+Format as concise bullet points per category. Be specific and measurable.`;
+
+const PROMPT_GENERATION_SYSTEM = `You are the world's best prompt engineer and cinematographer. Based on the video frame analysis below, generate 6 highly detailed prompts for AI video generators.
+
+Each prompt must be extremely detailed (500-1500 words) and include:
+- Scene description with setting and atmosphere
+- Subject description with appearance and expression
+- Environment and background details
+- Camera movement and angle specifications
+- Lens information (focal length, depth of field)
+- Lighting setup (key, fill, backlight)
+- Color grading and palette
+- Mood and emotional tone
+- Visual effects and transitions
+- Composition and framing
+- Motion dynamics and speed
+- Atmosphere and environmental details
+- Video style and genre
+- Cinematic techniques used
+- Frame-by-frame progression
+- Audio suggestions (music style, sound effects, voice)
+
+Return ONLY valid JSON with no markdown, no backticks. Use this exact structure:
+
+{
+  "universalPrompt": "...",
+  "veoPrompt": "...",
+  "klingPrompt": "...",
+  "runwayPrompt": "...",
+  "cinematicDirectorPrompt": "...",
+  "negativePrompt": "..."
+}`;
+
+const UNIVERSAL_INSTRUCTION = `Generate the UNIVERSAL PROMPT — a complete, versatile master prompt that works with any AI video generator (Veo, Kling, Runway, Pika, Hailuo, Luma, Sora). Include every visual and technical detail needed to recreate the video as closely as possible.`;
+
+const VEO_INSTRUCTION = `Generate the GOOGLE VEO PROMPT — optimized specifically for Google Veo 2. Use Veo-friendly language: describe motion naturally, focus on realistic physics, natural lighting transitions, and temporal coherence. Include camera movement descriptions that Veo handles well (smooth pans, dolly shots, tracking). Avoid abstract concepts.`;
+
+const KLING_INSTRUCTION = `Generate the KLING PROMPT — optimized for Kling 1.6. Kling excels at complex motion, so emphasize: dramatic camera movements, character actions, particle effects, weather dynamics, and physical interactions between elements. Use vivid action verbs. Include duration-specific descriptions.`;
+
+const RUNWAY_INSTRUCTION = `Generate the RUNWAY PROMPT — optimized for Runway Gen-3. Use Runway's preferred syntax: clear subject-action-environment structure. Emphasize cinematic lighting, lens effects, film grain, and professional camera work. Runway handles style transfers well, so include reference styles.`;
+
+const CINEMATIC_INSTRUCTION = `Generate the CINEMATIC DIRECTOR PROMPT — written as if by a professional film director. Break down the video into a shot-by-shot sequence with specific camera instructions for each shot. Include: shot type, camera angle, lens, movement, duration, action, and transition to next shot. Reference specific films or directors for style guidance.`;
+
+const NEGATIVE_INSTRUCTION = `Generate the NEGATIVE PROMPT — what the AI should avoid. List visual artifacts, unwanted styles, common AI video issues (flickering, morphing, inconsistent faces, physics violations), and any elements that would reduce quality or similarity to the original.`;
+
+async function analyzeFrames(frames, metadata) {
+  const descriptions = [];
+  for (let i = 0; i < frames.length; i++) {
+    const timeMark = Math.round(i * (metadata.duration || 0) / frames.length);
+    try {
+      const analysis = await generateAIContent({
+        prompt: `Frame ${i + 1} of ${frames.length} at ${timeMark}s.\n\n${FRAME_ANALYSIS_PROMPT}`,
+        systemPrompt: 'You are an expert cinematographer and video analyst. Analyze this frame with extreme detail.',
+        model: 'google/gemini-2.5-pro',
+        imageBase64: frames[i].data.split(',')[1],
+        imageMimeType: 'image/jpeg',
+        toolId: 'video-to-prompt',
+        temperature: 0.2,
+        maxTokens: 1200
+      });
+      descriptions.push(`=== FRAME ${i + 1} (${timeMark}s) ===\n${analysis}`);
+    } catch (err) {
+      descriptions.push(`=== FRAME ${i + 1} (${timeMark}s) ===\n[Analysis unavailable: ${err.message}]`);
+    }
+  }
+  return descriptions.join('\n\n');
+}
+
+async function generatePrompts(frameAnalysis, metadata, ultraDetailed) {
+  const frameCount = metadata.frameCount || 0;
+  const promptBody = `VIDEO METADATA:
+- File: ${metadata.fileName}
+- Duration: ${Math.round(metadata.duration || 0)}s
+- Resolution: ${metadata.width}x${metadata.height}
+- Frames Analyzed: ${frameCount}
+- Analysis Mode: ${ultraDetailed ? 'Ultra Detailed' : 'Standard'}
+
+COMPREHENSIVE FRAME ANALYSIS:
+${frameAnalysis}
+
+Generate all 6 prompts now.
+
+${UNIVERSAL_INSTRUCTION}
+
+${VEO_INSTRUCTION}
+
+${KLING_INSTRUCTION}
+
+${RUNWAY_INSTRUCTION}
+
+${CINEMATIC_INSTRUCTION}
+
+${NEGATIVE_INSTRUCTION}
+
+Follow the exact JSON structure specified.`;
+
+  const result = await generateAIContent({
+    prompt: promptBody,
+    systemPrompt: PROMPT_GENERATION_SYSTEM,
+    toolId: 'video-to-prompt',
+    temperature: ultraDetailed ? 0.5 : 0.4,
+    maxTokens: 4096
+  });
+
+  const cleaned = result.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (match) {
+      try { return JSON.parse(match[0]); } catch {}
+    }
+    return null;
+  }
+}
 
 export async function POST(request) {
   const rateCheck = await limiter(request);
@@ -9,174 +141,34 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
+    const { frames, metadata = {}, ultraDetailed = false } = body;
 
-    if (body.rewrite) {
-      return handleRewrite(body);
+    if (!frames || frames.length === 0) {
+      return Response.json({ success: false, error: 'No video frames provided' }, { status: 400 });
     }
 
-    return handleAnalysis(body);
-  } catch (err) {
-    return Response.json({ success: false, error: err.message }, { status: 500 });
-  }
-}
+    metadata.frameCount = frames.length;
 
-async function handleAnalysis(body) {
-  const { frames, metadata } = body;
-  if (!frames || frames.length === 0) {
-    return Response.json({ success: false, error: 'No video frames provided' }, { status: 400 });
-  }
+    const frameAnalysis = await analyzeFrames(frames, metadata);
 
-  const frameDescriptions = await analyzeFrames(frames, metadata);
+    const prompts = await generatePrompts(frameAnalysis, metadata, ultraDetailed);
 
-  const analysisPrompt = `You are a professional video analyst and prompt engineer. Based on the following video frame analysis, generate 5 types of prompts.
+    if (!prompts) {
+      return Response.json({ success: false, error: 'Failed to generate prompts from analysis. Try again.' }, { status: 422 });
+    }
 
-VIDEO METADATA:
-- File: ${metadata.fileName}
-- Duration: ${Math.round(metadata.duration)}s
-- Resolution: ${metadata.width}x${metadata.height}
-
-FRAME ANALYSIS:
-${frameDescriptions}
-
-Generate the following prompts. Return as valid JSON (no markdown):
-
-{
-  "detailedPrompt": "A detailed, comprehensive prompt describing every visual element, scene composition, lighting, colors, camera angles, subject, and environment. Perfect for recreating the exact style.",
-  "shortPrompt": "A concise, punchy prompt (under 100 chars) capturing the essence.",
-  "cinematicPrompt": "A dramatic, film-oriented prompt emphasizing camera movements, shot composition, and mood.",
-  "imageGenPrompt": "A prompt optimized for Midjourney/DALL-E/Stable Diffusion with style modifiers and technical parameters.",
-  "videoGenPrompt": "A prompt optimized for AI video generators (Runway, Pika, Sora) with motion descriptions and temporal details."
-}`;
-
-  const result = await generateAIContent({
-    prompt: analysisPrompt,
-    systemPrompt: 'You are a video analysis expert. Output valid JSON only, no markdown, no backticks. Ensure all JSON keys are exactly as specified.',
-    toolId: 'video-to-prompt',
-    temperature: 0.4,
-    maxTokens: 2000
-  });
-
-  let cleaned = result.replace(/^```json/i, '').replace(/^```/i, '').replace(/```$/i, '').trim();
-  let data;
-  try {
-    data = JSON.parse(cleaned);
-  } catch {
-    data = extractPromptsFromText(cleaned);
-  }
-
-  data.metadata = metadata;
-  return Response.json({ success: true, ...data });
-}
-
-async function handleRewrite(body) {
-  const { originalPrompt, metadata } = body;
-
-  const rewritePrompt = `You are a creative prompt engineer. Rewrite the following prompt to create 3 unique alternative versions.
-
-Original Prompt:
-${originalPrompt}
-
-Requirements:
-- Preserve the original idea and visual concept
-- Reduce similarity between versions
-- Improve prompt quality with better descriptive language
-- Make each version distinct in style and approach
-
-Return as valid JSON (no markdown):
-{
-  "version1": "First rewritten version - focus on photographic realism",
-  "version2": "Second rewritten version - focus on artistic/creative interpretation",
-  "version3": "Third rewritten version - focus on cinematic/dramatic elements"
-}`;
-
-  const result = await generateAIContent({
-    prompt: rewritePrompt,
-    systemPrompt: 'You are a prompt engineering expert. Output valid JSON only, no markdown, no backticks.',
-    toolId: 'video-to-prompt',
-    temperature: 0.8,
-    maxTokens: 1500
-  });
-
-  let cleaned = result.replace(/^```json/i, '').replace(/^```/i, '').replace(/```$/i, '').trim();
-  let data;
-  try {
-    data = JSON.parse(cleaned);
-  } catch {
-    data = {
-      version1: cleaned.substring(0, 300),
-      version2: cleaned.substring(300, 600),
-      version3: cleaned.substring(600, 900)
-    };
-  }
-
-  data.metadata = metadata;
-  return Response.json({ success: true, ...data });
-}
-
-async function analyzeFrames(frames, metadata) {
-  const descriptions = [];
-
-  for (let i = 0; i < frames.length; i++) {
-    const frameAnalysis = await generateAIContent({
-      prompt: `Analyze this video frame (frame ${i + 1} of ${frames.length}, at ~${Math.round(i * metadata.duration / frames.length)}s). Describe in detail:
-1. Scene type and setting
-2. Camera angle (eye-level, low, high, dutch, etc.)
-3. Lighting (natural, artificial, backlit, diffused, etc.)
-4. Dominant colors and color palette
-5. Visual style (cinematic, documentary, vlog, etc.)
-6. Subject and environment
-7. Composition (rule of thirds, symmetry, leading lines, etc.)
-8. Mood and atmosphere
-
-Keep descriptions concise but detailed.`,
-      systemPrompt: 'You are a professional video analyst. Analyze the frame and describe it in detail.',
-      toolId: 'video-to-prompt',
-      temperature: 0.3,
-      maxTokens: 500,
-      imageBase64: frames[i].split(',')[1],
-      imageMimeType: 'image/jpeg'
+    return Response.json({
+      success: true,
+      metadata,
+      frameAnalysis,
+      universalPrompt: prompts.universalPrompt || '',
+      veoPrompt: prompts.veoPrompt || '',
+      klingPrompt: prompts.klingPrompt || '',
+      runwayPrompt: prompts.runwayPrompt || '',
+      cinematicDirectorPrompt: prompts.cinematicDirectorPrompt || '',
+      negativePrompt: prompts.negativePrompt || ''
     });
-    descriptions.push(`Frame ${i + 1} (${Math.round(i * metadata.duration / frames.length)}s): ${frameAnalysis}`);
+  } catch (err) {
+    return Response.json({ success: false, error: err.message || 'Server error' }, { status: 500 });
   }
-
-  return descriptions.join('\n\n');
-}
-
-function extractPromptsFromText(text) {
-  const prompts = {
-    detailedPrompt: '',
-    shortPrompt: '',
-    cinematicPrompt: '',
-    imageGenPrompt: '',
-    videoGenPrompt: ''
-  };
-
-  const labels = {
-    detailedPrompt: ['detailed', 'detailed prompt', 'detailed ai prompt'],
-    shortPrompt: ['short', 'short prompt'],
-    cinematicPrompt: ['cinematic', 'cinematic prompt'],
-    imageGenPrompt: ['image', 'image gen', 'image generation'],
-    videoGenPrompt: ['video', 'video gen', 'video generation']
-  };
-
-  let currentKey = null;
-  const lines = text.split('\n');
-  for (const line of lines) {
-    const lower = line.toLowerCase().trim();
-    for (const [key, aliases] of Object.entries(labels)) {
-      if (aliases.some(a => lower.includes(a) && (lower.includes(':') || lower.includes('prompt') || lower.includes('generation')))) {
-        currentKey = key;
-        break;
-      }
-    }
-    if (currentKey) {
-      prompts[currentKey] += line.replace(/^(Detailed|Short|Cinematic|Image|Video).*?:/i, '').trim() + '\n';
-    }
-  }
-
-  Object.keys(prompts).forEach(k => {
-    prompts[k] = prompts[k].trim().replace(/^["']|["']$/g, '');
-  });
-
-  return prompts;
 }
