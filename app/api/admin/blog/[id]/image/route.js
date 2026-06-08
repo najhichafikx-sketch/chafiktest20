@@ -79,7 +79,7 @@ export async function POST(request, { params }) {
       return Response.json({ success: false, message: `Post ${id} not found` }, { status: 404 });
     }
 
-    // Save as file
+    // Save as file (cache - may be wiped on deploy)
     if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
     const { buf, ext } = dataUrlToBuffer(image);
     const filename = `${numId}_${Date.now()}.${ext}`;
@@ -87,15 +87,15 @@ export async function POST(request, { params }) {
     fs.writeFileSync(filePath, buf);
     const publicUrl = `/uploads/blog/${filename}`;
 
-    // Update DB (best-effort)
+    // Store base64 in DB (persists across deploys)
     try {
       await query(
         'UPDATE blog_posts SET featured_image = $1, has_image = TRUE, updated_at = NOW() WHERE id = $2',
-        [publicUrl, numId]
+        [image, numId]
       );
     } catch { /* DB unavailable */ }
 
-    // Also update JSON file for fallback
+    // Update JSON with file path (fast fallback)
     try {
       const jsonFile = path.join(process.cwd(), 'data', 'blog.json');
       if (fs.existsSync(jsonFile)) {
@@ -112,7 +112,7 @@ export async function POST(request, { params }) {
 
     return Response.json({
       success: true,
-      message: 'Image saved as file',
+      message: 'Image saved',
       post_id: numId,
       url: publicUrl,
       size: buf.length

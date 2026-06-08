@@ -1,4 +1,5 @@
 import { getBlogPostFeaturedImage } from '@/lib/db';
+import { getSql } from '@/lib/db';
 import fs from 'fs';
 import path from 'path';
 
@@ -42,30 +43,44 @@ export async function GET(request, { params }) {
     // File-based image
     if (typeof img === 'string' && img.startsWith('/uploads/')) {
       const filePath = path.join(process.cwd(), 'public', img);
-      if (!fs.existsSync(filePath)) {
-        const svg = placeholderSVG(slug);
-        const buf = Buffer.from(svg);
+      if (fs.existsSync(filePath)) {
+        const buf = fs.readFileSync(filePath);
+        const mime = isPngRequest ? 'image/png' : (() => {
+          const ext = path.extname(filePath).slice(1);
+          return ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : ext === 'png' ? 'image/png' : ext === 'gif' ? 'image/gif' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
+        })();
         return new Response(buf, {
           status: 200,
           headers: {
-            'Content-Type': isPngRequest ? 'image/png' : 'image/svg+xml',
-            'Cache-Control': 'public, max-age=3600',
+            'Content-Type': mime,
+            'Cache-Control': 'public, max-age=31536000, immutable',
             'Content-Length': String(buf.length)
           }
         });
       }
-      const buf = fs.readFileSync(filePath);
-      const mime = isPngRequest ? 'image/png' : (() => {
-        const ext = path.extname(filePath).slice(1);
-        return ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : ext === 'png' ? 'image/png' : ext === 'gif' ? 'image/gif' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
-      })();
-      return new Response(buf, {
-        status: 200,
-        headers: {
-          'Content-Type': mime,
-          'Cache-Control': 'public, max-age=31536000, immutable',
-          'Content-Length': String(buf.length)
+      // File missing — try DB for base64 (survives deploys)
+      try {
+        const sql = getSql();
+        if (sql) {
+          const rows = await sql.query(`SELECT featured_image FROM blog_posts WHERE slug = $1`, [slug]);
+          const row = rows.rows ? rows.rows[0] : rows?.[0];
+          if (row?.featured_image?.startsWith('data:')) {
+            const comma = row.featured_image.indexOf(',');
+            const mime2 = row.featured_image.slice(5, comma).split(';')[0] || 'image/jpeg';
+            const base64 = row.featured_image.slice(comma + 1);
+            const b = Buffer.from(base64, 'base64');
+            return new Response(b, {
+              status: 200,
+              headers: { 'Content-Type': isPngRequest ? 'image/png' : mime2, 'Cache-Control': 'public, max-age=31536000, immutable', 'Content-Length': String(b.length) }
+            });
+          }
         }
+      } catch { /* hard fallback to placeholder */ }
+      const svg = placeholderSVG(slug);
+      const b = Buffer.from(svg);
+      return new Response(b, {
+        status: 200,
+        headers: { 'Content-Type': isPngRequest ? 'image/png' : 'image/svg+xml', 'Cache-Control': 'public, max-age=3600', 'Content-Length': String(b.length) }
       });
     }
 
