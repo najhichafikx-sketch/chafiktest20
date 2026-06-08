@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Sparkles } from 'lucide-react';
-import Sidebar from './components/Sidebar';
-import CanvasPreview from './components/CanvasPreview';
+import HeroBanner from '@/components/dashboard/HeroBanner';
+import Topbar from '@/components/dashboard/Topbar';
+import Sidebar from '@/components/dashboard/Sidebar';
+import CanvasPreview from '@/components/dashboard/CanvasPreview';
+import RecentDesigns from '@/components/dashboard/RecentDesigns';
 import { useGenerate } from '@/hooks/useGenerate';
+import { useHistory } from '@/hooks/useHistory';
 import { MODEL_COSTS } from '@/lib/stripe';
 
 export default function ThumbnailGeneratorPage() {
@@ -16,13 +19,15 @@ export default function ThumbnailGeneratorPage() {
   const [references, setReferences] = useState([]);
   const [colors, setColors] = useState([]);
 
-  const { loading, result, loadingMessage, progress, generate, reset } = useGenerate();
+  const { loading, result, progress, generate, reset } = useGenerate();
+  const { designs, refetch } = useHistory();
   const estimatedCost = MODEL_COSTS[model] || MODEL_COSTS.basic;
 
   const handleGenerate = useCallback(async () => {
     if (!title.trim() || loading) return;
     await generate({ title, style, dimension, model, personImage, references });
-  }, [title, style, dimension, model, personImage, references, loading, generate]);
+    refetch();
+  }, [title, style, dimension, model, personImage, references, loading, generate, refetch]);
 
   const handleDownload = useCallback(() => {
     if (!result) return;
@@ -33,56 +38,26 @@ export default function ThumbnailGeneratorPage() {
   }, [result]);
 
   return (
-    <div dir="rtl" className="min-h-screen flex flex-col bg-[#0B0E14] text-white" style={{ fontFamily: "'Cairo', sans-serif" }}>
-      {/* Top Banner */}
-      <div className="flex items-center justify-between px-8 py-4 border-b border-white/5 bg-[#10131A]">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#1A1D24] border border-white/5 flex items-center justify-center">
-            <Sparkles size={18} className="text-[#EAB308]" />
-          </div>
-          <div>
-            <h1 className="text-base font-bold text-white">Create AI Thumbnail</h1>
-            <p className="text-[11px] text-gray-500">Generate professional thumbnails using AI — powered by your brand identity.</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1A1D24] border border-white/5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#EAB308] animate-pulse" />
-            <span className="text-[10px] font-bold text-[#EAB308] tracking-wider">AI POWERED</span>
-          </div>
-          <button className="bg-[#EAB308] hover:bg-[#FACC15] text-black text-sm font-bold rounded-full px-6 py-2 transition-colors shadow-lg shadow-[#EAB308]/20">
-            Start now
-          </button>
-        </div>
-      </div>
-
-      {/* Main Layout — Sidebar first for RTL (right side) */}
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#0d0d0f', color: '#e8e6e0' }}>
+      <HeroBanner />
+      <Topbar />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar
-          title={title}
-          onTitleChange={setTitle}
-          references={references}
-          onReferencesChange={setReferences}
-          personImage={personImage}
-          onPersonImageChange={setPersonImage}
-          colors={colors}
-          onColorsChange={setColors}
-          model={model}
-          onModelChange={setModel}
-          dimension={dimension}
-          onDimensionChange={setDimension}
-          onGenerate={handleGenerate}
-          loading={loading}
-          estimatedCost={estimatedCost}
+          title={title} onTitleChange={setTitle}
+          references={references} onReferencesChange={setReferences}
+          personImage={personImage} onPersonImageChange={setPersonImage}
+          colors={colors} onColorsChange={setColors}
+          model={model} onModelChange={setModel}
+          dimension={dimension} onDimensionChange={setDimension}
+          onGenerate={handleGenerate} loading={loading} estimatedCost={estimatedCost}
         />
-        <CanvasPreview
-          loading={loading}
-          loadingMessage=""
-          result={result}
-          onDownload={handleDownload}
-          onRedo={reset}
-          progress={progress}
-        />
+        <div className="flex-1 flex flex-col overflow-y-auto">
+          <CanvasPreview
+            loading={loading} result={result}
+            onDownload={handleDownload} onRedo={reset} progress={progress}
+          />
+          {!loading && <RecentDesigns designs={designs} />}
+        </div>
       </div>
     </div>
   );
