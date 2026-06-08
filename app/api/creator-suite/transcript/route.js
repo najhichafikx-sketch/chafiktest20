@@ -1,4 +1,5 @@
 import { writeLog } from '@/lib/db';
+import { fetchTranscript } from 'youtube-transcript';
 
 const TIMEOUT = 12000;
 
@@ -41,6 +42,28 @@ function pickBestSubtitle(subs) {
   return withUrl || null;
 }
 
+async function tryYoutubeTranscript(videoId) {
+  try {
+    const segments = await fetchTranscript(videoId);
+    if (segments && segments.length > 0) {
+      const text = segments.map(s => s.text).join(' ').replace(/\s+/g, ' ').trim();
+      if (text && text.length > 20) {
+        return { source: 'youtube-transcript:innertube', text, lang: segments[0]?.lang || 'auto' };
+      }
+    }
+  } catch (e) {
+    const msg = e?.message || '';
+    if (msg.includes('disabled')) return { disabled: true };
+    if (msg.includes('unavailable') || msg.includes('no longer available')) return { unavailable: true };
+    if (msg.includes('not available')) {
+      if (msg.includes('language')) return { langUnavailable: true };
+      return { notAvailable: true };
+    }
+    if (msg.includes('too many')) return { rateLimited: true };
+  }
+  return null;
+}
+
 const PIPED_INSTANCES = [
   'https://pipedapi.kavin.rocks',
   'https://pipedapi.adminforge.de',
@@ -48,9 +71,7 @@ const PIPED_INSTANCES = [
   'https://pipedapi.r4fo.com',
   'https://piped-api.privacy.com.de',
   'https://pipedapi.darkness.services',
-  'https://pipedapi.qdi.fi',
   'https://pipedapi.osphost.fi',
-  'https://pipedapi.lunar.icu'
 ];
 
 const INVIDIOUS_INSTANCES = [
@@ -62,8 +83,6 @@ const INVIDIOUS_INSTANCES = [
   'https://invidious.nerdvpn.de',
   'https://vid.puffyan.us',
   'https://invidious.materialio.us',
-  'https://invidious.flokinet.to',
-  'https://invidious.privacydev.net'
 ];
 
 async function fetchText(url) {
@@ -84,8 +103,7 @@ async function tryPiped(videoId) {
       });
       if (!res.ok) continue;
       const data = await res.json();
-      const subs = data?.subtitles;
-      const sub = pickBestSubtitle(subs);
+      const sub = pickBestSubtitle(data?.subtitles);
       if (sub?.url) {
         const vtt = await fetchText(sub.url);
         const text = parseVtt(vtt);
@@ -157,30 +175,56 @@ export async function POST(request) {
   const videoId = extractVideoId(body?.videoId || body?.url);
   if (!videoId || videoId.length !== 11) {
     return Response.json(
-      { success: false, message: 'Invalid YouTube URL or video ID. Please paste a link like https://www.youtube.com/watch?v=... or just the 11-character video ID.' },
+      { success: false, message: 'Invalid YouTube URL or video ID.' },
       { status: 400 }
     );
   }
 
   let result = null;
-  let sources = [];
+  const sources = [];
 
-  sources.push('Piped');
-  result = await tryPiped(videoId);
+  // Primary: youtube-transcript package (InnerTube API)
+  sources.push('youtube-transcript');
+  result = await tryYoutubeTranscript(videoId);
+
+  // If the video exists but has no transcript, skip fallbacks
+  if (result && result.notAvailable) {
+    try { await writeLog('WARN', 'Transcript not available for video', { videoId }); } catch {}
+    return Response.json({
+      success: false,
+      message: `This video (${videoId}) has no transcript available. The video may have captions disabled. Please paste the transcript text manually.`
+    }, { status: 404 });
+  }
+
+  if (result && result.disabled) {
+    try { await writeLog('WARN', 'Transcript disabled for video', { videoId }); } catch {}
+    return Response.json({
+      success: false,
+      message: `Transcript is disabled for this video (${videoId}). Please paste the transcript text manually.`
+    }, { status: 404 });
+  }
 
   if (!result) {
+    // Fallback 1: Piped
+    sources.push('Piped');
+    result = await tryPiped(videoId);
+  }
+
+  if (!result) {
+    // Fallback 2: Invidious
     sources.push('Invidious');
     result = await tryInvidious(videoId);
   }
 
   if (!result) {
+    // Fallback 3: YouTube timedtext
     sources.push('YouTube timedtext');
     result = await tryYoutubeTimedtext(videoId);
   }
 
   if (!result) {
     try {
-      await writeLog('WARN', 'Transcript fetch failed for video', { videoId, tried: sources });
+      await writeLog('WARN', 'Transcript fetch failed for video', { videoId, tried: sources.join(',') });
     } catch {}
     return Response.json({
       success: false,
@@ -197,7 +241,7 @@ export async function POST(request) {
     videoId,
     transcript: result.text,
     source: result.source,
-    lang: result.lang,
+    lang: result.lang || 'auto',
     length: result.text.length
   });
 }
@@ -205,7 +249,7 @@ export async function POST(request) {
 export async function GET() {
   return Response.json({
     service: 'YouTube Transcript Fetcher',
-    usage: 'POST { videoId: "<11-char id>" } or POST { url: "<youtube url>" }',
-    note: 'No YouTube API key needed. Uses public Piped/Invidious instances and YouTube timedtext fallback.'
+    version: '2.0',
+    usage: 'POST { videoId: "<11-char id>" } or POST { url: "<youtube url>" }'
   });
 }
