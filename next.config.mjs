@@ -83,11 +83,26 @@ const nextConfig = {
     ]
   },
   async redirects() {
-    return REDIRECTS.map(([from, to]) => ({
-      source: `/blog/${from}`,
-      destination: `/blog/${to}`,
-      permanent: true
-    }));
+    return [
+      ...REDIRECTS.map(([from, to]) => ({
+        source: `/blog/${from}`,
+        destination: `/blog/${to}`,
+        permanent: true
+      })),
+      {
+        source: '/api/blog/:slug/image',
+        destination: '/api/blog/:slug/image.png',
+        permanent: true
+      }
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/blog/:slug/image.png',
+        destination: '/api/blog/:slug/image'
+      }
+    ];
   }
 };
 

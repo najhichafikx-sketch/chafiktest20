@@ -56,6 +56,20 @@ export async function proxy(request) {
   const url = new URL(request.url);
   const path = url.pathname;
 
+  // Pinterest-compatible image URLs: rewrite /image → /image.png
+  const imageMatch = path.match(/^(\/api\/blog\/[^\/]+)\/image(\.png)?$/);
+  if (imageMatch) {
+    const base = imageMatch[1];
+    if (!imageMatch[2]) {
+      // /image → 308 redirect to .png
+      return NextResponse.redirect(new URL(`${base}/image.png`, request.url), { status: 308 });
+    }
+    // /image.png → rewrite to /image with format signal
+    const dest = new URL(`${base}/image`, request.url);
+    dest.searchParams.set('__fmt', 'png');
+    return NextResponse.rewrite(dest);
+  }
+
   if (HTML_REDIRECTS[path]) {
     return NextResponse.redirect(new URL(HTML_REDIRECTS[path], request.url), { status: 301 });
   }
