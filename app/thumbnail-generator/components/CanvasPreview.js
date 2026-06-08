@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Sparkles, Download, RotateCcw, Wand2, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, Download, RotateCcw, Image as ImageIcon } from 'lucide-react';
 
 const STATUS_STEPS = [
   { emoji: '🎨', text: 'جاري توليد الخلفية...' },
@@ -11,7 +11,7 @@ const STATUS_STEPS = [
   { emoji: '🎯', text: 'اللمسات الأخيرة...' },
 ];
 
-export default function CanvasPreview({ loading, loadingMessage, result, onDownload, onRedo, progress }) {
+export default function CanvasPreview({ loading, result, onDownload, onRedo, progress }) {
   const [stepIdx, setStepIdx] = useState(0);
 
   useEffect(() => {
@@ -21,31 +21,9 @@ export default function CanvasPreview({ loading, loadingMessage, result, onDownl
   }, [loading]);
 
   return (
-    <main className="flex-1 flex flex-col bg-[#0B0E14] min-h-screen overflow-y-auto">
-      {/* Top Navbar */}
-      <nav className="flex items-center justify-between px-8 py-5">
-        <div className="flex items-center gap-2 cursor-pointer">
-          <span className="text-xl font-bold text-white tracking-tight">ThumPure</span>
-          <div className="w-6 h-6 rounded-md flex items-center justify-center border-2 border-[#EAB308]">
-            <div className="w-2.5 h-2.5 bg-[#EAB308] rounded-[2px]"></div>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="bg-[#1A1D24] text-gray-300 text-sm font-medium rounded-full px-5 py-2 flex items-center gap-2 hover:bg-white/5 transition-colors border border-white/5">
-            <Wand2 size={15} className="text-[#EAB308]" />
-            دليل الاستخدام
-          </button>
-          <button className="bg-white text-black text-sm font-bold rounded-full px-6 py-2 hover:bg-gray-200 transition-colors">
-            ترقية
-          </button>
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 border-2 border-[#EAB308] overflow-hidden p-[2px] cursor-pointer">
-            <div className="w-full h-full rounded-full bg-[#1A1D24]" />
-          </div>
-        </div>
-      </nav>
-
+    <main className="flex-1 flex flex-col bg-[#0B0E14] overflow-y-auto">
       {/* Canvas */}
-      <div className="flex-1 flex flex-col items-center justify-center p-8 pt-0">
+      <div className="flex-1 flex flex-col items-center justify-center p-8 pt-10">
         <div className="w-full max-w-5xl aspect-video bg-[#10131A] border border-white/5 rounded-[1.75rem] flex flex-col items-center justify-center relative overflow-hidden shadow-2xl transition-all duration-500">
           {loading ? (
             <div className="flex flex-col items-center px-8 w-full max-w-sm">
