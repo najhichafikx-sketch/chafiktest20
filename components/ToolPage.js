@@ -225,11 +225,14 @@ export default function ToolPage({ icon, title, description, placeholder, inputH
               <div className="tool-section">
                 <h2>Related Tools</h2>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {relatedIds.map(id => (
-                    <a key={id} href={`/tools/${id}`} className="btn btn-sm btn-outline">
-                      {TOOL_NAMES[id]?.name || id}
-                    </a>
-                  ))}
+                  {relatedIds.map(id => {
+                    const toolUrl = TOOL_ARTICLES[id]?.toolUrl || id;
+                    return (
+                      <a key={id} href={`/tools/${toolUrl}`} className="btn btn-sm btn-outline">
+                        {TOOL_NAMES[id]?.name || id}
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
             )}
