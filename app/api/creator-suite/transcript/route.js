@@ -187,48 +187,35 @@ export async function POST(request) {
   sources.push('youtube-transcript');
   result = await tryYoutubeTranscript(videoId);
 
-  // If the video exists but has no transcript, skip fallbacks
-  if (result && result.notAvailable) {
-    try { await writeLog('WARN', 'Transcript not available for video', { videoId }); } catch {}
-    return Response.json({
-      success: false,
-      message: `This video (${videoId}) has no transcript available. The video may have captions disabled. Please paste the transcript text manually.`
-    }, { status: 404 });
+  let disabledOrNotAvail = false;
+
+  if (result && (result.notAvailable || result.disabled)) {
+    disabledOrNotAvail = true;
+    result = null; // Try fallbacks — alternate sources may still work
   }
 
-  if (result && result.disabled) {
-    try { await writeLog('WARN', 'Transcript disabled for video', { videoId }); } catch {}
-    return Response.json({
-      success: false,
-      message: `Transcript is disabled for this video (${videoId}). Please paste the transcript text manually.`
-    }, { status: 404 });
-  }
+  // Fallback 1: Piped
+  sources.push('Piped');
+  if (!result) result = await tryPiped(videoId);
 
-  if (!result) {
-    // Fallback 1: Piped
-    sources.push('Piped');
-    result = await tryPiped(videoId);
-  }
+  // Fallback 2: Invidious
+  sources.push('Invidious');
+  if (!result) result = await tryInvidious(videoId);
 
-  if (!result) {
-    // Fallback 2: Invidious
-    sources.push('Invidious');
-    result = await tryInvidious(videoId);
-  }
-
-  if (!result) {
-    // Fallback 3: YouTube timedtext
-    sources.push('YouTube timedtext');
-    result = await tryYoutubeTimedtext(videoId);
-  }
+  // Fallback 3: YouTube timedtext
+  sources.push('YouTube timedtext');
+  if (!result) result = await tryYoutubeTimedtext(videoId);
 
   if (!result) {
     try {
       await writeLog('WARN', 'Transcript fetch failed for video', { videoId, tried: sources.join(',') });
     } catch {}
+    const reason = disabledOrNotAvail
+      ? `The video has transcripts disabled or unavailable.`
+      : `Could not fetch from any of ${sources.length} sources. Possible reasons: (1) the video has no captions/subtitles, (2) the video is private, age-restricted, or region-locked, (3) all public transcript APIs are currently down.`;
     return Response.json({
       success: false,
-      message: `Could not fetch transcript for video ${videoId} from any of ${sources.length} sources. Possible reasons: (1) the video has no captions/subtitles, (2) the video is private, age-restricted, or region-locked, (3) all public transcript APIs are currently down. Please paste the transcript text manually in the textarea below.`
+      message: `${reason} Please paste the transcript text manually in the textarea below.`
     }, { status: 404 });
   }
 
