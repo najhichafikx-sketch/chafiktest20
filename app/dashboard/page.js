@@ -1,91 +1,79 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState, useCallback } from 'react';
+import HeroBanner from './components/HeroBanner';
+import Topbar from './components/Topbar';
+import Sidebar from './components/Sidebar';
+import CanvasPreview from './components/CanvasPreview';
+import RecentDesigns from './components/RecentDesigns';
+import { useGenerate } from '@/hooks/useGenerate';
+import { useHistory } from '@/hooks/useHistory';
+import { MODEL_COSTS } from '@/lib/stripe';
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [title, setTitle] = useState('');
+  const [style, setStyle] = useState('cinematic');
+  const [model, setModel] = useState('basic');
+  const [dimension, setDimension] = useState('16:9');
+  const [personImage, setPersonImage] = useState(null);
+  const [references, setReferences] = useState([]);
+  const [colors, setColors] = useState([]);
 
-  useEffect(() => {
-    const token = localStorage.getItem('user_token');
-    if (!token) { router.push('/login'); return; }
+  const { loading, result, error, loadingMessage, progress, generate, reset } = useGenerate();
+  const { designs, refetch } = useHistory();
 
-    fetch('/api/auth/me', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) setUser(data.user);
-        else router.push('/login');
-      })
-      .catch(() => router.push('/login'));
-  }, [router]);
+  const estimatedCost = MODEL_COSTS[model] || MODEL_COSTS.basic;
 
-  function handleLogout() {
-    localStorage.removeItem('user_token');
-    router.push('/login');
-  }
+  const handleGenerate = useCallback(async () => {
+    if (!title.trim() || loading) return;
+    await generate({ title, style, dimension, model, personImage, references });
+    refetch();
+  }, [title, style, dimension, model, personImage, references, loading, generate, refetch]);
 
-  if (!user) return <div className="section" style={{ paddingTop: '120px', textAlign: 'center' }}>Loading...</div>;
+  const handleDownload = useCallback(() => {
+    if (!result) return;
+    const link = document.createElement('a');
+    link.href = result;
+    link.download = `thumbnail-${Date.now()}.png`;
+    link.click();
+  }, [result]);
 
   return (
-    <section className="section" style={{ paddingTop: '100px' }}>
-      <div className="container" style={{ maxWidth: 1000, margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-          <div>
-            <h1 className="section-title" style={{ marginBottom: 0 }}>Dashboard</h1>
-            <p style={{ color: 'var(--text-secondary)' }}>Welcome back, {user.email}</p>
-          </div>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <Link href="/" className="btn btn-secondary btn-sm">Home</Link>
-            <button className="btn btn-outline btn-sm" onClick={handleLogout}>Logout</button>
-          </div>
-        </div>
-
-        <div className="dashboard-stats">
-          <StatCard icon="⚡" label="Generations Today" value={user.daily_generations || 0} iconClass="purple" />
-          <StatCard icon="🎯" label="Credits Remaining" value={user.credits || 'Unlimited'} iconClass="blue" />
-          <StatCard icon="📊" label="Current Plan" value={user.plan || 'free'} iconClass="cyan" capitalize />
-          <StatCard icon="💾" label="Saved Results" value={0} iconClass="green" />
-        </div>
-
-        <div className="dashboard-card" style={{ marginTop: 24 }}>
-          <div className="dashboard-card-header">
-            <h3>Quick Access Tools</h3>
-          </div>
-          <div className="tools-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
-            <ToolMiniLink href="/tools/seo-article-generator" icon="📝" name="SEO Article" />
-            <ToolMiniLink href="/tools/image-to-prompt" icon="📸" name="Image to Prompt" />
-            <ToolMiniLink href="/tools/video-to-prompt" icon="🎥" name="Video to Prompt" />
-            <ToolMiniLink href="/tools/tiktok-tools" icon="🎵" name="TikTok Suite" />
-            <ToolMiniLink href="/tools/youtube-suite" icon="📺" name="YouTube Suite" />
-            <ToolMiniLink href="/tools/ai-humanizer" icon="🤖" name="AI Humanizer" />
-          </div>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#0d0d0f', color: '#e8e6e0' }}>
+      <HeroBanner />
+      <Topbar />
+      <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 124px)' }}>
+        <Sidebar
+          title={title}
+          onTitleChange={setTitle}
+          references={references}
+          onReferencesChange={setReferences}
+          personImage={personImage}
+          onPersonImageChange={setPersonImage}
+          colors={colors}
+          onColorsChange={setColors}
+          model={model}
+          onModelChange={setModel}
+          dimension={dimension}
+          onDimensionChange={setDimension}
+          onGenerate={handleGenerate}
+          loading={loading}
+          estimatedCost={estimatedCost}
+        />
+        <div className="flex-1 flex flex-col">
+          <CanvasPreview
+            loading={loading}
+            loadingMessage={loadingMessage}
+            result={result}
+            onDownload={handleDownload}
+            onRedo={reset}
+            progress={progress}
+          />
+          {!loading && (
+            <RecentDesigns designs={designs} />
+          )}
         </div>
       </div>
-    </section>
-  );
-}
-
-function StatCard({ icon, label, value, iconClass, capitalize }) {
-  return (
-    <div className="stat-card">
-      <div className="stat-card-header">
-        <div className={`stat-card-icon ${iconClass}`}>{icon}</div>
-      </div>
-      <div className="stat-card-value">{value}</div>
-      <div className="stat-card-label" style={{ textTransform: capitalize ? 'capitalize' : 'none' }}>{label}</div>
     </div>
-  );
-}
-
-function ToolMiniLink({ href, icon, name }) {
-  return (
-    <Link href={href} className="tool-card" style={{ aspectRatio: 'auto', padding: '20px 16px' }}>
-      <div className="tool-icon" style={{ width: 48, height: 48, fontSize: 24, marginBottom: 12 }}>{icon}</div>
-      <h3 className="tool-name" style={{ fontSize: '1rem' }}>{name}</h3>
-    </Link>
   );
 }
