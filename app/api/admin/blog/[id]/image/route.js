@@ -1,26 +1,55 @@
 import { verifyAdmin } from '@/lib/auth';
 import { query } from '@/lib/db';
+import { put } from '@vercel/blob';
 import fs from 'fs';
 import path from 'path';
 
 const UPLOADS_DIR = path.join(process.cwd(), 'public', 'uploads', 'blog');
+const JSON_FILE = path.join(process.cwd(), 'data', 'blog.json');
+const TMP_JSON = path.join('/tmp', 'data', 'blog.json');
 
 async function findPostInFile(id) {
-  try {
-    const file = path.join(process.cwd(), 'data', 'blog.json');
-    if (!fs.existsSync(file)) return null;
-    const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
-    const posts = Array.isArray(data) ? data : (data.posts || []);
-    const numId = Number(id);
-    return posts.find(p => Number(p.id) === numId || p.id === id || p.slug === id) || null;
-  } catch {
-    return null;
+  for (const file of [TMP_JSON, JSON_FILE]) {
+    try {
+      if (!fs.existsSync(file)) continue;
+      const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
+      const posts = Array.isArray(data) ? data : (data.posts || []);
+      const numId = Number(id);
+      const found = posts.find(p => Number(p.id) === numId || p.id === id || p.slug === id);
+      if (found) return found;
+    } catch {}
+  }
+  return null;
+}
+
+async function updateJson(id, data) {
+  for (const file of [JSON_FILE, TMP_JSON]) {
+    try {
+      const dir = path.dirname(file);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      let posts;
+      if (fs.existsSync(file)) {
+        posts = JSON.parse(fs.readFileSync(file, 'utf-8'));
+        if (!Array.isArray(posts)) posts = posts.posts || [];
+      } else {
+        posts = [];
+      }
+      const idx = posts.findIndex(p => Number(p.id) === Number(id) || p.id === id);
+      if (idx >= 0) {
+        posts[idx] = { ...posts[idx], ...data };
+      } else {
+        posts.push({ id: Number(id), ...data });
+      }
+      fs.writeFileSync(file, JSON.stringify(posts, null, 2), 'utf-8');
+    } catch {}
   }
 }
 
 async function ensurePostExists(id) {
-  const check = await query('SELECT id FROM blog_posts WHERE id = $1', [Number(id)]);
-  if (check && check.length > 0) return true;
+  try {
+    const check = await query('SELECT id FROM blog_posts WHERE id = $1', [Number(id)]);
+    if (check && check.length > 0) return true;
+  } catch {}
 
   const fromFile = await findPostInFile(id);
   if (!fromFile) return false;
@@ -39,11 +68,8 @@ async function ensurePostExists(id) {
         fromFile.status || 'published', fromFile.published_at || null, fromFile.created_at || null
       ]
     );
-    return true;
-  } catch (e) {
-    console.error('ensurePostExists failed:', e.message);
-    return false;
-  }
+  } catch {}
+  return true;
 }
 
 function dataUrlToBuffer(dataUrl) {
@@ -79,42 +105,46 @@ export async function POST(request, { params }) {
       return Response.json({ success: false, message: `Post ${id} not found` }, { status: 404 });
     }
 
-    // Save as file (cache - may be wiped on deploy)
-    if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
     const { buf, ext } = dataUrlToBuffer(image);
     const filename = `${numId}_${Date.now()}.${ext}`;
-    const filePath = path.join(UPLOADS_DIR, filename);
-    fs.writeFileSync(filePath, buf);
-    const publicUrl = `/uploads/blog/${filename}`;
+    let finalImage = image;
 
-    // Store base64 in DB (persists across deploys)
+    // 1) Upload to Vercel Blob (persistent across deploys)
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      try {
+        const blob = await put(`blog/${filename}`, buf, {
+          access: 'public',
+          contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`
+        });
+        finalImage = blob.url;
+      } catch (e) {
+        console.warn('Blob upload failed, falling back to file:', e.message);
+      }
+    }
+
+    // 2) Save as file cache
+    try {
+      if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+      const filePath = path.join(UPLOADS_DIR, filename);
+      fs.writeFileSync(filePath, buf);
+    } catch {}
+
+    // 3) Store in DB
     try {
       await query(
         'UPDATE blog_posts SET featured_image = $1, has_image = TRUE, updated_at = NOW() WHERE id = $2',
-        [image, numId]
+        [finalImage, numId]
       );
-    } catch { /* DB unavailable */ }
+    } catch {}
 
-    // Update JSON with base64 (persists across deploys + Neon down)
-    try {
-      const jsonFile = path.join(process.cwd(), 'data', 'blog.json');
-      if (fs.existsSync(jsonFile)) {
-        let posts = JSON.parse(fs.readFileSync(jsonFile, 'utf-8'));
-        if (!Array.isArray(posts)) posts = posts.posts || [];
-        const idx = posts.findIndex(p => Number(p.id) === numId || p.id === id);
-        if (idx !== -1) {
-          posts[idx].featured_image = image;
-          posts[idx].has_image = true;
-          fs.writeFileSync(jsonFile, JSON.stringify(posts, null, 2), 'utf-8');
-        }
-      }
-    } catch { /* JSON update best-effort */ }
+    // 4) Store in JSON (/tmp + data/)
+    await updateJson(numId, { featured_image: finalImage, has_image: true });
 
     return Response.json({
       success: true,
       message: 'Image saved',
       post_id: numId,
-      url: publicUrl,
+      url: finalImage,
       size: buf.length
     });
   } catch (err) {

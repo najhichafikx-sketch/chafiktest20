@@ -13,11 +13,14 @@ export async function GET(request) {
     if (posts && posts.length > 0) {
       return Response.json({ success: true, posts });
     }
-    const file = path.join(process.cwd(), 'data', 'blog.json');
-    if (fs.existsSync(file)) {
-      const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
-      const arr = Array.isArray(data) ? data : (data.posts || []);
-      return Response.json({ success: true, posts: arr });
+    for (const file of [path.join('/tmp', 'data', 'blog.json'), path.join(process.cwd(), 'data', 'blog.json')]) {
+      if (fs.existsSync(file)) {
+        try {
+          const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
+          const arr = Array.isArray(data) ? data : (data.posts || []);
+          return Response.json({ success: true, posts: arr });
+        } catch {}
+      }
     }
     return Response.json({ success: true, posts: [] });
   } catch (err) {

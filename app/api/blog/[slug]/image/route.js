@@ -1,5 +1,4 @@
 import { getBlogPostFeaturedImage } from '@/lib/db';
-import { getSql } from '@/lib/db';
 import fs from 'fs';
 import path from 'path';
 
@@ -18,97 +17,78 @@ function placeholderSVG(slug) {
   </svg>`;
 }
 
+function respond(buf, contentType, cache, isPng) {
+  return new Response(buf, {
+    status: 200,
+    headers: {
+      'Content-Type': isPng ? 'image/png' : contentType,
+      'Cache-Control': cache,
+      'Content-Length': String(buf.length)
+    }
+  });
+}
+
 export async function GET(request, { params }) {
   try {
     const { slug } = await params;
-    const isPngRequest = request.nextUrl.searchParams.get('__fmt') === 'png';
+    const isPng = request.nextUrl.searchParams.get('__fmt') === 'png';
     const post = await getBlogPostFeaturedImage(slug);
 
-    // No post or no image → return placeholder
     if (!post || !post.featured_image) {
       const svg = placeholderSVG(slug);
-      const buf = Buffer.from(svg);
-      return new Response(buf, {
-        status: 200,
-        headers: {
-          'Content-Type': isPngRequest ? 'image/png' : 'image/svg+xml',
-          'Cache-Control': 'public, max-age=3600',
-          'Content-Length': String(buf.length)
-        }
-      });
+      return respond(Buffer.from(svg), 'image/svg+xml', 'public, max-age=3600', isPng);
     }
 
     const img = post.featured_image;
 
-    // File-based image
+    // URL-based (Vercel Blob)
+    if (typeof img === 'string' && (img.startsWith('http://') || img.startsWith('https://'))) {
+      try {
+        const res = await fetch(img, { cache: 'force-cache' });
+        if (res.ok) {
+          const blob = await res.arrayBuffer();
+          return respond(Buffer.from(blob), res.headers.get('Content-Type') || 'image/jpeg', 'public, max-age=31536000, immutable', isPng);
+        }
+      } catch {}
+    }
+
+    // File-based
     if (typeof img === 'string' && img.startsWith('/uploads/')) {
       const filePath = path.join(process.cwd(), 'public', img);
       if (fs.existsSync(filePath)) {
         const buf = fs.readFileSync(filePath);
-        const mime = isPngRequest ? 'image/png' : (() => {
+        const mime = isPng ? 'image/png' : (() => {
           const ext = path.extname(filePath).slice(1);
           return ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : ext === 'png' ? 'image/png' : ext === 'gif' ? 'image/gif' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
         })();
-        return new Response(buf, {
-          status: 200,
-          headers: {
-            'Content-Type': mime,
-            'Cache-Control': 'public, max-age=31536000, immutable',
-            'Content-Length': String(buf.length)
-          }
-        });
+        return respond(buf, mime, 'public, max-age=31536000, immutable', isPng);
       }
-      // File missing — try DB for base64 (survives deploys)
+      // File missing — try /tmp/blog.json for runtime base64
       try {
-        const sql = getSql();
-        if (sql) {
-          const rows = await sql.query(`SELECT featured_image FROM blog_posts WHERE slug = $1`, [slug]);
-          const row = rows.rows ? rows.rows[0] : rows?.[0];
-          if (row?.featured_image?.startsWith('data:')) {
-            const comma = row.featured_image.indexOf(',');
-            const mime2 = row.featured_image.slice(5, comma).split(';')[0] || 'image/jpeg';
-            const base64 = row.featured_image.slice(comma + 1);
-            const b = Buffer.from(base64, 'base64');
-            return new Response(b, {
-              status: 200,
-              headers: { 'Content-Type': isPngRequest ? 'image/png' : mime2, 'Cache-Control': 'public, max-age=31536000, immutable', 'Content-Length': String(b.length) }
-            });
+        const tmpFile = path.join('/tmp', 'data', 'blog.json');
+        if (fs.existsSync(tmpFile)) {
+          const posts = JSON.parse(fs.readFileSync(tmpFile, 'utf-8'));
+          const p = (Array.isArray(posts) ? posts : posts.posts || []).find(x => x.slug === slug);
+          if (p?.featured_image?.startsWith('data:')) {
+            const comma = p.featured_image.indexOf(',');
+            const mime2 = p.featured_image.slice(5, comma).split(';')[0] || 'image/jpeg';
+            const base64 = p.featured_image.slice(comma + 1);
+            return respond(Buffer.from(base64, 'base64'), mime2, 'public, max-age=31536000, immutable', isPng);
           }
         }
-      } catch { /* hard fallback to placeholder */ }
-      const svg = placeholderSVG(slug);
-      const b = Buffer.from(svg);
-      return new Response(b, {
-        status: 200,
-        headers: { 'Content-Type': isPngRequest ? 'image/png' : 'image/svg+xml', 'Cache-Control': 'public, max-age=3600', 'Content-Length': String(b.length) }
-      });
+      } catch {}
     }
 
-    // Legacy base64 image
-    if (typeof img !== 'string' || !img.startsWith('data:')) {
-      const svg = placeholderSVG(slug);
-      const buf = Buffer.from(svg);
-      return new Response(buf, {
-        status: 200,
-        headers: {
-          'Content-Type': isPngRequest ? 'image/png' : 'image/svg+xml',
-          'Cache-Control': 'public, max-age=3600',
-          'Content-Length': String(buf.length)
-        }
-      });
+    // Base64 image
+    if (typeof img === 'string' && img.startsWith('data:')) {
+      const comma = img.indexOf(',');
+      const mime = isPng ? 'image/png' : (img.slice(5, comma).split(';')[0] || 'image/jpeg');
+      const base64 = img.slice(comma + 1);
+      return respond(Buffer.from(base64, 'base64'), mime, 'public, max-age=31536000, immutable', isPng);
     }
-    const comma = img.indexOf(',');
-    const mime = isPngRequest ? 'image/png' : (img.slice(5, comma).split(';')[0] || 'image/jpeg');
-    const base64 = img.slice(comma + 1);
-    const buf = Buffer.from(base64, 'base64');
-    return new Response(buf, {
-      status: 200,
-      headers: {
-        'Content-Type': mime,
-        'Cache-Control': 'public, max-age=31536000, immutable',
-        'Content-Length': String(buf.length)
-      }
-    });
+
+    const svg = placeholderSVG(slug);
+    return respond(Buffer.from(svg), 'image/svg+xml', 'public, max-age=3600', isPng);
   } catch {
     return new Response(null, { status: 500 });
   }
