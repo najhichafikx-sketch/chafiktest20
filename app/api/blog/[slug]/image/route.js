@@ -1,4 +1,4 @@
-import { getBlogPostBySlug } from '@/lib/db';
+import { getBlogPostFeaturedImage } from '@/lib/db';
 import fs from 'fs';
 import path from 'path';
 
@@ -21,7 +21,7 @@ export async function GET(request, { params }) {
   try {
     const { slug } = await params;
     const isPngRequest = request.nextUrl.searchParams.get('__fmt') === 'png';
-    const post = await getBlogPostBySlug(slug);
+    const post = await getBlogPostFeaturedImage(slug);
 
     // No post or no image → return placeholder
     if (!post || !post.featured_image) {

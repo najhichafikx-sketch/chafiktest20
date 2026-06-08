@@ -151,11 +151,9 @@ export default async function BlogArticle({ params }) {
 
   const [dbPost, allDbPosts] = await Promise.all([getDbPost(slug), getAllDbPosts()]);
 
-  const isBase64Img = dbPost?.featured_image && dbPost.featured_image.startsWith('data:');
-  const isFileImg = dbPost?.featured_image && dbPost.featured_image.startsWith('/uploads/');
   const ver = dbPost?.updated_at || dbPost?.published_at || dbPost?.created_at || '';
   const imgVer = ver ? '?v=' + (typeof ver === 'string' ? ver.replace(/[^0-9]/g, '').slice(0, 14) : String(Date.now())) : '';
-  const featuredImage = isBase64Img ? `/api/blog/${slug}/image.png${imgVer}` : (isFileImg ? dbPost.featured_image : (dbPost?.featured_image || fallbackImage(post.slug)));
+  const featuredImage = `/api/blog/${slug}/image.png${imgVer}`;
 
   const seen = new Set();
   const mergedRelated = [];
