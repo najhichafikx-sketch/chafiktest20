@@ -5,6 +5,7 @@ import ChromeWrapper from '@/components/ChromeWrapper';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
 import MonetagServiceWorker from '@/components/MonetagServiceWorker';
 import SmartAdBootstrap from '@/components/SmartAdBootstrap';
+import ButtonCountdown from '@/components/ButtonCountdown';
 import { WebsiteSchema, OrganizationSchema, SoftwareAppSchema, JsonLd } from '@/lib/seo';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -67,6 +68,7 @@ export default function RootLayout({ children }) {
         <AnalyticsTracker />
         <MonetagServiceWorker />
         <SmartAdBootstrap />
+        <ButtonCountdown />
 
         <ChromeWrapper>
           {children}
