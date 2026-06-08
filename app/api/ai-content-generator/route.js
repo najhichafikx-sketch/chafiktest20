@@ -3,100 +3,177 @@ import { generateAIContent } from '@/lib/openrouter';
 
 export const dynamic = 'force-dynamic';
 
-const SYSTEM_PROMPT = `You are an elite SEO Content Strategist and Viral Copywriter with 15+ years experience.
+const CONTENT_TYPES = [
+  'blog-post', 'seo-article', 'social-media', 'product-description',
+  'landing-page', 'youtube-script', 'email-marketing', 'affiliate-content',
+  'pinterest-description', 'facebook-post', 'instagram-caption',
+  'tiktok-caption', 'linkedin-post', 'twitter-thread'
+];
 
-Generate highly optimized content that ranks on Google and drives viral engagement. Return ONLY valid JSON with no markdown.
+// Per-task model mapping for optimal quality + cost
+const MODEL_MAP = {
+  titles: 'google/gemini-2.5-pro',
+  keywords: 'google/gemini-2.5-pro',
+  content: 'anthropic/claude-sonnet-4.5',
+  social: 'openai/gpt-4o',
+  images: 'google/gemini-2.5-pro',
+  seo: 'openai/gpt-4o',
+};
 
-## SEO RULES FOR TITLES
-- Front-load the primary keyword within first 5 words
-- Match search intent (informational, transactional, commercial)
-- Include power words: proven, ultimate, essential, best, top, guide, 2026, secret, hacked, insane
-- Keep under 60 characters for Google SERP display
-- Use numbers, brackets, or parentheses to boost CTR
-- Score based on: keyword presence (30%), CTR potential (30%), emotional trigger (20%), clarity (20%)
+const TITLES_SYSTEM = `You are an elite SEO title strategist. Generate 10 click-worthy, SEO-optimized titles for the given topic.
 
-## SEO RULES FOR DESCRIPTIONS
-- YouTube: 200-350 words. Include primary keyword in first 2 sentences. 2-3 LSI keywords naturally placed. Strong CTA with subscribe/watch. Timestamp structure for long videos. Links to related content.
-- TikTok: 80-120 chars. Hook first line, question/poll to boost comments, trending sound mentions.
-- Instagram: 120-200 chars. Front-load keyword, line breaks for readability, 2-3 emojis, question for engagement, CTA to save/share.
-- Facebook: 150-250 chars. Story-style opening, curiosity gap, question to drive comments, link CTA.
+Rules:
+- Front-load primary keyword in first 5 words
+- Under 60 characters for Google SERP
+- Use power words: ultimate, best, top, guide, 2026, proven, essential, secret
+- Include numbers, brackets, or parentheses where natural
+- Match search intent (informational/transactional/commercial)
+- Score each title 0-100 based on CTR potential + keyword presence + emotional trigger + clarity
+- Include a brief reason explaining the score
 
-## HASHTAG STRATEGY
-- YouTube: 3 broad + 2 niche tags (total 5)
-- TikTok: 2 viral (1M+ posts) + 2 medium (100K+) + 2 niche (10K+)
-- Instagram: 3 viral + 4 medium + 5 niche + 3 branded (15 total max)
-- Facebook: 1 broad + 1 niche + 1 branded (3 total)
+Return ONLY valid JSON:
+{"titles":[{"score":95,"title":"...","reason":"..."}, ...]}`;
 
-## SEO NOTES
-- After each title, include exact reason for its score.
-- For each platform description, list 3 specific SEO keywords used.
-- Suggest 1 internal linking opportunity per platform.
+const KEYWORDS_SYSTEM = `You are an SEO keyword research expert. Analyze the topic and generate comprehensive keyword data.
 
-Return this exact JSON structure:
-{"titles":[{"score":95,"title":"...","reason":"Keyword front-loaded, power word \"ultimate\", clear search intent, under 60 chars"},{"score":88,"title":"...","reason":"..."},{"score":82,"title":"...","reason":"..."},{"score":76,"title":"...","reason":"..."},{"score":70,"title":"...","reason":"..."}],"descriptions":{"youtube":"...","tiktok":"...","instagram":"...","facebook":"..."},"hashtags":{"youtube":["tag1","tag2","tag3","tag4","tag5"],"tiktok":["tag1","tag2","tag3","tag4","tag5","tag6"],"instagram":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8","tag9","tag10","tag11","tag12","tag13","tag14","tag15"],"facebook":["tag1","tag2","tag3"]},"seoNotes":{"titles":"Primary keyword: [keyword]. Front-loaded in title 1, 2, 3. Intent: [informational/transactional]. Top pick because [reason].","youtube":"Keywords used: [kw1, kw2, kw3]. Suggested internal link: /blog/related-article","tiktok":"Viral keywords: [kw1, kw2]. Trending sound suggestion: [sound_name]","instagram":"Niche keywords: [kw1, kw2, kw3]. Best posting time: [time]","facebook":"Engagement keywords: [kw1, kw2]. Suggested link: /tools/related-tool"}}`;
+Return ONLY valid JSON:
+{
+  "primary": ["keyword1", "keyword2"],
+  "secondary": ["keyword3", "keyword4"],
+  "longTail": ["long tail keyword 1", "long tail keyword 2"],
+  "lsi": ["related term 1", "related term 2"],
+  "questions": ["question 1?", "question 2?"],
+  "searchIntent": "Informational / Transactional / Commercial / Navigational",
+  "difficulty": "Easy / Medium / Hard",
+  "opportunities": ["Content gap 1", "Content gap 2"]
+}`;
+
+const CONTENT_SYSTEM = `You are a world-class copywriter and content strategist. Write a comprehensive, engaging, SEO-optimized piece.
+
+Requirements:
+- Human-like, natural writing (not AI-sounding)
+- SEO optimized with primary + LSI keywords throughout
+- Proper H1/H2/H3 heading hierarchy
+- Internal linking suggestions in [brackets]
+- Clear CTAs
+- Readable for target audience
+- 800-2000 words depending on content type
+- Include introduction, body sections, and conclusion
+
+Write the full content. Return ONLY the content text with markdown headings.`;
+
+const SOCIAL_SYSTEM = `You are a social media content strategist. Generate platform-optimized content for all major platforms.
+
+Return ONLY valid JSON:
+{
+  "facebook": {"text":"...","cta":"...","hashtags":["#tag1","#tag2"]},
+  "instagram": {"caption":"...","hook":"...","hashtags":["#tag1","#tag2"]},
+  "tiktok": {"caption":"...","hooks":["hook1","hook2"],"hashtags":["#tag1","#tag2"]},
+  "youtube": {"title":"...","description":"...","tags":["tag1","tag2"],"hooks":["hook1","hook2"]},
+  "pinterest": {"pinTitle":"...","pinDescription":"...","keywords":["kw1","kw2"]},
+  "linkedin": {"post":"...","cta":"..."},
+  "twitter": {"thread":"...","hook":"..."}
+}`;
+
+const IMAGES_SYSTEM = `You are an expert AI prompt engineer specialized in marketing visuals. Generate highly detailed, commercial-quality image prompts based on the content.
+
+For each image type, generate 3 prompts: Standard, Advanced, Negative.
+
+Return ONLY valid JSON:
+{
+  "featured": {"standard":"...","advanced":"...","negative":"..."},
+  "social": {"standard":"...","advanced":"...","negative":"..."},
+  "blogBanner": {"standard":"...","advanced":"...","negative":"..."},
+  "youtubeThumbnail": {"standard":"...","advanced":"...","negative":"..."},
+  "pinterestPin": {"standard":"...","advanced":"...","negative":"..."}
+}`;
+
+const SEO_SYSTEM = `You are an SEO specialist. Generate complete SEO metadata for the given content.
+
+Return ONLY valid JSON:
+{
+  "title": "SEO title under 60 chars",
+  "metaDescription": "Meta description under 160 chars",
+  "focusKeyword": "primary keyword",
+  "slug": "url-friendly-slug",
+  "ogTitle": "Open Graph title",
+  "ogDescription": "Open Graph description",
+  "twitterCard": "Twitter card description"
+}`;
 
 function safeJsonParse(text) {
   if (!text) return null;
-  const cleaned = String(text).replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+  const cleaned = String(text).replace(/```json\s*/gi, '').replace(/```\s*/gi, '').replace(/```\s*$/gi, '').trim();
   try { return JSON.parse(cleaned); } catch {}
   const match = cleaned.match(/\{[\s\S]*\}/);
   if (match) { try { return JSON.parse(match[0]); } catch {} }
   return null;
 }
 
-function detectLanguage(text) {
-  if (!text) return 'en';
-  const sample = String(text).slice(0, 500);
-  return /[\u0600-\u06FF]/.test(sample) ? 'ar' : 'en';
+async function callModel({ prompt, systemPrompt, model, temperature = 0.5, maxTokens = 2000 }) {
+  const raw = await generateAIContent({
+    prompt, systemPrompt,
+    model, toolId: 'ai-content-generator',
+    temperature, maxTokens
+  });
+  return safeJsonParse(raw);
 }
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { topic, platform, lang } = body;
+    const { topic, keyword, niche, targetAudience, lang, contentType } = body;
 
-    if (!topic || typeof topic !== 'string' || topic.trim().length < 2) {
+    if (!topic || topic.trim().length < 2) {
       return NextResponse.json({ success: false, error: 'Topic must be at least 2 characters' }, { status: 400 });
     }
 
-    const validPlatforms = ['youtube', 'tiktok', 'instagram', 'facebook'];
-    const platformClean = validPlatforms.includes(platform) ? platform : 'youtube';
+    const contentTypeClean = CONTENT_TYPES.includes(contentType) ? contentType : 'seo-article';
     const langClean = lang === 'ar' ? 'ar' : 'en';
-
     const langInstruction = langClean === 'ar'
-      ? 'Respond entirely in Arabic (العربية) for titles, descriptions, and hashtag text. Keep platform names and technical terms in English.'
+      ? 'Respond entirely in Arabic (العربية). Keep technical terms in English.'
       : 'Respond entirely in English.';
 
-    const userPrompt = `Platform: ${platformClean}\nTopic: ${topic}\n\n${langInstruction}\n\nGenerate the content now.`;
+    const context = `Topic: ${topic.trim()}\nKeyword: ${keyword || topic.trim()}\nNiche: ${niche || 'General'}\nTarget Audience: ${targetAudience || 'General'}\nContent Type: ${contentTypeClean.replace(/-/g, ' ')}\n\n${langInstruction}`;
 
-    const raw = await generateAIContent({
-      prompt: userPrompt,
-      systemPrompt: SYSTEM_PROMPT,
-      toolId: 'ai-content-generator',
-      maxTokens: 2048,
-      temperature: 0.7
+    // Call 1: Titles + Keywords in parallel (Gemini - fast)
+    const [titlesData, keywordsData] = await Promise.all([
+      callModel({ prompt: `${context}\n\nGenerate 10 SEO titles.`, systemPrompt: TITLES_SYSTEM, model: MODEL_MAP.titles, maxTokens: 2000 }),
+      callModel({ prompt: `${context}\n\nGenerate comprehensive keyword research.`, systemPrompt: KEYWORDS_SYSTEM, model: MODEL_MAP.keywords, maxTokens: 1500 })
+    ]);
+
+    // Call 2: Full content (Claude - best writing)
+    const bestTitle = titlesData?.titles?.[0]?.title || topic;
+    const contentPrompt = `${context}\n\nTitle: ${bestTitle}\n\nWrite the full content now.`;
+    const contentRaw = await generateAIContent({
+      prompt: contentPrompt, systemPrompt: CONTENT_SYSTEM,
+      model: MODEL_MAP.content, toolId: 'ai-content-generator',
+      temperature: 0.6, maxTokens: 4096
     });
+    const content = String(contentRaw).replace(/^```markdown\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
 
-    const parsed = safeJsonParse(raw);
+    // Call 3: Social media + Image prompts + SEO in parallel (GPT-4o + Gemini)
+    const [socialData, imagesData, seoData] = await Promise.all([
+      callModel({ prompt: `${context}\n\nContent excerpt: ${content.slice(0, 1000)}\n\nGenerate social media content for all platforms.`, systemPrompt: SOCIAL_SYSTEM, model: MODEL_MAP.social, maxTokens: 2500 }),
+      callModel({ prompt: `${context}\n\nTopic: ${bestTitle}\n\nGenerate commercial-quality image prompts for marketing visuals.`, systemPrompt: IMAGES_SYSTEM, model: MODEL_MAP.images, maxTokens: 2000 }),
+      callModel({ prompt: `${context}\n\nTitle: ${bestTitle}\nContent preview: ${content.slice(0, 500)}\n\nGenerate complete SEO metadata.`, systemPrompt: SEO_SYSTEM, model: MODEL_MAP.seo, maxTokens: 1000 })
+    ]);
 
-    if (!parsed || !parsed.titles || !parsed.descriptions || !parsed.hashtags) {
-      return NextResponse.json({ success: false, error: 'AI returned invalid format. Try again.', raw }, { status: 422 });
-    }
-
-    const data = {
-      topic: topic.trim(),
-      platform: platformClean,
-      lang: langClean,
-      titles: parsed.titles,
-      descriptions: parsed.descriptions,
-      hashtags: parsed.hashtags
-    };
-
-    if (parsed.seoNotes) {
-      data.seoNotes = parsed.seoNotes;
-    }
-
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({
+      success: true,
+      data: {
+        topic: topic.trim(),
+        keyword: keyword || topic.trim(),
+        contentType: contentTypeClean,
+        lang: langClean,
+        titles: titlesData?.titles || [],
+        keywords: keywordsData || {},
+        content,
+        socialMedia: socialData || {},
+        imagePrompts: imagesData || {},
+        seo: seoData || {}
+      }
+    });
   } catch (err) {
     return NextResponse.json({ success: false, error: err.message || 'Server error' }, { status: 500 });
   }

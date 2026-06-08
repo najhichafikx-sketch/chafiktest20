@@ -103,7 +103,7 @@ function QuickToolsSidebar() {
           <span>📝</span><span className="gfs-text">SEO Generator</span>
         </Link>
         <Link href="/tools/ai-content-generator" className="gfs-link">
-          <span>🤖</span><span className="gfs-text">Content AI</span>
+          <span>📢</span><span className="gfs-text">Content AI</span>
         </Link>
         <Link href="/tools/ai-humanizer" className="gfs-link">
           <span>🧠</span><span className="gfs-text">AI Humanizer</span>
