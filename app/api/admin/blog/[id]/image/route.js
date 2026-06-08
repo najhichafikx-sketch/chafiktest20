@@ -87,10 +87,28 @@ export async function POST(request, { params }) {
     fs.writeFileSync(filePath, buf);
     const publicUrl = `/uploads/blog/${filename}`;
 
-    await query(
-      'UPDATE blog_posts SET featured_image = $1, has_image = TRUE, updated_at = NOW() WHERE id = $2',
-      [publicUrl, numId]
-    );
+    // Update DB (best-effort)
+    try {
+      await query(
+        'UPDATE blog_posts SET featured_image = $1, has_image = TRUE, updated_at = NOW() WHERE id = $2',
+        [publicUrl, numId]
+      );
+    } catch { /* DB unavailable */ }
+
+    // Also update JSON file for fallback
+    try {
+      const jsonFile = path.join(process.cwd(), 'data', 'blog.json');
+      if (fs.existsSync(jsonFile)) {
+        let posts = JSON.parse(fs.readFileSync(jsonFile, 'utf-8'));
+        if (!Array.isArray(posts)) posts = posts.posts || [];
+        const idx = posts.findIndex(p => Number(p.id) === numId || p.id === id);
+        if (idx !== -1) {
+          posts[idx].featured_image = publicUrl;
+          posts[idx].has_image = true;
+          fs.writeFileSync(jsonFile, JSON.stringify(posts, null, 2), 'utf-8');
+        }
+      }
+    } catch { /* JSON update best-effort */ }
 
     return Response.json({
       success: true,
