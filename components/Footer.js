@@ -25,6 +25,7 @@ export default function Footer() {
             <h4>Content Tools</h4>
             <Link href="/tools/seo-article-generator">SEO Article Generator</Link>
             <Link href="/tools/video-to-prompt">Video to Prompt</Link>
+            <Link href="/tools/ai-content-generator">AI Content Generator</Link>
             <Link href="/tools/ai-humanizer">AI Humanizer</Link>
             <Link href="/tools/prompt-viral">Prompt Viral</Link>
             <Link href="/tools/prompt-article">Article Prompt Generator</Link>
@@ -100,6 +101,9 @@ function QuickToolsSidebar() {
         </Link>
         <Link href="/tools/seo-article-generator" className="gfs-link">
           <span>📝</span><span className="gfs-text">SEO Generator</span>
+        </Link>
+        <Link href="/tools/ai-content-generator" className="gfs-link">
+          <span>🤖</span><span className="gfs-text">Content AI</span>
         </Link>
         <Link href="/tools/ai-humanizer" className="gfs-link">
           <span>🧠</span><span className="gfs-text">AI Humanizer</span>

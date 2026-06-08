@@ -74,7 +74,8 @@ function ToolsSection() {
         <CategorySection title="Content Creation" desc="Generate, optimize, and humanize content that ranks and converts.">
           <ToolCard href="/seo-tools" icon="📝" name="SEO Tools" desc="11 powerful AI-driven SEO tools: keyword research, ranking checks, meta tags, and more." />
           <ToolCard href="/ai-writing-tools" icon="✍️" name="AI Writing Tools" desc="Professional tools powered by AI to create and optimize your content." />
-          <ToolCard href="/tools/ai-humanizer" icon="🤖" name="AI Content Detector & Humanizer" desc="Detect AI-generated text instantly and rewrite it to sound naturally human, engaging, and SEO-ready." />
+          <ToolCard href="/tools/ai-content-generator" icon="🤖" name="AI Content Generator" desc="Generate viral titles, platform-optimized descriptions, and hashtags for YouTube, TikTok, Instagram, and Facebook in one click." />
+          <ToolCard href="/tools/ai-humanizer" icon="🧠" name="AI Content Detector & Humanizer" desc="Detect AI-generated text instantly and rewrite it to sound naturally human, engaging, and SEO-ready." />
         </CategorySection>
 
         <CategorySection title="AI Prompt Tools" desc="Transform images and videos into detailed AI prompts for any generator.">

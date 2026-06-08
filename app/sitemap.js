@@ -8,7 +8,7 @@ export default function sitemap() {
   ];
   const tools = [
     'seo-article-generator', 'image-to-prompt', 'video-to-prompt', 'tiktok-tools',
-    'youtube-suite', 'youtube-creator', 'ai-humanizer', 'prompt-viral', 'prompt-article',
+    'youtube-suite', 'youtube-creator', 'ai-content-generator', 'ai-humanizer', 'prompt-viral', 'prompt-article',
     'ad-copy-generator', 'amazon-listing-generator', 'digital-product-creator',
     'digital-product-email-writer', 'digital-product-name-generator',
     'dropshipping-research', 'etsy-listing-generator', 'landing-page-generator',
@@ -22,7 +22,7 @@ export default function sitemap() {
     'comment-reply-generator', 'video-content-repurposer'
   ];
   const blogArticles = [
-    'ai-seo-article-generator', 'image-to-prompt-ai', 'video-to-prompt-ai',
+    'ai-content-generator-guide', 'image-to-prompt-ai', 'video-to-prompt-ai',
     'tiktok-ai-tools', 'youtube-ai-suite', 'ai-humanizer-guide',
     'ai-ad-copy-generator', 'amazon-ai-listing', 'ai-product-descriptions',
     'etsy-ai-listing', 'ai-landing-page-generator', 'ai-sales-copy',
