@@ -563,7 +563,8 @@ function TestVideo({ labSessions, runTest, data, setData, showNotif }) {
     if (labSessions < 1) { showNotif('No test screens remaining. Buy more screens first.'); return; }
     setRunning(true);
 
-    await runTest();
+    const testRes = await runTest();
+    if (testRes?.error) { showNotif(testRes.error); setRunning(false); return; }
 
     const video = data.submitted.find(v => v.id === selectedVideo);
     let output;
