@@ -58,7 +58,8 @@ export async function POST(request) {
 
     return response;
   } catch (err) {
-    await writeLog('ERROR', 'Registration error', { error: err.message });
+    console.error('Registration error:', err?.message || err);
+    await writeLog('ERROR', 'Registration error', { error: err?.message || 'unknown' });
     return Response.json({ success: false, message: 'Server error during registration' }, { status: 500 });
   }
 }
