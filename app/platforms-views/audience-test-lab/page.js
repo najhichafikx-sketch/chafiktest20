@@ -120,7 +120,7 @@ export default function AudienceTestLabPage() {
         {tab === 'dashboard' && <Dashboard data={data} labPoints={labPoints} labSessions={labSessions} labEarned={labEarned} labSpent={labSpent} />}
         {tab === 'submit' && <SubmitVideo data={data} setData={setData} showNotif={showNotif} />}
         {tab === 'watch' && <WatchAndEarn data={data} setData={setData} earn={earn} showNotif={showNotif} dailyEarned={dailyEarned} updateEarned={updateEarned} />}
-        {tab === 'screens' && <BuyScreens labPoints={labPoints} labSessions={labSessions} purchase={purchase} showNotif={showNotif} />}
+        {tab === 'screens' && <BuyScreens labPoints={labPoints} labSessions={labSessions} purchase={purchase} showNotif={showNotif} data={data} setData={setData} />}
         {tab === 'test' && <TestVideo labSessions={labSessions} runTest={runTest} data={data} setData={setData} showNotif={showNotif} />}
         {tab === 'results' && <Results data={data} />}
       </div>
@@ -479,10 +479,18 @@ function WatchAndEarn({ data, setData, earn, showNotif, dailyEarned, updateEarne
 }
 
 /* ════════════════════════════════════════
-   BUY SCREENS
+   BUY SCREENS + PROMOTE VIDEO
    ════════════════════════════════════════ */
-function BuyScreens({ labPoints, labSessions, purchase, showNotif }) {
+function extractVideoId(input) {
+  const m = input.match(/(?:youtube\.com\/.*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : input;
+}
+
+function BuyScreens({ labPoints, labSessions, purchase, showNotif, data, setData }) {
   const [buying, setBuying] = useState(null);
+  const [promoting, setPromoting] = useState(null);
+  const [promoUrl, setPromoUrl] = useState('');
+  const [promoTitle, setPromoTitle] = useState('');
 
   const handleBuy = async (pkg) => {
     setBuying(pkg.screens);
@@ -490,6 +498,18 @@ function BuyScreens({ labPoints, labSessions, purchase, showNotif }) {
     if (res.error) showNotif(res.error);
     else showNotif(`Purchased ${pkg.screens} screens for ${pkg.cost} points!`);
     setBuying(null);
+  };
+
+  const handlePromote = async (pkg) => {
+    if (!promoUrl) { showNotif('Paste a YouTube video URL first'); return; }
+    setPromoting(pkg.screens);
+    const res = await purchase(pkg.screens);
+    if (res.error) { showNotif(res.error); setPromoting(null); return; }
+    const vid = extractVideoId(promoUrl);
+    const entry = { id: 'PROMO-' + Date.now().toString(36).toUpperCase(), url: vid, title: promoTitle || 'Promoted Video', duration: 2, submittedAt: Date.now(), promoted: true, views: pkg.screens };
+    setData({ ...data, submitted: [...data.submitted, entry] });
+    setPromoUrl(''); setPromoTitle(''); setPromoting(null);
+    showNotif(`Promoted! ${pkg.screens} views added to your video for ${pkg.cost} pts`);
   };
 
   return (
@@ -514,25 +534,44 @@ function BuyScreens({ labPoints, labSessions, purchase, showNotif }) {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
         {SCREEN_PACKAGES.map((pkg, i) => {
           const canBuy = labPoints >= pkg.cost;
           const saving = i === 0 ? 0 : Math.round((1 - pkg.cost / (pkg.screens * 2.5)) * 100);
           return (
             <div key={i} className="glass-card" style={{ padding: 24, textAlign: 'center', border: canBuy ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(100,100,120,0.15)', opacity: canBuy ? 1 : 0.5 }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: 8 }}>🖥️</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--neon-cyan)', marginBottom: 4 }}>{pkg.screens}</div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: 12 }}>Test Screens</div>
-              <div style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: 4 }}>{pkg.cost} points</div>
-              {saving > 0 && <div style={{ fontSize: '0.75rem', color: 'var(--neon-green)', marginBottom: 12 }}>Save {saving}% vs single</div>}
+              <div style={{ fontSize: '2rem', marginBottom: 4 }}>🖥️</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--neon-cyan)', marginBottom: 2 }}>{pkg.screens}</div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 8 }}>Test Screens</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 2 }}>{pkg.cost} points</div>
+              {saving > 0 && <div style={{ fontSize: '0.7rem', color: 'var(--neon-green)', marginBottom: 8 }}>Save {saving}% vs single</div>}
               <button
                 className={`btn ${canBuy ? 'btn-primary' : 'btn-outline'}`}
-                style={{ width: '100%' }}
+                style={{ width: '100%', marginBottom: 8 }}
                 onClick={() => handleBuy(pkg)}
                 disabled={!canBuy || buying === pkg.screens}
               >
-                {buying === pkg.screens ? 'Processing...' : canBuy ? 'Buy Now' : 'Need ' + (pkg.cost - labPoints) + ' more pts'}
+                {buying === pkg.screens ? 'Processing...' : canBuy ? 'Buy Screens' : 'Need ' + (pkg.cost - labPoints) + ' more pts'}
               </button>
+              <hr style={{ border: 'none', borderTop: '1px solid rgba(100,100,120,0.15)', margin: '12px 0' }} />
+              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--neon-purple)', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                <span>📹</span> Promote Your Video <span>👇</span>
+              </div>
+              <input className="form-input" type="url" placeholder="YouTube URL..." value={promoUrl} onChange={e => setPromoUrl(e.target.value)} style={{ marginBottom: 6, fontSize: '0.8rem', padding: '6px 10px' }} />
+              <input className="form-input" type="text" placeholder="Title (optional)" value={promoTitle} onChange={e => setPromoTitle(e.target.value)} style={{ marginBottom: 8, fontSize: '0.8rem', padding: '6px 10px' }} />
+              <button
+                className={`btn ${canBuy && promoUrl ? 'btn-accent' : 'btn-outline'}`}
+                style={{ width: '100%', background: canBuy && promoUrl ? 'linear-gradient(135deg,#6c63ff,#f72585)' : undefined }}
+                onClick={() => handlePromote(pkg)}
+                disabled={!canBuy || !promoUrl || promoting === pkg.screens}
+              >
+                {promoting === pkg.screens ? 'Promoting...' : canBuy && promoUrl ? `Promote → ${pkg.screens} views` : !promoUrl ? 'Paste URL above' : 'Need ' + (pkg.cost - labPoints) + ' more pts'}
+              </button>
+              {promoUrl && (
+                <div style={{ marginTop: 8, borderRadius: 6, overflow: 'hidden', position: 'relative', paddingTop: '56.25%' }}>
+                  <iframe src={`https://www.youtube.com/embed/${extractVideoId(promoUrl)}?autoplay=0&controls=1&rel=0`} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none', borderRadius: 6 }} allow="accelerometer; encrypted-media; gyroscope" allowFullScreen />
+                </div>
+              )}
             </div>
           );
         })}
