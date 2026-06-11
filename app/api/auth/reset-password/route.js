@@ -33,18 +33,24 @@ export async function POST(request) {
     return Response.json({ success: false, message: 'Password must contain at least one letter and one number' }, { status: 400 });
   }
 
-  const user = await findUserByResetToken(token);
-  if (!user) {
-    return Response.json({ success: false, message: 'Invalid or expired reset token' }, { status: 400 });
+  try {
+    const user = await findUserByResetToken(token);
+    if (!user) {
+      return Response.json({ success: false, message: 'Invalid or expired reset token' }, { status: 400 });
+    }
+
+    const salt = crypto.randomBytes(32).toString('hex');
+    const hash = crypto.pbkdf2Sync(password, salt, 600000, 64, 'sha512').toString('hex');
+
+    const updated = await updatePasswordById(user.id, hash, salt);
+    if (!updated) {
+      return Response.json({ success: false, message: 'Failed to reset password' }, { status: 500 });
+    }
+
+    return Response.json({ success: true, message: 'Password reset successful' });
+  } catch (err) {
+    const msg = err?.message || err?.toString() || 'Unknown error';
+    const isConfigError = msg.includes('Supabase not configured');
+    return Response.json({ success: false, message: isConfigError ? msg : 'Server error' }, { status: isConfigError ? 503 : 500 });
   }
-
-  const salt = crypto.randomBytes(32).toString('hex');
-  const hash = crypto.pbkdf2Sync(password, salt, 600000, 64, 'sha512').toString('hex');
-
-  const updated = await updatePasswordById(user.id, hash, salt);
-  if (!updated) {
-    return Response.json({ success: false, message: 'Failed to reset password' }, { status: 500 });
-  }
-
-  return Response.json({ success: true, message: 'Password reset successful' });
 }

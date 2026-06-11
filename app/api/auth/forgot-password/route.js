@@ -19,26 +19,30 @@ export async function POST(request) {
     return Response.json({ success: false, message: 'Valid email is required' }, { status: 400 });
   }
 
-  const user = await findUser(email);
-  if (!user) {
-    return Response.json({ success: true, message: 'If this email exists, a reset link has been sent' });
-  }
-
-  const resetToken = crypto.randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
-
-  await setResetToken(email, resetToken, expiresAt);
-
-  const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.chafiktech.com';
-  const resetLink = `${origin}/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
-
   try {
-    await sendResetEmail(email, resetLink);
-  } catch {
-    return Response.json({ success: true, message: 'If this email exists, a reset link has been sent' });
-  }
+    const user = await findUser(email);
+    if (!user) {
+      return Response.json({ success: true, message: 'If this email exists, a reset link has been sent' });
+    }
 
-  return Response.json({ success: true, message: 'If this email exists, a reset link has been sent' });
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+
+    await setResetToken(email, resetToken, expiresAt);
+
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.chafiktech.com';
+    const resetLink = `${origin}/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
+
+    try {
+      await sendResetEmail(email, resetLink);
+    } catch {}
+
+    return Response.json({ success: true, message: 'If this email exists, a reset link has been sent' });
+  } catch (err) {
+    const msg = err?.message || err?.toString() || 'Unknown error';
+    const isConfigError = msg.includes('Supabase not configured');
+    return Response.json({ success: false, message: isConfigError ? msg : 'Server error' }, { status: isConfigError ? 503 : 500 });
+  }
 }
 
 async function sendResetEmail(to, link) {

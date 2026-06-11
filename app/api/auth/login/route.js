@@ -75,7 +75,9 @@ export async function POST(request) {
 
     return response;
   } catch (err) {
-    await writeLog('ERROR', 'Login error', { error: err.message });
-    return Response.json({ success: false, message: 'Server error' }, { status: 500 });
+    const msg = err?.message || err?.toString() || 'Unknown error';
+    await writeLog('ERROR', 'Login error', { error: msg });
+    const isConfigError = msg.includes('Supabase not configured');
+    return Response.json({ success: false, message: isConfigError ? msg : 'Server error' }, { status: isConfigError ? 503 : 500 });
   }
 }

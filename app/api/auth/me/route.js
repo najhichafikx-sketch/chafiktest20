@@ -34,6 +34,8 @@ export async function GET(request) {
       }
     });
   } catch (err) {
-    return Response.json({ success: false, message: 'Server error' }, { status: 500 });
+    const msg = err?.message || err?.toString() || 'Unknown error';
+    const isConfigError = msg.includes('Supabase not configured');
+    return Response.json({ success: false, message: isConfigError ? msg : 'Server error' }, { status: isConfigError ? 503 : 500 });
   }
 }
