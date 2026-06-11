@@ -12,6 +12,7 @@ const TOOLS = [
   { name: 'Image to Prompt', url: '/tools/image-to-prompt', icon: '📸', cat: 'Image AI' },
   { name: 'Product Image Enhancer', url: '/tools/product-image-enhancer', icon: '🖼️', cat: 'Image AI' },
   { name: 'Watermark Remover', url: '/tools/watermark-remover', icon: '🧹', cat: 'Image AI' },
+  { name: 'PNG to WebP Converter', url: '/tools/png-to-webp', icon: '🖼️', cat: 'Image AI' },
   { name: 'Video to Prompt', url: '/tools/video-to-prompt', icon: '🎬', cat: 'Video AI' },
   { name: 'YouTube Suite', url: '/tools/youtube-suite', icon: '▶️', cat: 'Video AI' },
   { name: 'Ad Copy Generator', url: '/tools/ad-copy-generator', icon: '📢', cat: 'Marketing' },
