@@ -161,6 +161,8 @@ export default async function BlogArticle({ params }) {
   for (const p of allDbPosts) {
     if (p?.slug && p.slug !== post.slug && !seen.has(p.slug)) {
       seen.add(p.slug);
+      const rVer = p.updated_at || p.published_at || p.created_at || '';
+      const rImgVer = rVer ? '?v=' + (typeof rVer === 'string' ? rVer.replace(/[^0-9]/g, '').slice(0, 14) : '0') : '';
       mergedRelated.push({
         slug: p.slug,
         title: p.title,
@@ -168,7 +170,8 @@ export default async function BlogArticle({ params }) {
         excerpt: p.excerpt || p.meta_description || '',
         reading_time: p.reading_time || 5,
         featured_image: p.featured_image || '',
-        has_file_image: p.has_file_image || (typeof p.featured_image === 'string' && p.featured_image.startsWith('/uploads/'))
+        has_file_image: p.has_file_image || (typeof p.featured_image === 'string' && p.featured_image.startsWith('/uploads/')),
+        imgVer: rImgVer
       });
     }
   }
@@ -287,6 +290,15 @@ export default async function BlogArticle({ params }) {
               <span>{post.reading_time} min read</span>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', marginTop: 16 }}>{post.excerpt}</p>
+            {featuredImage && (
+              <div style={{ marginTop: 24, borderRadius: 10, overflow: 'hidden' }}>
+                <img
+                  src={featuredImage}
+                  alt={post.title}
+                  style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 10, aspectRatio: '16/9', objectFit: 'cover' }}
+                />
+              </div>
+            )}
           </div>
 
           {dbPost?.external_link && (
@@ -355,7 +367,7 @@ export default async function BlogArticle({ params }) {
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, marginBottom: 24 }}>Related Articles</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 16 }}>
               {relatedPosts.map(rp => {
-                const img = `/api/blog/${rp.slug}/image.png`;
+                const img = `/api/blog/${rp.slug}/image.png${rp.imgVer || ''}`;
                 return (
                   <Link key={rp.slug} href={`/blog/${rp.slug}`} className="related-card">
                     <div className="related-card-image">

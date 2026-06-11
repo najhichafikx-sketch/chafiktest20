@@ -22,7 +22,7 @@ function respond(buf, contentType, cache, isPng) {
     status: 200,
     headers: {
       'Content-Type': isPng ? 'image/png' : contentType,
-      'Cache-Control': cache,
+      'Cache-Control': 'no-cache, must-revalidate',
       'Content-Length': String(buf.length)
     }
   });
