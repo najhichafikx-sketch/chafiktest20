@@ -194,6 +194,7 @@ export default function EditBlogPost() {
             .then(r => r.json())
             .then(d => {
               if (d.success) {
+                set('featured_image', d.url);
                 setMessage(`✅ Image saved! (${formatSize(finalSize)}) — visible now`);
               } else {
                 setMessage(`⚠️ Image ready but save failed: ${d.message}. Will retry on Save.`);
@@ -276,7 +277,20 @@ export default function EditBlogPost() {
       const data = await res.json();
       if (data.success) {
         setMessage('Saved successfully!');
-        if (isNew) router.push(`/admin/blog/edit/${form.slug}`);
+        if (isNew) {
+          const newId = data.id;
+          const token = localStorage.getItem('admin_token');
+          if (newId && form.featured_image && form.featured_image.startsWith('data:') && token) {
+            fetch(`/api/admin/blog/${newId}/image`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+              body: JSON.stringify({ image: form.featured_image })
+            }).then(r => r.json()).then(d => {
+              if (d.success) set('featured_image', d.url);
+            }).catch(() => {});
+          }
+          router.push(`/admin/blog/edit/${form.slug}`);
+        }
       } else {
         setMessage('Error: ' + (data.message || 'Save failed'));
       }
