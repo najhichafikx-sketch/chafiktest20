@@ -21,6 +21,7 @@ export default function WatermarkRemover() {
   const [viewMode, setViewMode] = useState('split');
   const [splitPos, setSplitPos] = useState(0.5);
   const [hasMask, setHasMask] = useState(false);
+  const [undoCount, setUndoCount] = useState(0);
 
   const imageRef = useRef(null);
   const imageDataRef = useRef(null);
@@ -121,36 +122,6 @@ export default function WatermarkRemover() {
     }
   }, [isProcessing, step]);
 
-  const saveUndo = useCallback(() => {
-    const mc = maskCanvasRef.current;
-    if (!mc) return;
-    const ctx = mc.getContext('2d');
-    const snap = ctx.getImageData(0, 0, mc.width, mc.height);
-    const stack = undoStackRef.current;
-    stack.push(snap);
-    if (stack.length > UNDO_LIMIT) stack.shift();
-  }, []);
-
-  const undo = useCallback(() => {
-    const stack = undoStackRef.current;
-    if (stack.length === 0) return;
-    const mc = maskCanvasRef.current;
-    if (!mc) return;
-    const ctx = mc.getContext('2d');
-    const snap = stack.pop();
-    ctx.putImageData(snap, 0, 0);
-    checkMask();
-  }, []);
-
-  const clearMask = useCallback(() => {
-    const mc = maskCanvasRef.current;
-    if (!mc) return;
-    const ctx = mc.getContext('2d');
-    ctx.clearRect(0, 0, mc.width, mc.height);
-    undoStackRef.current = [];
-    setHasMask(false);
-  }, []);
-
   const checkMask = useCallback(() => {
     const mc = maskCanvasRef.current;
     if (!mc) return;
@@ -161,6 +132,16 @@ export default function WatermarkRemover() {
       if (d.data[i] > 16) { has = true; break; }
     }
     setHasMask(has);
+  }, []);
+
+  const clearMask = useCallback(() => {
+    const mc = maskCanvasRef.current;
+    if (!mc) return;
+    const ctx = mc.getContext('2d');
+    ctx.clearRect(0, 0, mc.width, mc.height);
+    undoStackRef.current = [];
+    setHasMask(false);
+    setUndoCount(0);
   }, []);
 
   const getPointerPos = useCallback((e) => {
@@ -174,68 +155,6 @@ export default function WatermarkRemover() {
       y: (e.clientY - rect.top) * scaleY
     };
   }, []);
-
-  const startDrawing = useCallback((e) => {
-    e.preventDefault();
-    if (isProcessing) return;
-    isDrawingRef.current = true;
-    const pos = getPointerPos(e);
-    drawStartRef.current = pos;
-    lastPointRef.current = pos;
-    if (toolRef.current === 'brush' || toolRef.current === 'eraser') {
-      saveUndo();
-      drawAt(pos);
-    }
-  }, [isProcessing, getPointerPos, saveUndo]);
-
-  const draw = useCallback((e) => {
-    e.preventDefault();
-    if (!isDrawingRef.current) return;
-    const pos = getPointerPos(e);
-    const last = lastPointRef.current;
-    if (toolRef.current === 'brush' || toolRef.current === 'eraser') {
-      const step = brushSizeRef.current / 6;
-      const dist = Math.hypot(pos.x - last.x, pos.y - last.y);
-      if (dist > step) {
-        const steps = Math.ceil(dist / step);
-        for (let i = 0; i <= steps; i++) {
-          const t = i / steps;
-          drawAt({ x: last.x + (pos.x - last.x) * t, y: last.y + (pos.y - last.y) * t });
-        }
-      } else {
-        drawAt(pos);
-      }
-    }
-    if (toolRef.current === 'rect') {
-      previewRect(pos);
-    }
-    if (toolRef.current === 'lasso') {
-      drawLassoTo(pos);
-    }
-    lastPointRef.current = pos;
-  }, [getPointerPos]);
-
-  const endDrawing = useCallback((e) => {
-    if (e?.preventDefault) e.preventDefault();
-    if (!isDrawingRef.current) return;
-    isDrawingRef.current = false;
-    if (toolRef.current === 'rect') {
-      saveUndo();
-      const pos = getPointerPos(e);
-      finishRect(pos);
-    }
-    if (toolRef.current === 'lasso') {
-      saveUndo();
-      finishLasso();
-    }
-    checkMask();
-  }, [getPointerPos, saveUndo, checkMask]);
-
-  const drawAtRef = useRef(null);
-  const toolRef = useRef(tool);
-  const brushSizeRef = useRef(brushSize);
-  useEffect(() => { toolRef.current = tool; }, [tool]);
-  useEffect(() => { brushSizeRef.current = brushSize; }, [brushSize]);
 
   const drawAt = useCallback((pos) => {
     const mc = maskCanvasRef.current;
@@ -251,7 +170,9 @@ export default function WatermarkRemover() {
     setHasMask(true);
   }, []);
 
-  drawAtRef.current = drawAt;
+  const drawAtRef = useRef(null);
+  const lassoPathRef = useRef(null);
+  useEffect(() => { drawAtRef.current = drawAt; }, [drawAt]);
 
   const previewRect = useCallback((pos) => {
     const mc = maskCanvasRef.current;
@@ -284,8 +205,6 @@ export default function WatermarkRemover() {
     setHasMask(true);
   }, []);
 
-  let lassoPathRef = useRef(null);
-
   const drawLassoTo = useCallback((pos) => {
     const mc = maskCanvasRef.current;
     if (!mc) return;
@@ -317,6 +236,88 @@ export default function WatermarkRemover() {
     lassoPathRef.current = null;
     setHasMask(true);
   }, []);
+
+  const saveUndo = useCallback(() => {
+    const mc = maskCanvasRef.current;
+    if (!mc) return;
+    const ctx = mc.getContext('2d');
+    const snap = ctx.getImageData(0, 0, mc.width, mc.height);
+    const stack = undoStackRef.current;
+    stack.push(snap);
+    if (stack.length > UNDO_LIMIT) stack.shift();
+    setUndoCount(stack.length);
+  }, []);
+
+  const undo = useCallback(() => {
+    const stack = undoStackRef.current;
+    if (stack.length === 0) return;
+    const mc = maskCanvasRef.current;
+    if (!mc) return;
+    const ctx = mc.getContext('2d');
+    const snap = stack.pop();
+    ctx.putImageData(snap, 0, 0);
+    setUndoCount(stack.length);
+    checkMask();
+  }, [checkMask]);
+
+  const toolRef = useRef(tool);
+  const brushSizeRef = useRef(brushSize);
+
+  const startDrawing = useCallback((e) => {
+    e.preventDefault();
+    if (isProcessing) return;
+    isDrawingRef.current = true;
+    const pos = getPointerPos(e);
+    drawStartRef.current = pos;
+    lastPointRef.current = pos;
+    if (toolRef.current === 'brush' || toolRef.current === 'eraser') {
+      saveUndo();
+      drawAt(pos);
+    }
+  }, [isProcessing, getPointerPos, saveUndo, drawAt]);
+
+  const draw = useCallback((e) => {
+    e.preventDefault();
+    if (!isDrawingRef.current) return;
+    const pos = getPointerPos(e);
+    const last = lastPointRef.current;
+    if (toolRef.current === 'brush' || toolRef.current === 'eraser') {
+      const step = brushSizeRef.current / 6;
+      const dist = Math.hypot(pos.x - last.x, pos.y - last.y);
+      if (dist > step) {
+        const steps = Math.ceil(dist / step);
+        for (let i = 0; i <= steps; i++) {
+          const t = i / steps;
+          drawAt({ x: last.x + (pos.x - last.x) * t, y: last.y + (pos.y - last.y) * t });
+        }
+      } else {
+        drawAt(pos);
+      }
+    }
+    if (toolRef.current === 'rect') {
+      previewRect(pos);
+    }
+    if (toolRef.current === 'lasso') {
+      drawLassoTo(pos);
+    }
+    lastPointRef.current = pos;
+  }, [getPointerPos, drawAt, previewRect, drawLassoTo]);
+
+  const endDrawing = useCallback((e) => {
+    if (e?.preventDefault) e.preventDefault();
+    if (!isDrawingRef.current) return;
+    isDrawingRef.current = false;
+    if (toolRef.current === 'rect') {
+      saveUndo();
+      const pos = getPointerPos(e);
+      finishRect(pos);
+    }
+    if (toolRef.current === 'lasso') {
+      saveUndo();
+      finishLasso();
+    }
+    checkMask();
+  }, [getPointerPos, saveUndo, checkMask, finishRect, finishLasso]);
 
   const resetToSource = useCallback(() => {
     setStep('source');
@@ -582,7 +583,7 @@ export default function WatermarkRemover() {
                   {isProcessing ? 'Processing...' : 'Remove Watermark'}
                 </button>
                 <button onClick={resetToSource} style={btnSecondary}>New Image</button>
-                <button onClick={undo} style={{ ...btnSecondary, padding: '8px 16px', fontSize: 13 }} disabled={undoStackRef.current.length === 0}>Undo</button>
+                <button onClick={undo} style={{ ...btnSecondary, padding: '8px 16px', fontSize: 13 }} disabled={undoCount === 0}>Undo</button>
                 <button onClick={clearMask} style={{ ...btnSecondary, padding: '8px 16px', fontSize: 13 }}>Clear selection</button>
               </div>
             </div>

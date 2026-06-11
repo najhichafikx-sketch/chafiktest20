@@ -22,7 +22,7 @@ export default function ContactPage() {
           <div style={{ textAlign: 'center', padding: '24px 0' }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
             <h3 style={{ marginBottom: 8 }}>Message Sent!</h3>
-            <p style={{ color: 'var(--text-secondary)' }}>We'll get back to you within 24 hours.</p>
+            <p style={{ color: 'var(--text-secondary)' }}>We&apos;ll get back to you within 24 hours.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>

@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Head from 'next/head';
 import { MessageSquare, Eye, BarChart3 } from 'lucide-react';
 
@@ -133,7 +134,7 @@ export default function PromptsLibrary() {
                       <div className="text-muted" style={{ fontSize: 11 }}>{p.views || 0} views</div>
                     </a>
                   ))}
-                <a href="/prompts" className="list-group-item list-group-item-action small text-primary text-center">View All</a>
+                <Link href="/prompts" className="list-group-item list-group-item-action small text-primary text-center">View All</Link>
               </div>
             </div>
           </div>

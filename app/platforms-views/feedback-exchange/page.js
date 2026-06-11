@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, startTransition } from 'react';
 import Link from 'next/link';
 import { VideoEmbed } from '@/lib/video-embed';
 import { FEEDBACK_CATEGORIES } from '@/lib/platforms-views-content';
@@ -23,7 +23,7 @@ export default function FeedbackExchangePage() {
   const [data, setData] = useState(null);
   const [message, setMessage] = useState('');
 
-  useEffect(() => { setData(loadLocal()); }, []);
+  useEffect(() => { startTransition(() => setData(loadLocal())); }, []);
   useEffect(() => { if (data) saveLocal(data); }, [data]);
 
   if (!data) return null;

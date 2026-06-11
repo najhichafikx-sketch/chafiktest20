@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, startTransition } from 'react';
 import Link from 'next/link';
 import { getUserId, getCredits } from '@/lib/platforms-credits';
 
@@ -12,7 +12,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const saved = localStorage.getItem('theme') || 'dark';
-    setTheme(saved);
+    startTransition(() => setTheme(saved));
     document.documentElement.setAttribute('data-theme', saved);
 
     const onScroll = () => setScrolled(window.scrollY > 50);

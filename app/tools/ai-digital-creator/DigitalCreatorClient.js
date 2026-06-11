@@ -384,7 +384,7 @@ export default function DigitalCreatorClient() {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', textAlign: 'center', color: '#64748b' }}>
               <div style={{ fontSize: 56, marginBottom: 14 }}>🎯</div>
               <h2 style={{ color: '#cbd5e1', fontSize: 20, marginBottom: 6 }}>Ready to optimize your product?</h2>
-              <p style={{ maxWidth: 380, fontSize: 13, lineHeight: 1.6 }}>Fill in the details and click "Analyze Product" for 14+ AI-powered outputs including validation, blueprint, and image prompts.</p>
+               <p style={{ maxWidth: 380, fontSize: 13, lineHeight: 1.6 }}>Fill in the details and click &quot;Analyze Product&quot; for 14+ AI-powered outputs including validation, blueprint, and image prompts.</p>
             </div>
           )}
 
@@ -791,7 +791,7 @@ export default function DigitalCreatorClient() {
                     </div>
                     {title && !listingInput && (
                       <button onClick={() => generateListings(title)} style={{ marginTop: 6, background: 'transparent', color: '#a5b4fc', border: '1px dashed #2d2d4e', borderRadius: 6, padding: '6px 10px', fontSize: 11, cursor: 'pointer' }}>
-                        ⚡ Use current title: "{title}"
+                        ⚡ Use current title: &quot;{title}&quot;
                       </button>
                     )}
                   </div>

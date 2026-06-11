@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, startTransition } from 'react';
 
 const ADSTERRA_KEY = 'a64a753a91e1df2d14eac4534cea9820';
 const SIDE_KEY = 'chafik_side_dismissed';
@@ -58,7 +58,7 @@ export default function SideBanner({ side = 'left' }) {
     if (sessionStorage.getItem(SIDE_KEY)) return;
     if (window.__sideBannerLoaded) return;
     window.__sideBannerLoaded = true;
-    setVisible(true);
+    startTransition(() => setVisible(true));
   }, []);
 
   useEffect(() => {

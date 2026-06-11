@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, startTransition } from 'react';
 import { ADS_CONFIG, AD_SLOTS } from '@/lib/adSystem';
 
 const TIMEFRAMES = [
@@ -74,8 +74,8 @@ export default function AdMonetizationClient() {
   }, [timeframe]);
 
   useEffect(() => {
-    setLoading(true);
-    load();
+    startTransition(() => setLoading(true));
+    startTransition(() => load());
     const id = setInterval(load, 30000);
     return () => clearInterval(id);
   }, [load]);

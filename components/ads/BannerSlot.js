@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, startTransition } from 'react';
 
 const ADSTERRA_KEY = 'a64a753a91e1df2d14eac4534cea9820';
 const MONETAG_PUSH_ZONE = '11103150';
@@ -173,7 +173,7 @@ export default function BannerSlot({ slotId = 'site-top' }) {
     if (window.__bannerSlotsLoaded === undefined) window.__bannerSlotsLoaded = {};
     if (window.__bannerSlotsLoaded[slotId]) return;
     window.__bannerSlotsLoaded[slotId] = true;
-    setShow(true);
+    startTransition(() => setShow(true));
     bindToolButtons();
   }, [slotId]);
 

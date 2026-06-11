@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, startTransition } from 'react';
 import AdminLayout from '@/components/AdminLayout';
 
 const SETTINGS_KEYS = {
@@ -31,7 +31,7 @@ export default function AdminPlatformsViewsPage() {
 
   useEffect(() => {
     const t = localStorage.getItem('admin_token');
-    setToken(t);
+    startTransition(() => setToken(t));
     if (t) { fetchSettings(t); fetchVideos(t); }
   }, []);
 

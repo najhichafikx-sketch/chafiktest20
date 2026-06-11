@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, startTransition } from 'react';
 import { Sparkles, Download, RotateCcw, Wand2, AlertCircle } from 'lucide-react';
 
 const LOADING_STEPS = [
@@ -21,7 +21,7 @@ export default function CanvasPreview({ loading, result, error, onDownload, onRe
       timerRef.current = null;
     }
     if (!loading) {
-      setStepIdx(0);
+      startTransition(() => setStepIdx(0));
       return;
     }
     timerRef.current = setInterval(() => {

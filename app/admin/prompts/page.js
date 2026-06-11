@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import AdminLayout from '@/components/AdminLayout';
 
 export default function AdminPrompts() {
@@ -51,7 +52,7 @@ export default function AdminPrompts() {
     <AdminLayout>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h1 className="h3 m-0">Prompt Management</h1>
-        <a href="/admin/prompts/edit/new" className="btn btn-primary btn-sm">+ New Prompt</a>
+        <Link href="/admin/prompts/edit/new" className="btn btn-primary btn-sm">+ New Prompt</Link>
       </div>
 
       <div className="card mb-3">
@@ -98,7 +99,7 @@ export default function AdminPrompts() {
                   <td><span className={`badge bg-${p.status === 'published' ? 'success' : 'warning'}`}>{p.status || 'published'}</span></td>
                   <td>
                     <div className="btn-group btn-group-sm">
-                      <a href={`/admin/prompts/edit/${p.id}`} className="btn btn-outline-primary">Edit</a>
+                      <Link href={`/admin/prompts/edit/${p.id}`} className="btn btn-outline-primary">Edit</Link>
                       <button className="btn btn-outline-danger" onClick={() => handleDelete(p.id, p.slug)}>Del</button>
                     </div>
                   </td>

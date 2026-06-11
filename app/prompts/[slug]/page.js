@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import Head from 'next/head';
 
 const COPY_DELAY_SECONDS = 5;
@@ -115,8 +116,8 @@ export default function PromptPage() {
       <div className="container py-4">
         <nav aria-label="breadcrumb" className="mb-3">
           <ol className="breadcrumb small">
-            <li className="breadcrumb-item"><a href="/">Home</a></li>
-            <li className="breadcrumb-item"><a href="/prompts">Prompts</a></li>
+            <li className="breadcrumb-item"><Link href="/">Home</Link></li>
+            <li className="breadcrumb-item"><Link href="/prompts">Prompts</Link></li>
             <li className="breadcrumb-item active">{prompt.title}</li>
           </ol>
         </nav>

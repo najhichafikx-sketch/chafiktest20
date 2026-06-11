@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import AdminLayout from '@/components/AdminLayout';
 
@@ -151,13 +152,13 @@ export default function PromptEditor() {
       <div style={{ padding: '20px 28px' }} dir="rtl">
         {/* Breadcrumb */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20, fontSize: 14, color: '#888' }}>
-          <a href="/admin/prompts" style={{ color: '#888', textDecoration: 'none' }}>Prompt Article</a>
+          <Link href="/admin/prompts" style={{ color: '#888', textDecoration: 'none' }}>Prompt Article</Link>
           <span style={{ color: '#ccc' }}>/</span>
           <span style={{ color: ACCENT, fontWeight: 600, fontSize: 13, background: `${ACCENT}0c`, padding: '3px 10px', borderRadius: 999 }}>Prompt Viral</span>
           <div style={{ flex: 1 }} />
-          <a href="/admin/prompts/edit/new" style={{ padding: '6px 16px', borderRadius: 8, background: ACCENT, color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <Link href="/admin/prompts/edit/new" style={{ padding: '6px 16px', borderRadius: 8, background: ACCENT, color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
             <span style={{ fontSize: 16 }}>+</span> مطالبة جديدة
-          </a>
+          </Link>
         </div>
 
         {/* Message */}
@@ -338,11 +339,11 @@ export default function PromptEditor() {
 
           {/* Actions */}
           <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-start', marginTop: 8 }}>
-            <a href="/admin/prompts" style={{ padding: '12px 28px', borderRadius: 8, border: '1px solid #d0d4dc', background: '#fff', color: '#555', fontSize: 14, fontWeight: 500, textDecoration: 'none', textAlign: 'center', display: 'inline-block' }}
+            <Link href="/admin/prompts" style={{ padding: '12px 28px', borderRadius: 8, border: '1px solid #d0d4dc', background: '#fff', color: '#555', fontSize: 14, fontWeight: 500, textDecoration: 'none', textAlign: 'center', display: 'inline-block' }}
               onMouseEnter={e => e.currentTarget.style.background = '#f5f6f8'}
               onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
               إلغاء
-            </a>
+            </Link>
             <button type="submit" disabled={saving}
               style={{
                 padding: '12px 32px', borderRadius: 8, border: 'none',

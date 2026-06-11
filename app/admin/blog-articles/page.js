@@ -1,5 +1,6 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, startTransition } from 'react';
+import Link from 'next/link';
 import AdminLayout from '@/components/AdminLayout';
 import { Plus, Edit, Trash2, Eye, EyeOff, Search, ExternalLink, Calendar, FileText, Filter } from 'lucide-react';
 
@@ -12,12 +13,6 @@ export default function BlogArticles() {
   const [busyId, setBusyId] = useState(null);
   const [toast, setToast] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem('admin_token');
-    if (!token) { setErr('Not authenticated. Please log in again.'); setLoading(false); return; }
-    load();
-  }, []);
-
   async function load() {
     setLoading(true);
     const token = localStorage.getItem('admin_token');
@@ -29,6 +24,12 @@ export default function BlogArticles() {
     } catch { setErr('Network error. Please try again.'); }
     finally { setLoading(false); }
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem('admin_token');
+    if (!token) { startTransition(() => { setErr('Not authenticated. Please log in again.'); setLoading(false); }); return; }
+    startTransition(() => load());
+  }, []);
 
   function showToast(message, type = 'success') {
     setToast({ message, type });
@@ -121,14 +122,14 @@ export default function BlogArticles() {
             </h1>
             <p style={{ margin: '6px 0 0', color: '#94a3b8', fontSize: 14 }}>إدارة جميع مقالات المدونة</p>
           </div>
-          <a href="/admin/blog/edit/new" style={{
+          <Link href="/admin/blog/edit/new" style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             background: 'linear-gradient(135deg, #6c63ff, #f72585)', color: '#fff',
             padding: '10px 18px', borderRadius: 8, fontSize: 14, fontWeight: 600,
             textDecoration: 'none', boxShadow: '0 4px 12px rgba(108,99,255,0.3)'
           }}>
             <Plus size={16} /> New Article
-          </a>
+          </Link>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 24 }}>
@@ -181,9 +182,9 @@ export default function BlogArticles() {
             <FileText size={48} style={{ marginBottom: 12, opacity: 0.5 }} />
             <p style={{ fontSize: 16, color: '#94a3b8' }}>{search || statusFilter !== 'all' ? 'لا توجد نتائج' : 'لا توجد مقالات بعد'}</p>
             {!search && statusFilter === 'all' && (
-              <a href="/admin/blog/edit/new" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 12, color: '#6c63ff', textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>
+              <Link href="/admin/blog/edit/new" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 12, color: '#6c63ff', textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>
                 <Plus size={16} /> أنشئ أول مقال
-              </a>
+              </Link>
             )}
           </div>
         ) : (

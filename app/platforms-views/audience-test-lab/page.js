@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, startTransition } from 'react';
 import Link from 'next/link';
 import { useLabPoints } from '@/hooks/useLabPoints';
 
@@ -45,7 +45,7 @@ export default function AudienceTestLabPage() {
 
   const showNotif = useCallback((msg) => { setNotif(msg); setTimeout(() => setNotif(null), 3000); }, []);
 
-  useEffect(() => { setData(loadData()); setDailyEarnedState(getDailyEarned()); }, []);
+  useEffect(() => { startTransition(() => { setData(loadData()); setDailyEarnedState(getDailyEarned()); }); }, []);
 
   useEffect(() => { if (data) saveData(data); }, [data]);
 
@@ -301,7 +301,7 @@ function WatchAndEarn({ data, setData, earn, showNotif, dailyEarned, updateEarne
   useEffect(() => {
     const otherVids = data.submitted.filter(v => !data.watchHistory.find(w => w.videoId === v.id));
     const defaultEntry = { ...DEFAULT_WATCH_VIDEO, isDefault: true };
-    setQueue([defaultEntry, ...otherVids]);
+    startTransition(() => setQueue([defaultEntry, ...otherVids]));
   }, [data]);
 
   const startWatching = (video) => {
@@ -406,7 +406,7 @@ function WatchAndEarn({ data, setData, earn, showNotif, dailyEarned, updateEarne
           <div className="glass-card" style={{ padding: 24, marginBottom: 20 }}>
             <h3 style={{ marginBottom: 8 }}>Watch & Earn Points</h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', marginBottom: 16 }}>
-              Watch other creators' videos to earn <strong style={{ color: 'var(--neon-cyan)' }}>4 points per minute</strong>. Points can be converted to test screens.
+              Watch other creators&apos; videos to earn <strong style={{ color: 'var(--neon-cyan)' }}>4 points per minute</strong>. Points can be converted to test screens.
             </p>
             <div style={{ display: 'flex', gap: 8, marginBottom: 16, alignItems: 'center' }}>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Watch duration:</span>

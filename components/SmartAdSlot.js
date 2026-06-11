@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, startTransition } from 'react';
 import { useAdController } from '@/hooks/useAdController';
 
 const DEFAULT_SIZES = {
@@ -30,15 +30,15 @@ export default function SmartAdSlot({
 
   useEffect(() => {
     if (!ready) return;
-    setAllowed(canShow(adType));
+    startTransition(() => setAllowed(canShow(adType)));
   }, [ready, adType, canShow]);
 
   useEffect(() => {
     if (!lazy || visible || !ref.current) return;
-    if (typeof IntersectionObserver === 'undefined') { setVisible(true); return; }
+    if (typeof IntersectionObserver === 'undefined') { startTransition(() => setVisible(true)); return; }
     const obs = new IntersectionObserver((entries) => {
       for (const e of entries) {
-        if (e.isIntersecting) { setVisible(true); obs.disconnect(); break; }
+        if (e.isIntersecting) { startTransition(() => setVisible(true)); obs.disconnect(); break; }
       }
     }, { rootMargin: '200px' });
     obs.observe(ref.current);

@@ -1,5 +1,6 @@
-'use client';
-import { useState, useEffect } from 'react';
+﻿'use client';
+import { useState, useEffect, startTransition } from 'react';
+import Link from 'next/link';
 import AdminLayout from '@/components/AdminLayout';
 import { Plus, ExternalLink, Trash2 } from 'lucide-react';
 
@@ -10,15 +11,15 @@ export default function AdminBlog() {
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
-    if (!token) { setErr('Not authenticated'); setLoading(false); return; }
+    if (!token) { startTransition(() => { setErr('Not authenticated'); setLoading(false); }); return; }
     fetch('/api/admin/blog', { headers: { 'Authorization': `Bearer ${token}` } })
       .then(r => r.json())
       .then(d => {
-        if (d.success) setPosts(d.posts || []);
-        else setErr(d.message || 'Failed to load');
+        if (d.success) startTransition(() => setPosts(d.posts || []));
+        else startTransition(() => setErr(d.message || 'Failed to load'));
       })
-      .catch(() => setErr('Network error'))
-      .finally(() => setLoading(false));
+      .catch(() => startTransition(() => setErr('Network error')))
+      .finally(() => startTransition(() => setLoading(false)));
   }, []);
 
   async function handleToggleStatus(id, currentStatus) {
@@ -55,9 +56,9 @@ export default function AdminBlog() {
       <div style={{ padding: '32px 40px', background: '#f0f2f8', minHeight: '100vh' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
           <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0, color: '#1a1a2e' }}>Blog Articles</h1>
-          <a href="/admin/blog/edit/new" className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <Link href="/admin/blog/edit/new" className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
             <Plus size={16} /> New Article
-          </a>
+          </Link>
         </div>
 
         {err && <div style={{ background: '#fff', border: '1px solid #fecaca', borderRadius: 6, padding: '12px 16px', marginBottom: 16, color: '#dc2626', fontSize: 14 }}>{err}</div>}
@@ -84,9 +85,9 @@ export default function AdminBlog() {
                   </td>
                   <td style={{ padding: '12px 16px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      <a href={`/admin/blog/edit/${post.slug || post.id}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: '#888', fontSize: 13, textDecoration: 'none' }}>
+                      <Link href={`/admin/blog/edit/${post.slug || post.id}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: '#888', fontSize: 13, textDecoration: 'none' }}>
                         <ExternalLink size={13} /> Edit
-                      </a>
+                      </Link>
                       <button onClick={() => handleToggleStatus(post.id, post.status)} style={{ padding: '4px 12px', fontSize: 13, cursor: 'pointer', background: '#fff', border: '1px solid #d0d4dc', borderRadius: 4, color: '#333', textAlign: 'left' }}>
                         {post.status === 'published' ? 'Unpublish' : 'Publish'}
                       </button>

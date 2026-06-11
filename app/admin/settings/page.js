@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -11,13 +11,6 @@ export default function AdminSettingsPage() {
   const [globalPrompt, setGlobalPrompt] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const t = localStorage.getItem('admin_token');
-    if (!t) { router.push('/admin-login'); return; }
-    setToken(t);
-    fetchSettings(t);
-  }, [router]);
 
   async function fetchSettings(t) {
     const res = await fetch('/api/admin/settings', {
@@ -30,6 +23,13 @@ export default function AdminSettingsPage() {
       setGlobalPrompt(data.settings.global_system_prompt || '');
     }
   }
+
+  useEffect(() => {
+    const t = localStorage.getItem('admin_token');
+    if (!t) { router.push('/admin-login'); return; }
+    startTransition(() => setToken(t));
+    startTransition(() => fetchSettings(t));
+  }, [router]);
 
   async function handleSave(key, value) {
     setLoading(true);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, startTransition } from 'react';
 
 const API = '/api/platforms/lab';
 
@@ -37,7 +37,7 @@ export function useLabPoints() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { refetch(); }, [refetch]);
+  useEffect(() => { startTransition(() => refetch()); }, [refetch]);
 
   const earn = useCallback(async (amount) => {
     const userId = getUserId();

@@ -73,6 +73,35 @@ function downloadFile(content, filename, type) {
   a.click(); URL.revokeObjectURL(url);
 }
 
+function Input({ label, value, keyName, placeholder, type = 'text', maxLength, C, updateForm }) {
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <label className="lp-label">{label}</label>
+      {type === 'textarea' ? (
+        <textarea className="lp-input" value={value} onChange={e => updateForm(keyName, e.target.value)} placeholder={placeholder} rows={3} maxLength={maxLength} />
+      ) : (
+        <input type={type} className="lp-input" value={value} onChange={e => updateForm(keyName, e.target.value)} placeholder={placeholder} maxLength={maxLength} />
+      )}
+    </div>
+  );
+}
+
+function CodeBlock({ content, label, lang, C }) {
+  if (!content) return <div className="lp-card" style={{ textAlign: 'center', padding: 24, color: C.textMuted, fontSize: 13 }}>Not generated. Available with premium subscription.</div>;
+  return (
+    <div className="lp-card" style={{ overflow: 'hidden' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button onClick={(e) => copyText(content, e.currentTarget)} className="lp-export-btn" style={{ padding: '6px 14px', fontSize: 12 }}>📋 Copy</button>
+          <button onClick={() => downloadFile(content, `landing-page-${lang || 'code'}.${lang === 'html' ? 'html' : 'txt'}`, 'text/plain')} className="lp-export-btn" style={{ padding: '6px 14px', fontSize: 12 }}>⬇ Download</button>
+        </div>
+      </div>
+      <pre style={{ background: '#0a0a0a', border: `1px solid ${C.border}`, borderRadius: 8, padding: 16, fontSize: 12, lineHeight: 1.5, maxHeight: 500, overflow: 'auto', color: '#e8e6e0', margin: 0 }}><code>{content}</code></pre>
+    </div>
+  );
+}
+
 export default function LandingPageClient() {
   const [form, setForm] = useState({
     productName: '', serviceName: '', businessName: '', websiteName: '',
@@ -194,35 +223,6 @@ export default function LandingPageClient() {
     }
   }
 
-  function Input({ label, value, keyName, placeholder, type = 'text', maxLength }) {
-    return (
-      <div style={{ marginBottom: 10 }}>
-        <label className="lp-label">{label}</label>
-        {type === 'textarea' ? (
-          <textarea className="lp-input" value={value} onChange={e => updateForm(keyName, e.target.value)} placeholder={placeholder} rows={3} maxLength={maxLength} />
-        ) : (
-          <input type={type} className="lp-input" value={value} onChange={e => updateForm(keyName, e.target.value)} placeholder={placeholder} maxLength={maxLength} />
-        )}
-      </div>
-    );
-  }
-
-  function CodeBlock({ content, label, lang }) {
-    if (!content) return <div className="lp-card" style={{ textAlign: 'center', padding: 24, color: C.textMuted, fontSize: 13 }}>Not generated. Available with premium subscription.</div>;
-    return (
-      <div className="lp-card" style={{ overflow: 'hidden' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
-          <div style={{ display: 'flex', gap: 6 }}>
-            <button onClick={(e) => copyText(content, e.currentTarget)} className="lp-export-btn" style={{ padding: '6px 14px', fontSize: 12 }}>📋 Copy</button>
-            <button onClick={() => downloadFile(content, `landing-page-${lang || 'code'}.${lang === 'html' ? 'html' : 'txt'}`, 'text/plain')} className="lp-export-btn" style={{ padding: '6px 14px', fontSize: 12 }}>⬇ Download</button>
-          </div>
-        </div>
-        <pre style={{ background: '#0a0a0a', border: `1px solid ${C.border}`, borderRadius: 8, padding: 16, fontSize: 12, lineHeight: 1.5, maxHeight: 500, overflow: 'auto', color: '#e8e6e0', margin: 0 }}><code>{content}</code></pre>
-      </div>
-    );
-  }
-
   const canGenerate = !generating && (form.productName || form.serviceName);
 
   return (
@@ -280,18 +280,18 @@ export default function LandingPageClient() {
           {/* Basic Info */}
           <div className="lp-card">
             <h3 className="lp-section-title">📋 Basic Info</h3>
-            <Input label="Product Name" keyName="productName" value={form.productName} placeholder="e.g. AnalyticsPro" maxLength={60} />
-            <Input label="Service Name" keyName="serviceName" value={form.serviceName} placeholder="e.g. SEO Consulting" maxLength={60} />
-            <Input label="Business Name" keyName="businessName" value={form.businessName} placeholder="e.g. Acme Inc." maxLength={60} />
-            <Input label="Website URL" keyName="websiteName" value={form.websiteName} placeholder="e.g. acme.com" maxLength={80} />
+            <Input label="Product Name" keyName="productName" value={form.productName} placeholder="e.g. AnalyticsPro" maxLength={60} C={C} updateForm={updateForm} />
+            <Input label="Service Name" keyName="serviceName" value={form.serviceName} placeholder="e.g. SEO Consulting" maxLength={60} C={C} updateForm={updateForm} />
+            <Input label="Business Name" keyName="businessName" value={form.businessName} placeholder="e.g. Acme Inc." maxLength={60} C={C} updateForm={updateForm} />
+            <Input label="Website URL" keyName="websiteName" value={form.websiteName} placeholder="e.g. acme.com" maxLength={80} C={C} updateForm={updateForm} />
           </div>
 
           {/* Description */}
           <div className="lp-card">
             <h3 className="lp-section-title">📄 Description</h3>
-            <Input label="Product Description" keyName="description" value={form.description} placeholder="Describe what you offer, key features, and value..." type="textarea" maxLength={1000} />
-            <Input label="Target Audience" keyName="targetAudience" value={form.targetAudience} placeholder="e.g. Small business owners, marketers" />
-            <Input label="Industry" keyName="industry" value={form.industry} placeholder="e.g. SaaS, E-commerce, Education" />
+            <Input label="Product Description" keyName="description" value={form.description} placeholder="Describe what you offer, key features, and value..." type="textarea" maxLength={1000} C={C} updateForm={updateForm} />
+            <Input label="Target Audience" keyName="targetAudience" value={form.targetAudience} placeholder="e.g. Small business owners, marketers" C={C} updateForm={updateForm} />
+            <Input label="Industry" keyName="industry" value={form.industry} placeholder="e.g. SaaS, E-commerce, Education" C={C} updateForm={updateForm} />
           </div>
 
           {/* Settings */}
@@ -330,7 +330,7 @@ export default function LandingPageClient() {
                 <input type="color" value={primaryColor} onChange={e => setPrimaryColor(e.target.value)} style={{ width: 32, height: 32, borderRadius: 6, border: `1px solid ${C.border}`, padding: 0, cursor: 'pointer', background: 'transparent' }} />
               </div>
             </div>
-            <Input label="Competitor URLs (optional)" keyName="competitorUrls" value={form.competitorUrls} placeholder="e.g. competitor.com, rival.io" />
+            <Input label="Competitor URLs (optional)" keyName="competitorUrls" value={form.competitorUrls} placeholder="e.g. competitor.com, rival.io" C={C} updateForm={updateForm} />
           </div>
 
           {/* Advanced */}
@@ -473,10 +473,10 @@ export default function LandingPageClient() {
                 </div>
               )}
 
-              {activeTab === 'html' && <CodeBlock content={result.html} label="HTML" lang="html" />}
-              {activeTab === 'react' && <CodeBlock content={result.react} label="React Component" lang="react" />}
-              {activeTab === 'nextjs' && <CodeBlock content={result.nextjs} label="Next.js Component" lang="nextjs" />}
-              {activeTab === 'tailwind' && <CodeBlock content={result.tailwind} label="TailwindCSS" lang="tailwind" />}
+              {activeTab === 'html' && <CodeBlock content={result.html} label="HTML" lang="html" C={C} />}
+              {activeTab === 'react' && <CodeBlock content={result.react} label="React Component" lang="react" C={C} />}
+              {activeTab === 'nextjs' && <CodeBlock content={result.nextjs} label="Next.js Component" lang="nextjs" C={C} />}
+              {activeTab === 'tailwind' && <CodeBlock content={result.tailwind} label="TailwindCSS" lang="tailwind" C={C} />}
 
               {activeTab === 'seo' && result.seo && (
                 <div className="lp-card">

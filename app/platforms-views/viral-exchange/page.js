@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, startTransition } from 'react';
 import { VideoEmbed } from '@/lib/video-embed';
 import { CATEGORIES, LANGUAGES, FEEDBACK_CATEGORIES, REQUEST_TYPES, VIDEO_TYPES } from '@/lib/platforms-views-content';
 import { usePlatformCredits } from '@/hooks/usePlatformCredits';
@@ -52,15 +52,15 @@ export default function ViralExchangePage() {
 
   useEffect(() => {
     if (userInitialized) {
-      loadVideos();
-      refetchHistory();
+      startTransition(() => loadVideos());
+      startTransition(() => refetchHistory());
     }
   }, [userInitialized, loadVideos, refetchHistory]);
 
   useEffect(() => {
     const sub = myVideos.filter(v => v.status === 'active').length;
     const fbk = feedback.length;
-    setVideoStats({ submitted: myVideos.length, feedbackGiven: fbk, tests: 0 });
+    startTransition(() => setVideoStats({ submitted: myVideos.length, feedbackGiven: fbk, tests: 0 }));
   }, [myVideos, feedback]);
 
   if (loading) return <section className="section" style={{ paddingTop: 120, textAlign: 'center' }}><p style={{ color: 'var(--text-muted)' }}>Loading...</p></section>;
@@ -182,7 +182,10 @@ function EarnCredits({ credits, videos, userInitialized, onEarn, onRefresh, setM
     setWatchDuration(duration);
     setWatchTimer(duration);
     setWatchProgress(0);
-    setWatchEvents([{ currentTime: 0, timestamp: Date.now() }]);
+    startTransition(() => {
+      const now = Date.now();
+      setWatchEvents([{ currentTime: 0, timestamp: now }]);
+    });
   };
 
   useEffect(() => {

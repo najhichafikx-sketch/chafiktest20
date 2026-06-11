@@ -1,30 +1,30 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 const TABS = [
-  { id: 'rewrite', label: '✍️ Rewrite', emoji: '✍️' },
-  { id: 'keywords', label: '🔑 Keywords', emoji: '🔑' },
-  { id: 'titles', label: '🎯 Titles', emoji: '🎯' },
-  { id: 'hooks', label: '🪝 Hooks', emoji: '🪝' },
-  { id: 'script', label: '📜 Script', emoji: '📜' },
-  { id: 'description', label: '📝 Description', emoji: '📝' },
-  { id: 'tags', label: '🏷️ Tags', emoji: '🏷️' },
-  { id: 'thumbnails', label: '🎨 Thumbnails', emoji: '🎨' },
-  { id: 'seo', label: '📊 SEO Score', emoji: '📊' },
-  { id: 'ideas', label: '💡 Ideas', emoji: '💡' }
+  { id: 'rewrite', label: 'âœï¸ Rewrite', emoji: 'âœï¸' },
+  { id: 'keywords', label: 'ðŸ”‘ Keywords', emoji: 'ðŸ”‘' },
+  { id: 'titles', label: 'ðŸŽ¯ Titles', emoji: 'ðŸŽ¯' },
+  { id: 'hooks', label: 'ðŸª Hooks', emoji: 'ðŸª' },
+  { id: 'script', label: 'ðŸ“œ Script', emoji: 'ðŸ“œ' },
+  { id: 'description', label: 'ðŸ“ Description', emoji: 'ðŸ“' },
+  { id: 'tags', label: 'ðŸ·ï¸ Tags', emoji: 'ðŸ·ï¸' },
+  { id: 'thumbnails', label: 'ðŸŽ¨ Thumbnails', emoji: 'ðŸŽ¨' },
+  { id: 'seo', label: 'ðŸ“Š SEO Score', emoji: 'ðŸ“Š' },
+  { id: 'ideas', label: 'ðŸ’¡ Ideas', emoji: 'ðŸ’¡' }
 ];
 
 const TITLE_STYLE_META = {
-  viral: { label: '🔥 Viral', color: '#f72585' },
-  professional: { label: '💼 Professional', color: '#6c63ff' },
-  seo: { label: '🔍 SEO-Optimized', color: '#10b981' }
+  viral: { label: 'ðŸ”¥ Viral', color: '#f72585' },
+  professional: { label: 'ðŸ’¼ Professional', color: '#6c63ff' },
+  seo: { label: 'ðŸ” SEO-Optimized', color: '#10b981' }
 };
 
 const HOOK_STYLE_META = {
-  question: { label: '❓ Question Hook', color: '#6c63ff' },
-  shock: { label: '⚡ Shock Hook', color: '#f72585' },
-  story: { label: '📖 Story Hook', color: '#fbbf24' }
+  question: { label: 'â“ Question Hook', color: '#6c63ff' },
+  shock: { label: 'âš¡ Shock Hook', color: '#f72585' },
+  story: { label: 'ðŸ“– Story Hook', color: '#fbbf24' }
 };
 
 const SCORE_COLORS = {
@@ -82,7 +82,7 @@ function CopyButton({ text, id, label = 'Copy', style = 'primary' }) {
   return (
     <button onClick={copy} data-tool-action
       style={{ background: bg, color: '#fff', border, borderRadius: 6, padding: '6px 12px', fontSize: 11, fontWeight: 700, cursor: 'pointer', transition: 'background 0.2s' }}>
-      {copied ? '✅ Copied' : `📋 ${label}`}
+      {copied ? 'âœ… Copied' : `ðŸ“‹ ${label}`}
     </button>
   );
 }
@@ -92,8 +92,8 @@ function LoadingCard({ label }) {
     <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 12, padding: 36, textAlign: 'center', marginTop: 12 }}>
       <div style={{ width: 44, height: 44, border: '4px solid #2d2d4e', borderTopColor: '#f72585', borderRadius: '50%', animation: 'ycsSpin 1s linear infinite', margin: '0 auto 12px' }} />
       <style>{`@keyframes ycsSpin { to { transform: rotate(360deg); } }`}</style>
-      <div style={{ color: '#cbd5e1', fontSize: 13 }}>⏳ {label}...</div>
-      <div style={{ color: '#64748b', fontSize: 11, marginTop: 4 }}>OpenRouter is generating · ~10-30s</div>
+      <div style={{ color: '#cbd5e1', fontSize: 13 }}>â³ {label}...</div>
+      <div style={{ color: '#64748b', fontSize: 11, marginTop: 4 }}>OpenRouter is generating Â· ~10-30s</div>
     </div>
   );
 }
@@ -101,11 +101,11 @@ function LoadingCard({ label }) {
 function ErrorCard({ error, onRetry }) {
   return (
     <div style={{ background: '#7f1d1d33', border: '1px solid #ef4444', borderRadius: 10, padding: 14, color: '#fca5a5', fontSize: 13, marginTop: 12 }}>
-      ⚠️ {error}
+      âš ï¸ {error}
       {onRetry && (
         <button onClick={onRetry} data-tool-action
           style={{ marginLeft: 12, background: '#2d2d4e', color: '#fff', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 12, cursor: 'pointer' }}>
-          🔄 Retry
+          ðŸ”„ Retry
         </button>
       )}
     </div>
@@ -130,14 +130,14 @@ function ScoreBar({ label, value, color }) {
 function ConfigMissingCard({ onGoAdmin }) {
   return (
     <div style={{ background: 'linear-gradient(135deg, #7f1d1d22, #f7258522)', border: '1px solid #ef4444', borderRadius: 14, padding: 24, textAlign: 'center', marginTop: 24 }}>
-      <div style={{ fontSize: 48, marginBottom: 8 }}>🔑</div>
+      <div style={{ fontSize: 48, marginBottom: 8 }}>ðŸ”‘</div>
       <h3 style={{ color: '#fff', fontSize: 16, margin: '0 0 6px' }}>OpenRouter API Key Missing</h3>
       <p style={{ color: '#fca5a5', fontSize: 13, margin: '0 0 14px', lineHeight: 1.5 }}>
         Please configure the OpenRouter API Key in Admin Settings to use the YouTube AI Content Suite.
       </p>
       <a href="/admin-login" onClick={(e) => { e.preventDefault(); onGoAdmin && onGoAdmin(); }} data-tool-action
         style={{ display: 'inline-block', background: 'linear-gradient(135deg, #f72585, #6c63ff)', color: '#fff', textDecoration: 'none', borderRadius: 10, padding: '10px 20px', fontSize: 13, fontWeight: 700 }}>
-        ⚙️ Go to Admin Settings
+        âš™ï¸ Go to Admin Settings
       </a>
     </div>
   );
@@ -276,21 +276,21 @@ export default function YouTubeContentSuiteClient() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 12, padding: 16 }}>
           <label style={{ display: 'block', color: '#cbd5e1', fontSize: 12, fontWeight: 600, marginBottom: 10 }}>
-            🔄 Rewrite percentage: <span style={{ color: '#f72585' }}>{rewritePercent}%</span>
+            ðŸ”„ Rewrite percentage: <span style={{ color: '#f72585' }}>{rewritePercent}%</span>
           </label>
           <input type="range" min="50" max="100" step="5" value={rewritePercent}
             onChange={e => setRewritePercent(Number(e.target.value))}
             style={{ width: '100%', accentColor: '#f72585' }}
             data-tool-action />
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#64748b', marginTop: 4 }}>
-            <span>50% — Heavy paraphrase</span>
-            <span>100% — Light polish</span>
+            <span>50% â€” Heavy paraphrase</span>
+            <span>100% â€” Light polish</span>
           </div>
           <button onClick={() => { sectionCache.current.rewrite = null; setSectionData(prev => { const n = { ...prev }; delete n.rewrite; return n; }); generateSection('rewrite'); }}
             disabled={!transcript.trim() || sectionLoading.rewrite}
             data-tool-action
             style={{ marginTop: 12, background: 'linear-gradient(135deg, #6c63ff, #f72585)', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-            {sectionLoading.rewrite ? '⏳ Rewriting...' : '✨ Rewrite Now'}
+            {sectionLoading.rewrite ? 'â³ Rewriting...' : 'âœ¨ Rewrite Now'}
           </button>
         </div>
         {sectionLoading.rewrite && <LoadingCard label="Rewriting your text" />}
@@ -298,7 +298,7 @@ export default function YouTubeContentSuiteClient() {
         {data?.rewritten && (
           <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 12, padding: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-              <h4 style={{ margin: 0, color: '#fff', fontSize: 14 }}>✍️ Rewritten Text</h4>
+              <h4 style={{ margin: 0, color: '#fff', fontSize: 14 }}>âœï¸ Rewritten Text</h4>
               <CopyButton text={data.rewritten} id="rewrite-text" label="Copy Text" />
             </div>
             <div style={{ color: '#cbd5e1', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.rewritten}</div>
@@ -317,14 +317,14 @@ export default function YouTubeContentSuiteClient() {
         {data?.keywords && (
           <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 12, padding: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <h4 style={{ margin: 0, color: '#fff', fontSize: 14 }}>🔑 {data.keywords.length} SEO Keywords</h4>
+              <h4 style={{ margin: 0, color: '#fff', fontSize: 14 }}>ðŸ”‘ {data.keywords.length} SEO Keywords</h4>
               <CopyButton text={data.keywords.join(', ')} id="kw-all" label="Copy All" />
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {data.keywords.map((kw, i) => (
                 <button key={i} onClick={() => copy(kw, `kw-${i}`)} data-tool-action
                   style={{ background: copiedKey === `kw-${i}` ? '#10b981' : '#6c63ff22', color: copiedKey === `kw-${i}` ? '#fff' : '#a5b4fc', border: '1px solid #6c63ff55', borderRadius: 6, padding: '6px 10px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                  {copiedKey === `kw-${i}` ? '✅' : '#'}{kw}
+                  {copiedKey === `kw-${i}` ? 'âœ…' : '#'}{kw}
                 </button>
               ))}
             </div>
@@ -371,7 +371,7 @@ export default function YouTubeContentSuiteClient() {
                 <span style={{ background: meta.color + '22', color: meta.color, border: '1px solid ' + meta.color + '55', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700 }}>{meta.label}</span>
                 <CopyButton text={h.text} id={`hook-${i}`} label="Copy" />
               </div>
-              <div style={{ color: '#fff', fontSize: 14, fontWeight: 500, lineHeight: 1.5, fontStyle: 'italic' }}>"{h.text}"</div>
+              <div style={{ color: '#fff', fontSize: 14, fontWeight: 500, lineHeight: 1.5, fontStyle: 'italic' }}>&quot;{h.text}&quot;</div>
             </div>
           );
         })}
@@ -392,15 +392,15 @@ export default function YouTubeContentSuiteClient() {
               <CopyButton text={fullText} id="script-full" label="Copy Full Script" />
             </div>
             <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 12, padding: 16 }}>
-              <h4 style={{ color: '#f72585', margin: '0 0 8px', fontSize: 13, textTransform: 'uppercase' }}>🎬 Intro Hook (15-20s)</h4>
+              <h4 style={{ color: '#f72585', margin: '0 0 8px', fontSize: 13, textTransform: 'uppercase' }}>ðŸŽ¬ Intro Hook (15-20s)</h4>
               <div style={{ color: '#e2e8f0', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.script.intro}</div>
             </div>
             <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 12, padding: 16 }}>
-              <h4 style={{ color: '#6c63ff', margin: '0 0 8px', fontSize: 13, textTransform: 'uppercase' }}>📖 Main Content</h4>
+              <h4 style={{ color: '#6c63ff', margin: '0 0 8px', fontSize: 13, textTransform: 'uppercase' }}>ðŸ“– Main Content</h4>
               <div style={{ color: '#e2e8f0', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.script.main}</div>
             </div>
             <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 12, padding: 16 }}>
-              <h4 style={{ color: '#10b981', margin: '0 0 8px', fontSize: 13, textTransform: 'uppercase' }}>📢 Call To Action</h4>
+              <h4 style={{ color: '#10b981', margin: '0 0 8px', fontSize: 13, textTransform: 'uppercase' }}>ðŸ“¢ Call To Action</h4>
               <div style={{ color: '#e2e8f0', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.script.cta}</div>
             </div>
           </>
@@ -418,7 +418,7 @@ export default function YouTubeContentSuiteClient() {
         {data?.description && (
           <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 12, padding: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-              <h4 style={{ margin: 0, color: '#fff', fontSize: 14 }}>📝 YouTube Description</h4>
+              <h4 style={{ margin: 0, color: '#fff', fontSize: 14 }}>ðŸ“ YouTube Description</h4>
               <CopyButton text={data.description} id="desc" label="Copy" />
             </div>
             <div style={{ color: '#cbd5e1', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.description}</div>
@@ -438,14 +438,14 @@ export default function YouTubeContentSuiteClient() {
         {data?.tags && (
           <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 12, padding: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <h4 style={{ margin: 0, color: '#fff', fontSize: 14 }}>🏷️ {data.tags.length} YouTube Tags</h4>
+              <h4 style={{ margin: 0, color: '#fff', fontSize: 14 }}>ðŸ·ï¸ {data.tags.length} YouTube Tags</h4>
               <CopyButton text={data.tags.join(', ')} id="tags-all" label="Copy All (CSV)" />
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {data.tags.map((t, i) => (
                 <button key={i} onClick={() => copy(t, `tag-${i}`)} data-tool-action
                   style={{ background: copiedKey === `tag-${i}` ? '#10b981' : '#fbbf2422', color: copiedKey === `tag-${i}` ? '#fff' : '#fbbf24', border: '1px solid #fbbf2455', borderRadius: 6, padding: '5px 10px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                  {copiedKey === `tag-${i}` ? '✅' : ''}{t}
+                  {copiedKey === `tag-${i}` ? 'âœ…' : ''}{t}
                 </button>
               ))}
             </div>
@@ -464,7 +464,7 @@ export default function YouTubeContentSuiteClient() {
         {data?.thumbnails?.map((t, i) => (
           <div key={i} style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 12, padding: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-              <span style={{ background: '#f7258522', color: '#f72585', border: '1px solid #f7258555', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700 }}>🎨 Style: {t.style || `Variant ${i + 1}`}</span>
+              <span style={{ background: '#f7258522', color: '#f72585', border: '1px solid #f7258555', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700 }}>ðŸŽ¨ Style: {t.style || `Variant ${i + 1}`}</span>
               <CopyButton text={t.prompt} id={`thumb-${i}`} label="Copy" />
             </div>
             <div style={{ color: '#cbd5e1', fontSize: 12, lineHeight: 1.6, fontStyle: 'italic' }}>{t.prompt}</div>
@@ -483,18 +483,18 @@ export default function YouTubeContentSuiteClient() {
         {data?.seo && (
           <>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12, marginBottom: 14 }}>
-              <ScoreBar label="📌 Title Score" value={data.seo.title_score} color={scoreColor(data.seo.title_score)} />
-              <ScoreBar label="📝 Description Score" value={data.seo.description_score} color={scoreColor(data.seo.description_score)} />
-              <ScoreBar label="🏷️ Tags Score" value={data.seo.tags_score} color={scoreColor(data.seo.tags_score)} />
-              <ScoreBar label="🌟 Overall Score" value={data.seo.overall_score} color={scoreColor(data.seo.overall_score)} />
+              <ScoreBar label="ðŸ“Œ Title Score" value={data.seo.title_score} color={scoreColor(data.seo.title_score)} />
+              <ScoreBar label="ðŸ“ Description Score" value={data.seo.description_score} color={scoreColor(data.seo.description_score)} />
+              <ScoreBar label="ðŸ·ï¸ Tags Score" value={data.seo.tags_score} color={scoreColor(data.seo.tags_score)} />
+              <ScoreBar label="ðŸŒŸ Overall Score" value={data.seo.overall_score} color={scoreColor(data.seo.overall_score)} />
             </div>
             {data.seo.tips && data.seo.tips.length > 0 && (
               <div style={{ background: '#16162a', border: '1px solid #2d2d4e', borderRadius: 12, padding: 16 }}>
-                <h4 style={{ color: '#fff', fontSize: 14, margin: '0 0 10px' }}>💡 Actionable Improvement Tips</h4>
+                <h4 style={{ color: '#fff', fontSize: 14, margin: '0 0 10px' }}>ðŸ’¡ Actionable Improvement Tips</h4>
                 {data.seo.tips.map((tip, i) => (
                   <div key={i} style={{ background: '#0f0f1a', border: '1px solid #2d2d4e', borderRadius: 8, padding: 10, marginBottom: 8 }}>
                     <div style={{ color: '#fbbf24', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', marginBottom: 4 }}>
-                      {tip.area} · Priority
+                      {tip.area} Â· Priority
                     </div>
                     <div style={{ color: '#cbd5e1', fontSize: 12, lineHeight: 1.6 }}>{tip.tip}</div>
                   </div>
@@ -558,15 +558,15 @@ export default function YouTubeContentSuiteClient() {
           <h1 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: '#fff' }}>YouTube AI Content Suite</h1>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {pendingQueue > 0 && <span style={{ background: '#f7258522', color: '#f72585', borderRadius: 999, padding: '4px 10px', fontSize: 11, fontWeight: 700 }}>⏳ {pendingQueue} pending</span>}
-          <span style={{ background: '#10b98122', color: '#10b981', borderRadius: 999, padding: '4px 10px', fontSize: 11, fontWeight: 700 }}>📊 {progress.loaded}/{progress.total} generated</span>
+          {pendingQueue > 0 && <span style={{ background: '#f7258522', color: '#f72585', borderRadius: 999, padding: '4px 10px', fontSize: 11, fontWeight: 700 }}>â³ {pendingQueue} pending</span>}
+          <span style={{ background: '#10b98122', color: '#10b981', borderRadius: 999, padding: '4px 10px', fontSize: 11, fontWeight: 700 }}>ðŸ“Š {progress.loaded}/{progress.total} generated</span>
         </div>
       </nav>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 360px) 1fr', gap: 0, minHeight: 'calc(100vh - 60px)' }}>
         <aside style={{ background: '#16162a', borderRight: '1px solid #2d2d4e', padding: 20, overflowY: 'auto' }}>
           <div style={{ marginBottom: 18 }}>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#cbd5e1', marginBottom: 8 }}>🔗 Fetch from YouTube URL</label>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#cbd5e1', marginBottom: 8 }}>ðŸ”— Fetch from YouTube URL</label>
             <div style={{ display: 'flex', gap: 6 }}>
               <input value={videoUrl} onChange={e => setVideoUrl(e.target.value)}
                 placeholder="https://www.youtube.com/watch?v=..."
@@ -574,16 +574,16 @@ export default function YouTubeContentSuiteClient() {
                 style={{ flex: 1, background: '#0f0f1a', border: '1px solid #2d2d4e', borderRadius: 8, padding: '10px 12px', color: '#fff', fontSize: 12, boxSizing: 'border-box' }} />
               <button onClick={handleFetchTranscript} disabled={fetchingTranscript || !videoUrl.trim()} data-tool-action
                 style={{ background: fetchingTranscript || !videoUrl.trim() ? '#2d2d4e' : 'linear-gradient(135deg, #ff0033, #ff4444)', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                {fetchingTranscript ? '⏳' : '📥'}
+                {fetchingTranscript ? 'â³' : 'ðŸ“¥'}
               </button>
             </div>
-            {fetchError && <div style={{ marginTop: 6, color: '#fca5a5', fontSize: 11, lineHeight: 1.4 }}>⚠️ {fetchError}</div>}
-            <div style={{ marginTop: 6, color: '#64748b', fontSize: 10, lineHeight: 1.4 }}>Free transcript fetch via Piped · no YouTube API needed</div>
+            {fetchError && <div style={{ marginTop: 6, color: '#fca5a5', fontSize: 11, lineHeight: 1.4 }}>âš ï¸ {fetchError}</div>}
+            <div style={{ marginTop: 6, color: '#64748b', fontSize: 10, lineHeight: 1.4 }}>Free transcript fetch via Piped Â· no YouTube API needed</div>
           </div>
 
           <div style={{ marginBottom: 18 }}>
             <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, fontWeight: 600, color: '#cbd5e1', marginBottom: 8 }}>
-              <span>📝 Or paste transcript</span>
+              <span>ðŸ“ Or paste transcript</span>
               <span style={{ color: '#64748b', fontSize: 10, fontWeight: 400 }}>{transcript.length} chars</span>
             </label>
             <textarea value={transcript} onChange={e => setTranscript(e.target.value)}
@@ -596,17 +596,17 @@ export default function YouTubeContentSuiteClient() {
           {transcript && (
             <div style={{ background: '#0f0f1a', border: '1px solid #2d2d4e', borderRadius: 8, padding: 10, marginBottom: 14 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                <span style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600 }}>✅ Ready</span>
+                <span style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600 }}>âœ… Ready</span>
                 <button onClick={() => { setTranscript(''); setVideoUrl(''); sectionCache.current = {}; setSectionData({}); setSectionError({}); setProgress({ loaded: 0, total: TABS.length }); }} data-tool-action
                   style={{ background: 'transparent', color: '#94a3b8', border: '1px solid #2d2d4e', borderRadius: 6, padding: '3px 8px', fontSize: 10, cursor: 'pointer' }}>Clear</button>
               </div>
-              <div style={{ fontSize: 10, color: '#64748b', lineHeight: 1.5 }}>Click any tab to generate that section. Results are cached — no re-fetch when switching.</div>
+              <div style={{ fontSize: 10, color: '#64748b', lineHeight: 1.5 }}>Click any tab to generate that section. Results are cached â€” no re-fetch when switching.</div>
             </div>
           )}
 
           <div style={{ background: '#0f0f1a', border: '1px solid #2d2d4e', borderRadius: 8, padding: 10 }}>
-            <div style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600, marginBottom: 6 }}>🔑 Powered by</div>
-            <div style={{ fontSize: 10, color: '#64748b', lineHeight: 1.5 }}>OpenRouter API (admin-configured). All 10 sections use real AI — no hardcoded outputs.</div>
+            <div style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600, marginBottom: 6 }}>ðŸ”‘ Powered by</div>
+            <div style={{ fontSize: 10, color: '#64748b', lineHeight: 1.5 }}>OpenRouter API (admin-configured). All 10 sections use real AI â€” no hardcoded outputs.</div>
           </div>
         </aside>
 
@@ -624,7 +624,7 @@ export default function YouTubeContentSuiteClient() {
                   <span style={{ fontSize: 14 }}>{t.emoji}</span>
                   {t.label}
                   {hasData && !isActive && <span style={{ position: 'absolute', top: 4, right: 4, width: 6, height: 6, background: '#10b981', borderRadius: '50%' }} />}
-                  {isLoading && <span style={{ marginLeft: 4 }}>⏳</span>}
+                  {isLoading && <span style={{ marginLeft: 4 }}>â³</span>}
                 </button>
               );
             })}
@@ -634,9 +634,9 @@ export default function YouTubeContentSuiteClient() {
 
           {!transcript && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', textAlign: 'center', color: '#64748b' }}>
-              <div style={{ fontSize: 64, marginBottom: 16 }}>🎬</div>
+              <div style={{ fontSize: 64, marginBottom: 16 }}>ðŸŽ¬</div>
               <h2 style={{ color: '#cbd5e1', fontSize: 22, marginBottom: 8 }}>Ready to optimize your YouTube video?</h2>
-              <p style={{ maxWidth: 480, fontSize: 14, lineHeight: 1.6, margin: 0 }}>Paste a transcript in the left panel or fetch one from a YouTube URL. Then click any tab to generate that section — titles, hooks, scripts, descriptions, tags, thumbnails, SEO scores, and video ideas.</p>
+              <p style={{ maxWidth: 480, fontSize: 14, lineHeight: 1.6, margin: 0 }}>Paste a transcript in the left panel or fetch one from a YouTube URL. Then click any tab to generate that section â€” titles, hooks, scripts, descriptions, tags, thumbnails, SEO scores, and video ideas.</p>
             </div>
           )}
         </main>
@@ -651,3 +651,4 @@ export default function YouTubeContentSuiteClient() {
     </div>
   );
 }
+

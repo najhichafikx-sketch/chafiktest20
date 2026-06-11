@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -33,7 +33,7 @@ export default function AdminPage() {
   useEffect(() => {
     const t = localStorage.getItem('admin_token');
     if (!t) { router.push('/admin-login'); return; }
-    setToken(t);
+    startTransition(() => setToken(t));
     fetchStatus(t);
     fetchLogs(t);
     fetchAiSettings(t);

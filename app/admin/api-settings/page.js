@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function ApiSettingsPage() {
@@ -15,7 +15,7 @@ export default function ApiSettingsPage() {
   useEffect(() => {
     const t = localStorage.getItem('admin_token');
     if (!t) { router.push('/admin-login'); return; }
-    setToken(t);
+    startTransition(() => setToken(t));
     fetchStatus(t);
   }, [router]);
 

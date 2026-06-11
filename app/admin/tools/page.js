@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -11,13 +11,6 @@ export default function AdminToolsPage() {
   const [models, setModels] = useState([]);
   const [message, setMessage] = useState('');
   const [saving, setSaving] = useState({});
-
-  useEffect(() => {
-    const t = localStorage.getItem('admin_token');
-    if (!t) { router.push('/admin-login'); return; }
-    setToken(t);
-    fetchTools(t);
-  }, [router]);
 
   async function fetchTools(t) {
     const res = await fetch('/api/admin/tools', {
@@ -30,6 +23,13 @@ export default function AdminToolsPage() {
       setModels(data.availableModels || []);
     }
   }
+
+  useEffect(() => {
+    const t = localStorage.getItem('admin_token');
+    if (!t) { router.push('/admin-login'); return; }
+    startTransition(() => setToken(t));
+    startTransition(() => fetchTools(t));
+  }, [router]);
 
   async function handleToggle(tool, enabled) {
     setSaving(p => ({ ...p, [tool.tool_id]: true }));

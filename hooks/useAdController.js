@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, startTransition } from 'react';
 import { AdController } from '@/lib/adSystem';
 
 export function useAdController() {
@@ -9,8 +9,8 @@ export function useAdController() {
 
   useEffect(() => {
     const ctx = AdController.init();
-    setContext(ctx);
-    setReady(true);
+    startTransition(() => setContext(ctx));
+    startTransition(() => setReady(true));
   }, []);
 
   const canShow = useCallback((adType, overrides) => {

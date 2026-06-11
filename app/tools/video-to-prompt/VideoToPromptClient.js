@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
+import Link from 'next/link';
 
 const ALLOWED_EXTS = ['mp4', 'mov', 'avi', 'webm'];
 const MAX_SIZE = 500 * 1024 * 1024;
@@ -34,9 +35,6 @@ function downloadAsMd(prompts, filename, metadata) {
   let md = `# Video to Prompt - Analysis Report\n\n`;
   if (metadata) {
     md += `**File:** ${metadata.fileName || 'Unknown'}\n`;
-    md += `**Duration:** ${Math.round(metadata.duration || 0)}s\n`;
-    md += `**Resolution:** ${metadata.width}x${metadata.height}\n`;
-    md += `**Frames Analyzed:** ${metadata.frameCount || 0}\n\n`;
   }
   md += `---\n\n`;
   for (const [key, label] of Object.entries(PROMPT_LABELS)) {
@@ -69,6 +67,24 @@ const PROMPT_ICONS = {
   negativePrompt: '🚫'
 };
 
+function PromptCard({ id, content }) {
+  if (!content) return null;
+  return (
+    <div style={{ background: 'var(--card-bg, #111114)', border: '1px solid var(--card-border, #1e1e22)', borderRadius: 10, overflow: 'hidden' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', borderBottom: '1px solid var(--card-border, #1e1e22)', background: 'var(--surface, #0d0d0f)' }}>
+        <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-tertiary, #5a5a62)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
+          {PROMPT_ICONS[id] || ''} {PROMPT_LABELS[id] || id}
+        </h3>
+        <button onClick={(e) => copyText(content, e.currentTarget)}
+          style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, border: '1.5px solid var(--card-border, #2a2a2e)', background: 'transparent', color: 'var(--text-secondary, #9a9890)', cursor: 'pointer', fontWeight: 600 }}>
+            Copy
+        </button>
+      </div>
+      <pre style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-primary, #e8e6e0)', lineHeight: 1.6, whiteSpace: 'pre-wrap', fontFamily: 'inherit', maxHeight: 400, overflow: 'auto', margin: 0 }}>{content}</pre>
+    </div>
+  );
+}
+
 export default function VideoToPromptClient() {
   const [file, setFile] = useState(null);
   const [videoUrl, setVideoUrl] = useState('');
@@ -77,388 +93,270 @@ export default function VideoToPromptClient() {
   const [result, setResult] = useState(null);
   const [frameAnalysis, setFrameAnalysis] = useState(null);
   const [error, setError] = useState('');
-  const [step, setStep] = useState('upload');
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [extractProgress, setExtractProgress] = useState(0);
-  const [analyzeProgress, setAnalyzeProgress] = useState(0);
+  const [prompts, setPrompts] = useState([]);
+  const [promptsError, setPromptsError] = useState('');
+  const [videoMeta, setVideoMeta] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [stage, setStage] = useState('');
+  const canvasRef = useRef(null);
   const videoRef = useRef(null);
-
-  const [dragOver, setDragOver] = useState(false);
-
-  function validateFile(f) {
-    const ext = f.name.split('.').pop().toLowerCase();
-    if (!ALLOWED_EXTS.includes(ext)) {
-      setError('Invalid file type. Accepted: MP4, MOV, AVI, WEBM');
-      return false;
-    }
-    if (f.size > MAX_SIZE) {
-      setError('File too large. Max size: 500MB');
-      return false;
-    }
-    setError('');
-    return true;
-  }
-
-  function handleFile(f) {
-    if (!validateFile(f)) return;
-    setFile(f);
-    if (videoUrl) URL.revokeObjectURL(videoUrl);
-    setVideoUrl(URL.createObjectURL(f));
-    setResult(null);
-    setFrameAnalysis(null);
-    setStep('preview');
-    setUploadProgress(100);
-  }
-
-  async function extractFrames() {
-    const video = videoRef.current;
-    if (!video) return [];
-
-    await new Promise(resolve => {
-      video.onloadedmetadata = resolve;
-      if (video.readyState >= 1) resolve();
-    });
-
+  const fileInputRef = useRef(null);
+  const extractFrames = useCallback(async (videoFile) => {
+    const url = URL.createObjectURL(videoFile);
+    const video = document.createElement('video');
+    video.src = url;
+    await video.play();
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    const duration = video.duration;
-    const targetFrames = ultraDetailed ? 10 : 5;
-    const totalFrames = Math.min(targetFrames, Math.floor(duration));
-    if (totalFrames < 1) return [{ time: 0, data: captureFrame(video, canvas, ctx, 0) }];
-    const interval = duration / totalFrames;
+    const fps = 2;
     const frames = [];
-
-    for (let i = 0; i < totalFrames; i++) {
-      const time = i * interval;
-      video.currentTime = time;
-      await new Promise(resolve => {
-        video.onseeked = resolve;
-        if (Math.abs(video.currentTime - time) < 0.1) resolve();
-      });
+    video.addEventListener('loadedmetadata', () => {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0);
-      frames.push({ time, data: canvas.toDataURL('image/jpeg', 0.65) });
-      setExtractProgress(Math.round(((i + 1) / totalFrames) * 100));
-    }
+      const totalFrames = Math.floor(video.duration * fps);
+      for (let i = 0; i < totalFrames; i++) {
+        video.currentTime = i / fps;
+        ctx.drawImage(video, 0, 0);
+        frames.push(canvas.toDataURL('image/jpeg', 0.5));
+      }
+    });
+    await new Promise((resolve) => { video.addEventListener('seeked', resolve, { once: true }); });
     return frames;
-  }
-
-  function captureFrame(video, canvas, ctx, time) {
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    ctx.drawImage(video, 0, 0);
-    return canvas.toDataURL('image/jpeg', 0.65);
-  }
-
-  async function handleGenerate() {
-    if (!file) return;
-    setLoading(true);
-    setResult(null);
-    setFrameAnalysis(null);
-    setError('');
-    setExtractProgress(0);
-    setAnalyzeProgress(0);
-    setStep('extracting');
-
-    try {
-      const frames = await extractFrames();
-      setStep('analyzing');
-      setAnalyzeProgress(10);
-
-      const metadata = {
-        fileName: file.name,
-        fileSize: file.size,
-        duration: videoRef.current?.duration || 0,
-        width: videoRef.current?.videoWidth || 0,
-        height: videoRef.current?.videoHeight || 0
+  }, []);
+  const captureFrame = useCallback((videoFile) => {
+    return new Promise((resolve) => {
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      video.src = URL.createObjectURL(videoFile);
+      video.onloadedmetadata = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        video.currentTime = Math.min(video.duration * 0.25, 5);
+        video.onseeked = () => {
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(video, 0, 0);
+          resolve(canvas.toDataURL('image/jpeg', 0.6));
+        };
       };
-
-      setAnalyzeProgress(30);
-
+    });
+  }, []);
+  const handleGenerate = useCallback(async () => {
+    if (!file) { setError('Please select a video file first.'); return; }
+    setError('');
+    setResult(null);
+    setPrompts([]);
+    setLoading(true);
+    setProgress(0);
+    setStage('Extracting frames');
+    try {
+      await new Promise((r) => setTimeout(r, 500));
+      setProgress(30);
+      setStage('Analyzing content');
+      const formData = new FormData();
+      formData.append('video', file);
+      formData.append('ultraDetailed', ultraDetailed);
+      formData.append('frameCount', 5);
+      formData.append('maxDuration', 120);
       const res = await fetch('/api/tools/video-to-prompt', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ frames, metadata, ultraDetailed })
+        body: formData,
       });
-
-      setAnalyzeProgress(80);
-
+      setProgress(80);
+      setStage('Finalizing');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Analysis failed with status ' + res.status);
+      }
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Analysis failed');
-      if (!data.success) throw new Error(data.error || 'Analysis failed');
-
-      setAnalyzeProgress(100);
+      if (data.prompts) { setPrompts(data.prompts); }
+      if (data.frameAnalysis) { setFrameAnalysis(data.frameAnalysis); }
       setResult(data);
-      setFrameAnalysis(data.frameAnalysis);
-      setStep('results');
+      setProgress(100);
+      setStage('');
     } catch (err) {
-      setError(err.message);
-      setStep('upload');
+      setError(err.message || 'An error occurred during analysis.');
     } finally {
       setLoading(false);
+      setStage('');
     }
-  }
-
-  function handleDrop(e) {
+  }, [file, ultraDetailed]);
+  const handleDrop = useCallback((e) => {
     e.preventDefault();
-    setDragOver(false);
-    const f = e.dataTransfer.files[0];
-    if (f) handleFile(f);
-  }
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile) {
+      const ext = droppedFile.name.split('.').pop().toLowerCase();
+      if (!ALLOWED_EXTS.includes(ext)) {
+        setError('Invalid file type. Please upload MP4, MOV, AVI, or WEBM.');
+        return;
+      }
+      if (droppedFile.size > MAX_SIZE) {
+        setError('File size exceeds 500 MB limit.');
+        return;
+      }
+      setFile(droppedFile);
+      setError('');
+    }
+  }, []);
+  return (
+    <div style={{ maxWidth: 800, margin: ' 0 auto', padding: '24px 16px', fontFamily: 'inherit' }}>
+      <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 700, margin: ' 0 0 8px', color: 'var(--text-primary, #e8e6e0)' }}>
+          Video to Prompt
+        </h1>
+        <p style={{ fontSize: 15, color: 'var(--text-secondary, #9a9890)', maxWidth: 560, margin: ' 0 auto' }}>
+          Upload a video and get detailed AI-generated prompts for various AI video generation platforms
+        </p>
+      </div>
 
-  function PromptCard({ id, content }) {
-    if (!content) return null;
-    return (
-      <div style={{ background: 'var(--card-bg, #111114)', border: '1px solid var(--card-border, #1e1e22)', borderRadius: 10, overflow: 'hidden' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', borderBottom: '1px solid var(--card-border, #1e1e22)', background: 'var(--surface, #0d0d0f)' }}>
-          <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-tertiary, #5a5a62)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
-            {PROMPT_ICONS[id] || ''} {PROMPT_LABELS[id] || id}
-          </h3>
-          <button onClick={(e) => copyText(content, e.currentTarget)}
-            style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, border: '1.5px solid var(--card-border, #2a2a2e)', background: 'transparent', color: 'var(--text-secondary, #9a9890)', cursor: 'pointer', fontWeight: 600 }}>
-            Copy
+      <div onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}
+        style={{ border: '2px dashed var(--card-border, #333)', borderRadius: 12, padding: '40px 20px', textAlign: 'center', marginBottom: 24, background: 'var(--surface, #0d0d0f)', cursor: 'pointer' }}
+        onClick={() => fileInputRef.current?.click()}>
+        {!file ? (
+          <div>
+            <div style={{ fontSize: 40, marginBottom: 12 }}>🎥</div>
+            <p style={{ fontSize: 15, color: 'var(--text-secondary, #9a9890)', margin: ' 0 0 8px' }}>
+              Drag & drop your video here or click to browse
+            </p>
+            <p style={{ fontSize: 12, color: 'var(--text-tertiary, #5a5a62)' }}>
+              Supports MP4, MOV, AVI, WEBM (max 500 MB)
+            </p>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+            <span style={{ fontSize: 14, color: 'var(--text-primary, #e8e6e0)' }}>📰 {file.name}</span>
+            <span style={{ fontSize: 12, color: 'var(--text-tertiary, #5a5a62)' }}>({formatSize(file.size)})</span>
+            <button onClick={(e) => { e.stopPropagation(); setFile(null); setError(''); setResult(null); }}
+              style={{ fontSize: 12, padding: '4px 12px', borderRadius: 6, border: '1px solid var(--card-border, #333)', background: 'transparent', color: 'var(--text-secondary, #9a9890)', cursor: 'pointer' }}>
+              Remove
+            </button>
+          </div>
+        )}
+        <input ref={fileInputRef} type='file' accept='.mp4,.mov,.avi,.webm' style={{ display: 'none' }} onChange={(e) => {
+          const f = e.target.files[0];
+          if (f) { setFile(f); setError(''); }
+        }} />
+      </div>
+
+      {file && !loading && !result && (
+        <div style={{ marginBottom: 24 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text-secondary, #9a9890)' }}>
+            <input type='checkbox' checked={ultraDetailed} onChange={(e) => setUltraDetailed(e.target.checked)}
+              style={{ width: 16, height: 16 }} />
+            Ultra-detailed analysis (slower, more comprehensive)
+          </label>
+          <button onClick={handleGenerate} disabled={loading}
+            style={{ marginTop: 16, width: '100%', padding: '12px', fontSize: 15, fontWeight: 600, border: 'none', borderRadius: 8, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}>
+            {loading ? 'Analyzing...' : 'Analyze Video to Generate Prompts'}
           </button>
         </div>
-        <pre style={{ padding: '14px 16px', fontSize: 13, color: 'var(--text-primary, #e8e6e0)', lineHeight: 1.6, whiteSpace: 'pre-wrap', fontFamily: 'inherit', maxHeight: 400, overflow: 'auto', margin: 0 }}>{content}</pre>
-      </div>
-    );
-  }
+      )}
 
-  return (
-    <section className="section tool-page" style={{ paddingTop: 120 }}>
-      <div className="container">
-        <div className="tool-page-header">
-          <div className="tool-page-icon">🎥</div>
-          <h1 className="tool-page-title">Video to Prompt Generator</h1>
-          <p className="tool-page-desc">Upload any video and get detailed AI prompts for Veo, Kling, Runway, Pika, Hailuo, Luma, and other AI video generators.</p>
+      {loading && (
+        <div style={{ marginBottom: 24, background: 'var(--surface, #0d0d0f)', borderRadius: 8, padding: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 13, color: 'var(--text-secondary, #9a9890)' }}>
+            <span>`${stage || 'Processing...'}`</span>
+            <span>`${progress}%`</span>
+          </div>
+          <div style={{ height: 6, background: 'var(--card-border, #1e1e22)', borderRadius: 3, overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', borderRadius: 3, transition: 'width 0.3s ease' }} />
+          </div>
         </div>
+      )}
 
-        <div className="tool-layout" style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-          <div className="tool-workspace" style={{ flex: 1, minWidth: 0 }}>
-            <div className="tool-section">
-              <h2>Upload Video</h2>
-              <div className="usage-steps" style={{ marginBottom: 16 }}>
-                <ol>
-                  <li><strong>Upload</strong> – MP4, MOV, AVI, or WEBM (up to 500MB)</li>
-                  <li><strong>AI Analysis</strong> – Frames extracted and analyzed for visual style, camera, lighting, composition, and more</li>
-                  <li><strong>6 Prompts</strong> – Universal, Veo, Kling, Runway, Cinematic Director, and Negative prompts</li>
-                </ol>
-              </div>
-            </div>
+      {error && (
+        <div style={{ marginBottom: 24, padding: '12px 16px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: 8, color: '#ef4444', fontSize: 14 }}>
+          {error}
+        </div>
+      )}
 
-            <div onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={handleDrop}
-              onClick={() => document.getElementById('v2p-input')?.click()}
-              style={{
-                border: `2px dashed ${dragOver ? 'var(--neon-purple, #8b5cf6)' : 'var(--card-border, #2a2a2e)'}`,
-                borderRadius: 12, padding: '40px 24px', textAlign: 'center', cursor: 'pointer',
-                background: dragOver ? 'rgba(139,92,246,0.06)' : 'var(--card-bg, #111114)',
-                transition: 'all 0.15s', marginBottom: 16
-              }}>
-              <input id="v2p-input" type="file" accept=".mp4,.mov,.avi,.webm" style={{ display: 'none' }}
-                onChange={e => { if (e.target.files[0]) handleFile(e.target.files[0]); }} />
-              <div style={{ fontSize: 40, marginBottom: 12 }}>{file ? '🎬' : '📁'}</div>
-              {file ? (
-                <>
-                  <h3 style={{ margin: '0 0 4px', fontSize: 16, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)' }}>{file.name}</h3>
-                  <p style={{ margin: 0, fontSize: 13, color: 'var(--text-tertiary, #5a5a62)' }}>{formatSize(file.size)}</p>
-                </>
-              ) : (
-                <>
-                  <h3 style={{ margin: '0 0 4px', fontSize: 16, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)' }}>Drop video here or click to browse</h3>
-                  <p style={{ margin: 0, fontSize: 13, color: 'var(--text-tertiary, #5a5a62)' }}>MP4, MOV, AVI, WEBM — Max 500MB</p>
-                </>
-              )}
-              {uploadProgress > 0 && uploadProgress < 100 && (
-                <div style={{ marginTop: 12, height: 4, borderRadius: 2, background: 'var(--card-border, #1e1e22)', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${uploadProgress}%`, background: 'linear-gradient(90deg, #8b5cf6, #d946ef)', borderRadius: 2, transition: 'width 0.3s' }} />
-                </div>
-              )}
-            </div>
-
-            {/* Ultra Detailed toggle */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, padding: '10px 16px', borderRadius: 8, background: 'var(--card-bg, #111114)', border: '1px solid var(--card-border, #1e1e22)' }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)' }}>🔬 Ultra Detailed Analysis</div>
-                <div style={{ fontSize: 12, color: 'var(--text-tertiary, #5a5a62)', marginTop: 2 }}>Extract more frames, deeper scene analysis, detect transitions and editing style (slower but more accurate)</div>
-              </div>
-              <button onClick={() => setUltraDetailed(!ultraDetailed)}
-                style={{
-                  width: 44, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer', position: 'relative',
-                  background: ultraDetailed ? 'linear-gradient(90deg, #8b5cf6, #d946ef)' : 'var(--card-border, #2a2a2e)',
-                  transition: 'background 0.2s'
-                }}>
-                <span style={{
-                  position: 'absolute', top: 2, width: 20, height: 20, borderRadius: '50%', background: '#fff',
-                  left: ultraDetailed ? 22 : 2, transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.3)'
-                }} />
+      {result && (
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', margin: 0 }}>
+              Generated Prompts
+            </h2>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={() => downloadAsTxt(prompts, file?.name || 'video')}
+                style={{ fontSize: 12, padding: '6px 14px', borderRadius: 6, border: '1px solid var(--card-border, #333)', background: 'transparent', color: 'var(--text-secondary, #9a9890)', cursor: 'pointer' }}>
+                Download TXT
+              </button>
+              <button onClick={() => downloadAsMd(prompts, file?.name || 'video', videoMeta)}
+                style={{ fontSize: 12, padding: '6px 14px', borderRadius: 6, border: '1px solid var(--card-border, #333)', background: 'transparent', color: 'var(--text-secondary, #9a9890)', cursor: 'pointer' }}>
+                Download MD
               </button>
             </div>
-
-            {error && (
-              <div style={{ padding: '12px 16px', borderRadius: 8, background: '#2a0f0f', border: '1px solid #ef4444', color: '#ef4444', fontSize: 14, marginBottom: 16 }}>
-                {error}
-              </div>
-            )}
-
-            {file && (
-              <div style={{ marginBottom: 16 }}>
-                <video ref={videoRef} src={videoUrl} style={{ width: '100%', maxHeight: 400, borderRadius: 12, background: '#000' }} controls />
-              </div>
-            )}
-
-            <button className="btn btn-primary generate-btn" onClick={handleGenerate} disabled={loading || !file}
-              style={{ width: '100%', marginBottom: 16 }}>
-              {loading ? '⏳ Processing...' : '✨ Generate Prompts'}
-            </button>
-
-            {/* Progress indicators */}
-            {step === 'extracting' && (
-              <div style={{ marginBottom: 16, padding: '16px 20px', borderRadius: 10, background: 'var(--card-bg, #111114)', border: '1px solid var(--card-border, #1e1e22)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                  <div className="saas-spinner" style={{ width: 20, height: 20, borderWidth: 2 }}></div>
-                  <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)' }}>Extracting frames...</span>
-                  <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-tertiary, #5a5a62)', fontFamily: 'monospace' }}>{extractProgress}%</span>
-                </div>
-                <div style={{ height: 4, borderRadius: 2, background: 'var(--card-border, #1e1e22)', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${extractProgress}%`, background: 'linear-gradient(90deg, #8b5cf6, #d946ef)', borderRadius: 2, transition: 'width 0.3s' }} />
-                </div>
-              </div>
-            )}
-
-            {step === 'analyzing' && (
-              <div style={{ marginBottom: 16, padding: '16px 20px', borderRadius: 10, background: 'var(--card-bg, #111114)', border: '1px solid var(--card-border, #1e1e22)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                  <div className="saas-spinner" style={{ width: 20, height: 20, borderWidth: 2 }}></div>
-                  <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)' }}>AI analyzing video...</span>
-                  <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-tertiary, #5a5a62)', fontFamily: 'monospace' }}>{analyzeProgress}%</span>
-                </div>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', fontSize: 12, color: 'var(--text-tertiary, #5a5a62)' }}>
-                  <span>🔍 Visual style & composition</span>
-                  <span>🎬 Camera & lighting</span>
-                  <span>🎨 Color & mood</span>
-                  {ultraDetailed && <span>🔬 Scene transitions & editing</span>}
-                </div>
-                <div style={{ marginTop: 8, height: 4, borderRadius: 2, background: 'var(--card-border, #1e1e22)', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${analyzeProgress}%`, background: 'linear-gradient(90deg, #8b5cf6, #d946ef)', borderRadius: 2, transition: 'width 0.3s' }} />
-                </div>
-              </div>
-            )}
-
-            {/* Results */}
-            {result && !loading && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, padding: '12px 16px', borderRadius: 10, background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(217,70,239,0.05))', border: '1px solid rgba(139,92,246,0.2)' }}>
-                  <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)' }}>
-                    🎯 {ultraDetailed ? 'Ultra Detailed' : 'Standard'} Analysis Complete
-                  </span>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    <button onClick={() => downloadAsTxt(result, file?.name || 'video')}
-                      style={{ fontSize: 12, padding: '6px 14px', borderRadius: 6, border: '1.5px solid var(--card-border, #2a2a2e)', background: 'transparent', color: 'var(--text-secondary, #9a9890)', cursor: 'pointer', fontWeight: 600 }}>
-                      📄 Download TXT
-                    </button>
-                    <button onClick={() => downloadAsMd(result, file?.name || 'video', result.metadata)}
-                      style={{ fontSize: 12, padding: '6px 14px', borderRadius: 6, border: '1.5px solid var(--card-border, #2a2a2e)', background: 'transparent', color: 'var(--text-secondary, #9a9890)', cursor: 'pointer', fontWeight: 600 }}>
-                      📝 Download MD
-                    </button>
-                  </div>
-                </div>
-
-                <PromptCard id="universalPrompt" content={result.universalPrompt} />
-                <PromptCard id="veoPrompt" content={result.veoPrompt} />
-                <PromptCard id="klingPrompt" content={result.klingPrompt} />
-                <PromptCard id="runwayPrompt" content={result.runwayPrompt} />
-                <PromptCard id="cinematicDirectorPrompt" content={result.cinematicDirectorPrompt} />
-                <PromptCard id="negativePrompt" content={result.negativePrompt} />
-
-                {frameAnalysis && (
-                  <details style={{ background: 'var(--card-bg, #111114)', border: '1px solid var(--card-border, #1e1e22)', borderRadius: 10, overflow: 'hidden' }}>
-                    <summary style={{ padding: '10px 16px', fontSize: 13, fontWeight: 600, color: 'var(--text-tertiary, #5a5a62)', cursor: 'pointer', userSelect: 'none', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      🔬 View Raw Frame Analysis
-                    </summary>
-                    <pre style={{ padding: '14px 16px', fontSize: 12, color: 'var(--text-secondary, #9a9890)', lineHeight: 1.5, whiteSpace: 'pre-wrap', maxHeight: 500, overflow: 'auto', margin: 0, borderTop: '1px solid var(--card-border, #1e1e22)' }}>{frameAnalysis}</pre>
-                  </details>
-                )}
-
-                <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                  <button onClick={() => { setResult(null); setFrameAnalysis(null); setFile(null); setStep('upload'); setUploadProgress(0); }}
-                    style={{ padding: '10px 20px', borderRadius: 8, border: '1.5px solid var(--card-border, #2a2a2e)', background: 'transparent', color: 'var(--text-primary, #e8e6e0)', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-                    Start Over
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="tool-section">
-              <h2>FAQ</h2>
-              <div className="faq-list">
-                <div className="faq-item">
-                  <div className="faq-question">
-                    Which AI video generators are supported?
-                    <span className="faq-icon">+</span>
-                  </div>
-                  <div className="faq-answer">
-                    <div className="faq-answer-content">Google Veo 2, Kling 1.6, Runway Gen-3, Pika, Hailuo, Luma Dream Machine, and any text-to-video model. Each prompt is optimized for its specific platform's strengths.</div>
-                  </div>
-                </div>
-                <div className="faq-item">
-                  <div className="faq-question">
-                    How long does analysis take?
-                    <span className="faq-icon">+</span>
-                  </div>
-                  <div className="faq-answer">
-                    <div className="faq-answer-content">Standard analysis (5 frames): 20-40 seconds. Ultra Detailed (10 frames): 45-90 seconds. Processing time depends on video length and AI model response time.</div>
-                  </div>
-                </div>
-                <div className="faq-item">
-                  <div className="faq-question">
-                    What can I use the prompts for?
-                    <span className="faq-icon">+</span>
-                  </div>
-                  <div className="faq-answer">
-                    <div className="faq-answer-content">Recreate the exact video style in any AI video generator, generate storyboards, create consistent visual styles, extract cinematography techniques for learning, or use as reference for manual video production.</div>
-                  </div>
-                </div>
-                <div className="faq-item">
-                  <div className="faq-question">
-                    What is Ultra Detailed Analysis?
-                    <span className="faq-icon">+</span>
-                  </div>
-                  <div className="faq-answer">
-                    <div className="faq-answer-content">Extracts 10 frames instead of 5, detects scene transitions, editing style, pacing, cinematic techniques, and storytelling structure. Produces a master prompt optimized for maximum similarity to the original video.</div>
-                  </div>
-                </div>
-                <div className="faq-item">
-                  <div className="faq-question">
-                    Are my videos stored on your server?
-                    <span className="faq-icon">+</span>
-                  </div>
-                  <div className="faq-answer">
-                    <div className="faq-answer-content">No. Videos are processed entirely in your browser. Only anonymized frame data is sent to the AI for analysis. Your video file never leaves your device.</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="tool-section">
-              <h2>Related Tools</h2>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <a href="/tools/youtube-creator" className="btn btn-sm btn-outline">AI YouTube Creator Suite</a>
-                <a href="/tools/thumbnail-prompts" className="btn btn-sm btn-outline">Thumbnail Prompt Generator</a>
-                <a href="/tools/youtube-script" className="btn btn-sm btn-outline">YouTube Script Generator</a>
-                <a href="/tools/faceless-video" className="btn btn-sm btn-outline">Faceless Video Generator</a>
-                <a href="/tools/image-to-prompt" className="btn btn-sm btn-outline">Image to Prompt Generator</a>
-              </div>
-            </div>
           </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {Object.entries(PROMPT_LABELS).map(([key, label]) => (
+              prompts[key] ? <PromptCard key={key} id={key} content={prompts[key]} /> : null
+            ))}
+          </div>
+          {promptsError && (
+            <p style={{ fontSize: 13, color: 'var(--text-tertiary, #5a5a62)', marginTop: 12 }}>
+              {promptsError}
+            </p>
+          )}
+        </div>
+      )}
 
-          <aside className="tool-sidebar" style={{ width: 300, flexShrink: 0 }}>
-            <div style={{ position: 'sticky', top: 100 }}></div>
-          </aside>
+      <div style={{ marginTop: 40, marginBottom: 32 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', margin: ' 0 16px' }}>
+          Frequently Asked Questions
+        </h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ background: 'var(--surface, #0d0d0f)', borderRadius: 8, padding: '16px 20px', border: '1px solid var(--card-border, #1e1e22)' }}>
+            <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', margin: ' 0 6px' }}>How does the video to prompt analysis work?</h3>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary, #9a9890)', margin: 0, lineHeight: 1.6 }}>
+              Our AI analyzes your video content, including visual elements, scene composition, motion patterns, and audio cues to generate optimized prompts for various AI video generation platforms.
+            </p>
+          </div>
+          <div style={{ background: 'var(--surface, #0d0d0f)', borderRadius: 8, padding: '16px 20px', border: '1px solid var(--card-border, #1e1e22)' }}>
+            <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', margin: ' 0 6px' }}>What video formats are supported?</h3>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary, #9a9890)', margin: 0, lineHeight: 1.6 }}>
+              We support MP4, MOV, AVI, and WEBM formats. Maximum file size is 500 MB.
+            </p>
+          </div>
+          <div style={{ background: 'var(--surface, #0d0d0f)', borderRadius: 8, padding: '16px 20px', border: '1px solid var(--card-border, #1e1e22)' }}>
+            <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', margin: ' 0 6px' }}>What platforms are the prompts optimized for?</h3>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary, #9a9890)', margin: 0, lineHeight: 1.6 }}>
+              We generate prompts optimized for Google Veo, Kling, Runway, and other major AI video platforms, plus a universal prompt that works across multiple platforms.
+            </p>
+          </div>
+          <div style={{ background: 'var(--surface, #0d0d0f)', borderRadius: 8, padding: '16px 20px', border: '1px solid var(--card-border, #1e1e22)' }}>
+            <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', margin: ' 0 6px' }}>What does ultra-detailed analysis do?</h3>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary, #9a9890)', margin: 0, lineHeight: 1.6 }}>
+              Ultra-detailed mode performs a more comprehensive analysis of your video, capturing more frames and generating more nuanced prompts that include specific visual details, color palettes, and stylistic elements.
+            </p>
+          </div>
+          <div style={{ background: 'var(--surface, #0d0d0f)', borderRadius: 8, padding: '16px 20px', border: '1px solid var(--card-border, #1e1e22)' }}>
+            <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', margin: ' 0 6px' }}>How long does the analysis take?</h3>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary, #9a9890)', margin: 0, lineHeight: 1.6 }}>
+              Analysis time depends on video length and complexity. Most videos are processed within a few minutes. Ultra-detailed mode may take longer.
+            </p>
+          </div>
         </div>
       </div>
-    </section>
+
+      <div style={{ marginBottom: 32 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', margin: ' 0 16px' }}>
+          Related Tools
+        </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
+          <Link href='/tools/youtube-creator'
+            style={{ textDecoration: 'none', padding: '16px', background: 'var(--surface, #0d0d0f)', borderRadius: 8, border: '1px solid var(--card-border, #1e1e22)', transition: 'border-color 0.2s' }}>
+            <div style={{ fontSize: 24, marginBottom: 8 }}>🎬</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', marginBottom: 4 }}>YouTube Content Suite</div>
+            <div style={{ fontSize: 12, color: 'var(--text-secondary, #9a9890)' }}>Generate ideas, scripts, and titles for your YouTube videos</div>
+          </Link>
+          <Link href='/tools/prompt-viral'
+            style={{ textDecoration: 'none', padding: '16px', background: 'var(--surface, #0d0d0f)', borderRadius: 8, border: '1px solid var(--card-border, #1e1e22)', transition: 'border-color 0.2s' }}>
+            <div style={{ fontSize: 24, marginBottom: 8 }}>🚀</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary, #e8e6e0)', marginBottom: 4 }}>Prompt Viral</div>
+            <div style={{ fontSize: 12, color: 'var(--text-secondary, #9a9890)' }}>Generate viral-worthy prompts for your AI content</div>
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }

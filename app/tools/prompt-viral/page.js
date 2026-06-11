@@ -47,7 +47,7 @@ export default function PromptViralPage() {
           <p className="section-subtitle">
             Viral prompts crafted for social media, content marketing, and AI-powered creativity.
             Browse the library or{' '}
-            <a href="/tools/prompt-viral/generate" style={{ color: 'var(--neon-purple)', fontWeight: 600 }}>generate new ones with AI</a>.
+            <Link href="/tools/prompt-viral/generate" style={{ color: 'var(--neon-purple)', fontWeight: 600 }}>generate new ones with AI</Link>.
           </p>
         </div>
 
@@ -103,7 +103,7 @@ export default function PromptViralPage() {
               {filtered.length === 0 && (
                 <div style={{ textAlign: 'center', padding: 48, color: 'var(--text-muted)' }}>
                   <p>No viral prompts found matching your search.</p>
-                  <a href="/admin/prompts/edit/new" style={{ color: 'var(--neon-purple)', fontSize: 14 }}>Create a new prompt →</a>
+                  <Link href="/admin/prompts/edit/new" style={{ color: 'var(--neon-purple)', fontSize: 14 }}>Create a new prompt →</Link>
                 </div>
               )}
             </>
@@ -111,9 +111,9 @@ export default function PromptViralPage() {
         </div>
 
         <div style={{ textAlign: 'center', marginTop: 48, padding: '24px 0 48px' }}>
-          <a href="/tools/prompt-viral/generate" className="btn btn-primary" style={{ padding: '14px 40px', fontSize: 15 }}>
+          <Link href="/tools/prompt-viral/generate" className="btn btn-primary" style={{ padding: '14px 40px', fontSize: 15 }}>
             ✨ Generate New Viral Prompt with AI
-          </a>
+          </Link>
         </div>
       </div>
     </section>
