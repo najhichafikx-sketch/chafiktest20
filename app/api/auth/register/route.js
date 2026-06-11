@@ -56,8 +56,13 @@ export async function POST(request) {
 
     return response;
   } catch (err) {
-    console.error('Registration error:', err?.message || err);
-    await writeLog('ERROR', 'Registration error', { error: err?.message || 'unknown' });
-    return Response.json({ success: false, message: 'Server error during registration' }, { status: 500 });
+    const msg = err?.message || err?.toString() || 'Unknown error';
+    console.error('[REGISTER ERROR]', msg);
+    await writeLog('ERROR', 'Registration error', { error: msg });
+    const isConfigError = msg.includes('Supabase not configured');
+    return Response.json({
+      success: false,
+      message: isConfigError ? msg : 'Server error during registration'
+    }, { status: isConfigError ? 503 : 500 });
   }
 }
