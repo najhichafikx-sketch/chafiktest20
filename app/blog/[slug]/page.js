@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import BlogImage from '@/components/BlogImage';
+import BlogViewTracker from '@/components/BlogViewTracker';
 import { TOOL_NAMES, TOOL_ARTICLES } from '@/lib/tool-content';
 import { YOUTUBE_BLOG_POSTS } from '@/lib/blog-content';
 import { SEED_POSTS } from '@/lib/seed-blog';
@@ -379,6 +380,7 @@ export default async function BlogArticle({ params }) {
           </div>
         </div>
       </section>
+        <BlogViewTracker slug={slug} />
     </>
   );
 }
