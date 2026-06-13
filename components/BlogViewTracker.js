@@ -7,8 +7,16 @@ export default function BlogViewTracker({ slug }) {
     fetch('/api/blog/track-view', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slug })
-    }).catch(() => {});
+      body: JSON.stringify({
+        slug,
+        path: window.location.pathname,
+        referrer: document.referrer || ''
+      })
+    })
+    .then(res => {
+      if (!res.ok) console.warn('[track-view] API returned', res.status);
+    })
+    .catch(err => console.warn('[track-view] Fetch failed:', err));
   }, [slug]);
 
   return null;

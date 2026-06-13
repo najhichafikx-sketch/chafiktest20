@@ -101,27 +101,37 @@ export default function VideoToPromptClient() {
   const canvasRef = useRef(null);
   const videoRef = useRef(null);
   const fileInputRef = useRef(null);
-  const extractFrames = useCallback(async (videoFile) => {
+  const MAX_FRAME_WIDTH = 640;
+
+  function resizeFrame(canvas, ctx, videoEl) {
+    const scale = Math.min(1, MAX_FRAME_WIDTH / videoEl.videoWidth);
+    canvas.width = Math.round(videoEl.videoWidth * scale);
+    canvas.height = Math.round(videoEl.videoHeight * scale);
+  }
+
+  const extractFrames = useCallback(async (videoFile, ultraDetailed) => {
     const url = URL.createObjectURL(videoFile);
     const video = document.createElement('video');
     video.src = url;
     await video.play();
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    const fps = 2;
+    const fps = ultraDetailed ? 1 : 0.5;
+    const maxFrames = ultraDetailed ? 12 : 6;
     const frames = [];
-    video.addEventListener('loadedmetadata', () => {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const totalFrames = Math.floor(video.duration * fps);
-      for (let i = 0; i < totalFrames; i++) {
-        video.currentTime = i / fps;
-        ctx.drawImage(video, 0, 0);
-        frames.push(canvas.toDataURL('image/jpeg', 0.5));
-      }
-    });
-    await new Promise((resolve) => { video.addEventListener('seeked', resolve, { once: true }); });
-    return frames;
+    const totalFrames = Math.min(Math.floor(video.duration * fps), maxFrames);
+    video.addEventListener('loadedmetadata', () => resizeFrame(canvas, ctx, video));
+    await new Promise(r => { video.addEventListener('loadedmetadata', r, { once: true }); });
+    resizeFrame(canvas, ctx, video);
+    for (let i = 0; i < totalFrames; i++) {
+      video.currentTime = i / fps;
+      await new Promise(r => { video.addEventListener('seeked', r, { once: true }); });
+      ctx.drawImage(video, 0, 0);
+      frames.push(canvas.toDataURL('image/jpeg', 0.6));
+    }
+    video.remove();
+    URL.revokeObjectURL(url);
+    return { frames, duration: video.duration, width: video.videoWidth, height: video.videoHeight };
   }, []);
   const captureFrame = useCallback((videoFile) => {
     return new Promise((resolve) => {
@@ -130,11 +140,10 @@ export default function VideoToPromptClient() {
       video.src = URL.createObjectURL(videoFile);
       video.onloadedmetadata = () => {
         const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        resizeFrame(canvas, ctx, video);
         video.currentTime = Math.min(video.duration * 0.25, 5);
         video.onseeked = () => {
-          const ctx = canvas.getContext('2d');
           ctx.drawImage(video, 0, 0);
           resolve(canvas.toDataURL('image/jpeg', 0.6));
         };
@@ -148,19 +157,22 @@ export default function VideoToPromptClient() {
     setPrompts([]);
     setLoading(true);
     setProgress(0);
-    setStage('Extracting frames');
     try {
-      await new Promise((r) => setTimeout(r, 500));
-      setProgress(30);
-      setStage('Analyzing content');
-      const formData = new FormData();
-      formData.append('video', file);
-      formData.append('ultraDetailed', ultraDetailed);
-      formData.append('frameCount', 5);
-      formData.append('maxDuration', 120);
+      setStage('Extracting frames');
+      setProgress(10);
+      await new Promise((r) => setTimeout(r, 100));
+      const { frames, duration, width, height } = await extractFrames(file, ultraDetailed);
+      if (frames.length === 0) throw new Error('Could not extract frames from this video.');
+      setProgress(40);
+      setStage(`Analyzing ${frames.length} frames (AI)...`);
       const res = await fetch('/api/tools/video-to-prompt', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          frames,
+          ultraDetailed,
+          metadata: { fileName: file.name, duration, width, height }
+        })
       });
       setProgress(80);
       setStage('Finalizing');
@@ -169,9 +181,14 @@ export default function VideoToPromptClient() {
         throw new Error(errData.error || 'Analysis failed with status ' + res.status);
       }
       const data = await res.json();
-      if (data.prompts) { setPrompts(data.prompts); }
-      if (data.frameAnalysis) { setFrameAnalysis(data.frameAnalysis); }
+      setVideoMeta({ fileName: file.name, duration, width, height });
       setResult(data);
+      setFrameAnalysis(data.frameAnalysis || '');
+      const promptEntries = {};
+      for (const key of ['universalPrompt', 'veoPrompt', 'klingPrompt', 'runwayPrompt', 'cinematicDirectorPrompt', 'negativePrompt']) {
+        if (data[key]) promptEntries[key] = data[key];
+      }
+      setPrompts(promptEntries);
       setProgress(100);
       setStage('');
     } catch (err) {
@@ -180,7 +197,7 @@ export default function VideoToPromptClient() {
       setLoading(false);
       setStage('');
     }
-  }, [file, ultraDetailed]);
+  }, [file, ultraDetailed, extractFrames]);
   const handleDrop = useCallback((e) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files[0];

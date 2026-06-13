@@ -3,6 +3,7 @@ import Script from 'next/script';
 import './globals.css';
 import ChromeWrapper from '@/components/ChromeWrapper';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
+import PageViewTracker from '@/components/PageViewTracker';
 import MonetagServiceWorker from '@/components/MonetagServiceWorker';
 import SmartAdBootstrap from '@/components/SmartAdBootstrap';
 import ButtonCountdown from '@/components/ButtonCountdown';
@@ -68,6 +69,7 @@ export default function RootLayout({ children }) {
         <AnalyticsTracker />
         <MonetagServiceWorker />
         <SmartAdBootstrap />
+        <PageViewTracker />
         <ButtonCountdown />
 
         <ChromeWrapper>

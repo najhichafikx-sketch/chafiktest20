@@ -21,23 +21,39 @@ const CC_MAP = {
 
 export async function POST(request) {
   try {
-    const { slug } = await request.json();
-    if (!slug) return NextResponse.json({ error: 'slug required' }, { status: 400 });
-    if (!SB_URL || !SB_KEY) return NextResponse.json({ error: 'not configured' }, { status: 503 });
+    const body = await request.json();
+    const slug = body.slug || body.path || '/';
+    const pagePath = body.path || slug;
+    const referrer = body.referrer || '';
+
+    if (!SB_URL || !SB_KEY) {
+      console.warn('[track-view] Supabase not configured');
+      return NextResponse.json({ error: 'not configured' }, { status: 503 });
+    }
 
     const countryCode = request.headers.get('x-vercel-ip-country') || 'XX';
     const countryName = CC_MAP[countryCode] || countryCode;
+    const userAgent = request.headers.get('user-agent') || '';
 
     const sb = createClient(SB_URL, SB_KEY, { auth: { persistSession: false } });
-    await sb.from('blog_views').insert({
+
+    const { error } = await sb.from('blog_views').insert({
       slug,
+      path: pagePath,
       date: new Date().toISOString().split('T')[0],
-      country: countryName
+      country: countryName,
+      referrer: referrer.slice(0, 500),
+      user_agent: userAgent.slice(0, 300)
     });
+
+    if (error) {
+      console.error('[track-view] Supabase insert error:', error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('Track view error:', err);
+    console.error('[track-view] Unexpected error:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
