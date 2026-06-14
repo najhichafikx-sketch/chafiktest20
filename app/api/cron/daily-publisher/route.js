@@ -4,7 +4,7 @@
 import { NextResponse } from 'next/server';
 import { runDailyPipeline } from '@/lib/auto-publisher/pipeline';
 
-export const maxDuration = 300; // 5 minutes
+export const maxDuration = 600; // 10 minutes
 export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
